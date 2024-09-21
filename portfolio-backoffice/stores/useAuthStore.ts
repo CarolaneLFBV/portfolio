@@ -1,6 +1,8 @@
 import {defineStore} from "pinia";
 import useSecurity from "~/composables/useSecurity";
 import type {User, UserLogin, UserRegister, UserStore} from "~/types/user";
+import { useRouter } from 'vue-router';
+import useAuthentication from "~/composables/useAuthentication";
 
 export const useAuthStore = defineStore("authStore", {
     state: (): UserStore => ({
@@ -28,8 +30,8 @@ export const useAuthStore = defineStore("authStore", {
             try {
                 const response = await apiHelper.kyPublicPost<{token: string, user: User}>('auth/login', credentials);
                 const tokenStorage = localStorage.getItem("token") ?? "";
+                const {token, user} = response.data;
                 if (!tokenStorage && response.success && response.data) {
-                    const {token, user} = response.data;
                     const {setToken} = useSecurity()
                     setToken(token);
                 }
@@ -43,6 +45,31 @@ export const useAuthStore = defineStore("authStore", {
             removeToken();
             this.user = undefined;
         },
+        async getAuthenticatedUser(){
+            try {
+                const tokenStorage = localStorage.getItem("token") ?? "";
+                const {tokenExpired} = useAuthentication();
+
+                if (tokenExpired(tokenStorage)) {
+                    const router = useRouter();
+                    await router.push("/auth/login");
+                    return;
+                }
+
+                const response = await apiHelper.kyPrivateGet<User>('users/current');
+                this.user = response;
+            } catch (error) {
+                console.error("Error while fetching user: ", error);
+            }
+        },
+        async getUserById(userID: srting) {
+            try {
+                const response = await apiHelper.kyPrivateGet(`users/${userID}`);
+                return response;
+            } catch (error) {
+                console.error(error);
+            }
+        }
 
 
     }

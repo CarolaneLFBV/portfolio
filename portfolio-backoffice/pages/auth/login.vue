@@ -10,7 +10,7 @@ const router = useRouter();
 async function onLogin() {
   try {
     await authenticateUser({email: user.value.email, password: user.value.password})
-    await router.push('/dashboard')
+    await router.push('/dashboard');
   } catch (error) {
     console.log(error);
   }

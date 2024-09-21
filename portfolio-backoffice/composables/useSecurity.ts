@@ -1,7 +1,7 @@
-import {useUserStore} from "~/stores/useUserStore";
-import type {UserRegisterData} from "~/types/user";
+import type {UserRegister} from "~/types/user";
+import { useRouter } from 'vue-router';
 
-const user = ref<UserRegisterData>({
+const user = ref<UserRegister>({
     email: '',
     password: '',
     role: '',
@@ -16,14 +16,9 @@ export default function () {
         localStorage.removeItem('token');
     }
 
-    function getToken() {
-        localStorage.getItem('token');
-    }
-
     return {
         user,
         setToken,
         removeToken,
-        getToken
     }
 }

@@ -1,6 +1,7 @@
 import ky from "ky";
 import type { ApiResponse } from "~/types/api";
 import { useAuthStore } from "~/stores/useAuthStore";
+import useSecurity from "~/composables/useSecurity";
 
 // API pour les requêtes publiques (sans token)
 const publicApi = ky.create({
@@ -15,8 +16,7 @@ const privateApi = publicApi.extend({
     hooks: {
         beforeRequest: [
             (request) => {
-                const authStore = useAuthStore();
-                const token = authStore.getToken();
+                const token = localStorage.getItem("token") ?? "";
                 if (token) {
                     request.headers.set('Authorization', `Bearer ${token}`);
                 }
@@ -47,8 +47,8 @@ const kyPrivatePost = async <T>(url: string, json: object): Promise<ApiResponse<
     }
 };
 
-// Requêtes GET publiques ou privées
-const kyGet = async <T>(url: string): Promise<ApiResponse<T>> => {
+// Requêtes GET publiques
+const kyPublicGet = async <T>(url: string): Promise<ApiResponse<T>> => {
     try {
         const response = await publicApi.get(url).json<T>();
         return { success: true, data: response };
@@ -57,6 +57,18 @@ const kyGet = async <T>(url: string): Promise<ApiResponse<T>> => {
         return { success: false, data: null };
     }
 };
+
+// Requêtes GET privées
+const kyPrivateGet = async <T>(url: string): Promise<ApiResponse<T>> => {
+    try {
+        const response = await privateApi.get(url).json<T>();
+        return { success: true, data: response };
+    } catch (error) {
+        console.log("Error getting data", error);
+        return { success: false, data: null };
+    }
+};
+
 
 // Requêtes PATCH pour les mises à jour privées
 const kyPatch = async <T>(url: string, json: object): Promise<ApiResponse<T>> => {
@@ -80,4 +92,4 @@ const kyDelete = async <T>(url: string): Promise<ApiResponse<T>> => {
     }
 };
 
-export default { kyGet, kyPrivatePost, kyPublicPost, kyPatch, kyDelete };
+export default { kyPublicGet, kyPrivateGet, kyPrivatePost, kyPublicPost, kyPatch, kyDelete };
