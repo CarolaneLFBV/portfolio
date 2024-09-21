@@ -1,23 +1,49 @@
 import {defineStore} from "pinia";
+import useSecurity from "~/composables/useSecurity";
+import type {User, UserLogin, UserRegister, UserStore} from "~/types/user";
 
 export const useAuthStore = defineStore("authStore", {
-    state: () => ({
-       token: null as string || null,
+    state: (): UserStore => ({
+        user: undefined,
     }),
+    getters: {
+        isAuth: (state: UserStore): boolean => !!state.user,
+        isAdmin: (state: UserStore): boolean => state.user?.role === "admin",
+    },
     actions: {
-        setToken(token: string) {
-            this.token = token;
-            localStorage.setItem("token", token);
+        async register(data: UserRegister) {
+          try {
+              const response = await apiHelper.kyPublicPost<{ token: string, user: User }>('auth/register', data);
+              if (response.success && response.data) {
+                  const {token, user} = response.data;
+                  const {setToken} = useSecurity()
+                  setToken(token);
+                  this.user = user;
+              }
+          } catch (error) {
+              console.log("Error registering user", error);
+          }
         },
-        loadToken() {
-            const token = localStorage.getItem("token");
-            if (token) {
-                this.token = token;
+        async authenticateUser(credentials: UserLogin) {
+            try {
+                const response = await apiHelper.kyPublicPost<{token: string, user: User}>('auth/login', credentials);
+                const tokenStorage = localStorage.getItem("token") ?? "";
+                if (!tokenStorage && response.success && response.data) {
+                    const {token, user} = response.data;
+                    const {setToken} = useSecurity()
+                    setToken(token);
+                }
+                this.user = user;
+            } catch (error) {
+                console.error("Error authenticating user", error);
             }
         },
-        clearToken() {
-            this.token = null;
-            localStorage.removeItem("token");
-        }
+        logout() {
+            const {removeToken} = useSecurity()
+            removeToken();
+            this.user = undefined;
+        },
+
+
     }
 })

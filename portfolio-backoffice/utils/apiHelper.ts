@@ -16,8 +16,9 @@ const privateApi = publicApi.extend({
         beforeRequest: [
             (request) => {
                 const authStore = useAuthStore();
-                if (authStore.token) {
-                    request.headers.set('Authorization', `Bearer ${authStore.token}`);
+                const token = authStore.getToken();
+                if (token) {
+                    request.headers.set('Authorization', `Bearer ${token}`);
                 }
             }
         ]
@@ -28,7 +29,7 @@ const privateApi = publicApi.extend({
 const kyPublicPost = async <T>(url: string, json: object): Promise<ApiResponse<T>> => {
     try {
         const response = await publicApi.post(url, { json }).json<T>();
-        return { success: true, data: null };
+        return { success: true, data: response };
     } catch (error) {
         console.log("Error in public POST request:", error);
         return { success: false, data: null };

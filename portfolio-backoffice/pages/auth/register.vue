@@ -1,35 +1,33 @@
 <script setup lang="ts">
+import {useAuthStore} from "~/stores/useAuthStore";
+import useSecurity from "~/composables/useSecurity";
 
-import {useUserStore} from "~/stores/useUserStore";
+const {register} = useAuthStore();
+const {user} = useSecurity()
 
-const userStore = useUserStore();
-const email = ref("");
-const password = ref("");
-const isAdmin = ref(false);
-
-const handleRegister = async () => {
+async function onRegister() {
   try {
-    await userStore.register(email.value, password.value, isAdmin.value);
-  } catch (e) {
-    console.error("Erreur API : ", e);
+    await register({
+      email: user.value.email,
+      password: user.value.password,
+      role: 'member',
+    })
+  } catch (error) {
+    console.log(error);
   }
 }
 
 </script>
 
 <template>
-  <form @submit.prevent="handleRegister">
+  <form @submit.prevent="onRegister">
     <div>
       <label for="email">Email</label>
-      <input type="email" id="email" v-model="email" required />
+      <input type="email" id="email" v-model="user.email" required />
     </div>
     <div>
       <label for="password">Mot de passe</label>
-      <input type="password" id="password" v-model="password" required />
-    </div>
-    <div>
-      <label for="adminSwitch">Activer l'administrateur :</label>
-      <input type="checkbox" id="adminSwitch" v-model="isAdmin" />
+      <input type="password" id="password" v-model="user.password" required />
     </div>
     <button type="submit">S'inscrire</button>
   </form>

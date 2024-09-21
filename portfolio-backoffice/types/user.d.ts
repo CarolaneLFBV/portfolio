@@ -4,9 +4,21 @@ export interface User {
     lastName: string;
     email: string;
     password: string;
-    isAdmin: boolean;
+    role: 'admin' | 'member';
 }
 
 export interface UserStore {
     user: User | undefined;
+}
+
+export interface UserRegister {
+    email: string;
+    password: string;
+    role: 'admin' | 'member';
+}
+
+export interface UserLogin {
+    email: string;
+    password: string;
+    role: 'admin' | 'member';
 }
