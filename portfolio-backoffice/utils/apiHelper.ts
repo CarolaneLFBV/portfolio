@@ -1,7 +1,5 @@
 import ky from "ky";
 import type { ApiResponse } from "~/types/api";
-import { useAuthStore } from "~/stores/useAuthStore";
-import useSecurity from "~/composables/useSecurity";
 
 // API pour les requêtes publiques (sans token)
 const publicApi = ky.create({

@@ -2,35 +2,30 @@
 import {definePageMeta} from "#imports";
 import {useAuthStore} from "~/stores/useAuthStore";
 import { useRouter } from 'vue-router';
+import {useUserStore} from "~/stores/useUserStore";
 
 definePageMeta({
   title: 'Dashboard',
   middleware: 'auth',
 })
 
-const {logout, getAuthenticatedUser, user} = useAuthStore();
+const {user, isAdmin} = useAuthStore();
+const {getAuthenticatedUser} = useUserStore();
 const router = useRouter()
 
 onMounted(async () => {
-  await getAuthenticatedUser();
-})
-
-
-async function onLogout() {
   try {
-    await logout();
-    await router.push('/auth/login');
+    await getAuthenticatedUser();
   } catch (error) {
     console.log(error);
+    await router.push('/auth/login');
   }
-}
+})
 </script>
 
 <template>
   <div class="dashboard">
     <h1>Dashboard</h1>
-
-    <!-- Afficher les informations de l'utilisateur connecté -->
     <div v-if="user">
       <p><strong>First Name:</strong> {{ user.firstName }}</p>
       <p><strong>Last Name:</strong> {{ user.lastName }}</p>
@@ -41,8 +36,6 @@ async function onLogout() {
     <div v-else>
       <p>Loading user data...</p>
     </div>
-
-    <button @click="onLogout">Deconnexion</button>
   </div>
 </template>
 
