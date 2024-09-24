@@ -42,7 +42,9 @@ async function update() {
 <template>
   <div v-if="user">
     <form @submit.prevent="update">
-      <input v-model="user.email" id="email" type="email" />
+      <p>Email : <input v-model="user.email" id="email" type="email" /></p>
+      <p>Prénom : <input v-model="user.firstName" id="firstName" type="text" /></p>
+      <p>Nom : <input v-model="user.lastName" id="lastName" type="text" /> </p>
       <button type="submit">Mettre à jour</button>
     </form>
   </div>
