@@ -2,7 +2,10 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
+
   router: {
     middleware: ['auth']
-  }
+  },
+
+  modules: ['@nuxt/ui']
 })
