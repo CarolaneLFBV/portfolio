@@ -69,7 +69,7 @@ const kyPrivateGet = async <T>(url: string): Promise<ApiResponse<T>> => {
 
 
 // Requêtes PATCH pour les mises à jour privées
-const kyPatch = async <T>(url: string, json: object): Promise<ApiResponse<T>> => {
+const kyPrivatePatch = async <T>(url: string, json: object): Promise<ApiResponse<T>> => {
     try {
         const response = await privateApi.patch(url, { json }).json<T>();
         return { success: true, data: response };
@@ -80,7 +80,7 @@ const kyPatch = async <T>(url: string, json: object): Promise<ApiResponse<T>> =>
 };
 
 // Requêtes DELETE pour les suppressions privées
-const kyDelete = async <T>(url: string): Promise<ApiResponse<T>> => {
+const kyPrivateDelete = async <T>(url: string): Promise<ApiResponse<T>> => {
     try {
         const response = await privateApi.delete(url).json<T>();
         return { success: true, data: response };
@@ -90,4 +90,4 @@ const kyDelete = async <T>(url: string): Promise<ApiResponse<T>> => {
     }
 };
 
-export default { kyPublicGet, kyPrivateGet, kyPrivatePost, kyPublicPost, kyPatch, kyDelete };
+export default { kyPublicGet, kyPrivateGet, kyPrivatePost, kyPublicPost, kyPrivatePatch, kyPrivateDelete };

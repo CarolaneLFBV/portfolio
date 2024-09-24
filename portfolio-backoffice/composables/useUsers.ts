@@ -28,7 +28,7 @@ export default function () {
     }
     async function updateUser(user: User) {
         try {
-            const response = await apiHelper.kyPatch(`users/${user.id}`, user);
+            const response = await apiHelper.kyPrivatePatch<User>(`users/${user.id}`, user);
             return response.data;
         } catch (error) {
             console.error(error);

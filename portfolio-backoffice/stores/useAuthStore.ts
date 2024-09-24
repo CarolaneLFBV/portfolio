@@ -25,9 +25,9 @@ export const useAuthStore = defineStore("authStore", {
               console.log("Error registering user", error);
           }
         },
-        async authenticateUser(credentials: UserLogin) {
+        async authenticateUser(data: UserLogin) {
             try {
-                const response = await apiHelper.kyPublicPost<{token: string, user: User}>('auth/login', credentials);
+                const response = await apiHelper.kyPublicPost<{token: string, user: User}>('auth/login', data);
                 const tokenStorage = localStorage.getItem("token") ?? "";
                 const {token, user} = response.data;
                 if (!tokenStorage && response.success && response.data) {

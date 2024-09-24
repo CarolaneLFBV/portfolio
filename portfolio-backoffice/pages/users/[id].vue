@@ -10,7 +10,7 @@ definePageMeta({
   middleware: ['auth'],
 })
 
-const { getUserById } = useUsers();
+const { getUserById, updateUser } = useUsers();
 const user = ref<User | null>(null);
 const route = useRoute();
 
@@ -29,15 +29,22 @@ async function onInit() {
     console.error("Erreur lors de la récupération de l'utilisateur :", error);
   }
 }
+
+async function update() {
+  try {
+    await updateUser(user.value);
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <template>
   <div v-if="user">
-    <h2>Modifier les informations de l'utilisateur</h2>
-    <p>Email : {{ user.email }}</p>
-  </div>
-  <div v-else>
-    <p>Chargement...</p>
+    <form @submit.prevent="update">
+      <input v-model="user.email" id="email" type="email" />
+      <button type="submit">Mettre à jour</button>
+    </form>
   </div>
 </template>
 
