@@ -2,10 +2,12 @@ import { defineStore } from 'pinia';
 import type {User, UserStore} from "~/types/user";
 import useAuthentication from "~/composables/useAuthentication";
 import {useRouter} from "#vue-router";
+import apiHelper from "~/utils/apiHelper";
 
 export const useUserStore = defineStore('userStore', {
     state: (): UserStore => ({
-        user: undefined
+        user: undefined,
+        users: []
     }),
     actions: {
         async getAuthenticatedUser(){
@@ -25,13 +27,5 @@ export const useUserStore = defineStore('userStore', {
                 console.error("Error while fetching user: ", error);
             }
         },
-        async getUserById(userID: srting) {
-            try {
-                const response = await apiHelper.kyPrivateGet(`users/${userID}`);
-                return response;
-            } catch (error) {
-                console.error(error);
-            }
-        }
     }
 });

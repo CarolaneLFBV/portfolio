@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/stores/useAuthStore'
-import useSecurity from "~/composables/useSecurity";
 import { useRouter } from 'vue-router';
+import useUsers from "~/composables/useUsers";
 
 const {authenticateUser} = useAuthStore()
-const {user} = useSecurity();
+const {user} = useUsers();
 const router = useRouter();
 
 async function onLogin() {

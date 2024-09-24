@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {useAuthStore} from "~/stores/useAuthStore";
-import useSecurity from "~/composables/useSecurity";
+import useUsers from "~/composables/useUsers";
 
 const {register} = useAuthStore();
-const {user} = useSecurity()
+const {user} = useUsers();
 
 async function onRegister() {
   try {
@@ -16,7 +16,6 @@ async function onRegister() {
     console.log(error);
   }
 }
-
 </script>
 
 <template>
