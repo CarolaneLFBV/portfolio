@@ -9,12 +9,16 @@ const router = useRouter();
 const users = ref<User[]>([]);
 
 onMounted(async () => {
+  await onInit();
+})
+
+async function onInit() {
   try {
     users.value = await getUsers();
   } catch (error) {
     console.error(error);
   }
-})
+}
 
 function editUser(id: string) {
   router.push(`/users/${id}`);
@@ -28,7 +32,6 @@ function editUser(id: string) {
       <thead>
       <tr>
         <th>Prénom</th>
-        <th>Prénom</th>
         <th>Nom</th>
         <th>Email</th>
         <th>Rôle</th>
@@ -37,7 +40,6 @@ function editUser(id: string) {
       </thead>
       <tbody>
       <tr v-for="user in users" :key="user.id">
-        <td>{{ user.id }}</td>
         <td>{{ user.firstName }}</td>
         <td>{{ user.lastName }}</td>
         <td>{{ user.email }}</td>
