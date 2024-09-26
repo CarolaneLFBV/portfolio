@@ -26,7 +26,7 @@ onMounted(async () => {
 
 <template>
   <div class="dashboard">
-    <h1>Dashboard</h1>
+    <h1>{{ $t("dashboard.title") }}</h1>
     <div v-if="isAdmin">
       <UserTable/>
     </div>

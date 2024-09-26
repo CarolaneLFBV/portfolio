@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import Login from "~/pages/auth/login.vue";
+
 </script>
 
 <template>
-  <login></login>
+  <header class="text-align-center">
+    <div class="logo">OKEEP</div>
+  </header>
 </template>
 
 <style scoped>

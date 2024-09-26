@@ -2,10 +2,30 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-
   router: {
     middleware: ['auth']
   },
+  css: ['~/assets/styles/main.scss'],
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap'
+        }
+      ]
+    }
+  },
+  modules: ['@nuxtjs/i18n'],
 
-  modules: ['@nuxt/ui']
+  i18n: {
+    locales: [
+      { code: 'en', name: 'English', iso: 'en-US', file: 'en.json' },
+      { code: 'fr', name: 'Français', iso: 'fr-FR', file: 'fr.json' }
+    ],
+    defaultLocale: 'fr',
+    lazy: true,
+    langDir: 'locales/',
+    strategy: 'no_prefix',
+  },
 })

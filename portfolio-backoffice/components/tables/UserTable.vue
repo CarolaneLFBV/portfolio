@@ -7,7 +7,6 @@ import type {User} from "~/types/user";
 const { getUsers } = useUsers();
 const router = useRouter();
 const users = ref<User[]>([]);
-
 onMounted(async () => {
   await onInit();
 })

@@ -1,0 +1,18 @@
+{
+  "edit": "Edit",
+  "dashboard": {
+    "title": "Dashboard",
+    "users-list": "Users' List"
+  },
+  "login": {
+    "title": "Login To Backoffice",
+    "login": "Login",
+    "email-placeholder": "Enter your email",
+    "password-placeholder": "Enter your password"
+  },
+  "email" : "Email",
+  "password": "Password",
+  "footer": {
+    "copyright": "© 2024 Carolane Lefebvre. All rights reserved."
+  }
+}
