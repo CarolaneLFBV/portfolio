@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/icon": "^1.5.1",
     "@nuxtjs/i18n": "^8.5.5",
     "ky": "^1.7.2",
     "nuxt": "^3.13.0",

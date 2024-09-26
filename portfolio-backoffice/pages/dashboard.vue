@@ -3,10 +3,10 @@ import {definePageMeta} from "#imports";
 import {useAuthStore} from "~/stores/useAuthStore";
 import { useRouter } from 'vue-router';
 import {useUserStore} from "~/stores/useUserStore";
-import UserTable from "~/components/tables/UserTable.vue";
+import UserCard from "~/components/cards/UserCard.vue";
 
 definePageMeta({
-  title: 'Dashboard',
+  layout: 'layout-dashboard',
   middleware: 'auth',
 })
 
@@ -25,24 +25,23 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="dashboard">
-    <h1>{{ $t("dashboard.title") }}</h1>
-    <div v-if="isAdmin">
-      <UserTable/>
+  <h1>{{ $t("dashboard.title") }}</h1>
+  <div v-if="isAdmin">
+    <h2>{{ $t("dashboard.users-list") }}</h2>
+    <UserCard/>
+  </div>
+
+  <div>
+    <h2>Your Informations</h2>
+    <div v-if="user">
+      <p><strong>First Name:</strong>{{ user.firstName }}</p>
+      <p><strong>Last Name:</strong>{{ user.lastName }}</p>
+      <p><strong>Email:</strong>{{ user.email }}</p>
+      <p><strong>Role:</strong>{{ user.role }}</p>
     </div>
 
-    <div>
-      <h1>Information</h1>
-      <div v-if="user">
-        <p><strong>First Name:</strong>{{ user.firstName }}</p>
-        <p><strong>Last Name:</strong>{{ user.lastName }}</p>
-        <p><strong>Email:</strong>{{ user.email }}</p>
-        <p><strong>Role:</strong>{{ user.role }}</p>
-      </div>
-
-      <div v-else>
-        <p>Loading user data...</p>
-      </div>
+    <div v-else>
+      <p>Loading user data...</p>
     </div>
   </div>
 </template>

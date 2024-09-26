@@ -1,10 +1,10 @@
 :root {
   --primary-color: #8800ff;
-  --secondary-color: ;
+  --secondary-color: #4e0094;
   --background-color: #171A1B;
+  --secondary-background-color: #333;
   --text-color: #ffff;
-  --caption-color: #bbb;
-  --input-bg-color: #1e1e1e;
+  --caption-color: #6c6c6c;
 }
 
 * {
@@ -32,6 +32,10 @@ h1, h2, h3 {
   font-weight: normal;
 }
 
+.tst {
+  background-color: red;
+}
+
 // Buttons
 button {
   background-color: var(--primary-color);
@@ -43,7 +47,32 @@ button {
 }
 
 button:hover {
-  background-color: #6400bd;
+  background-color: var(--secondary-color);
+}
+
+// Nav
+ul {
+  list-style: none;
+}
+
+li {
+  margin-bottom: 2rem;
+}
+
+li a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+li a:hover {
+  color: #a341ff;
+}
+
+.active-link {
+  color: var(--primary-color);
+  font-weight: bold;
+  border-left: .3rem solid var(--primary-color);
+  padding-left: 1rem;
 }
 
 // Image
@@ -54,31 +83,18 @@ button:hover {
   border: 2px solid white;
 }
 
-// Containers
-.container-lg, .container-md {
-  width: 100%;
-  margin: auto;
-}
-
-.container-lg {
-  max-width: 160rem;
-}
-
-.container-md {
-  max-width: 120rem;
-}
-
 // Card
 .card-container {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 2rem;
+  border-radius: 2rem;
+  padding: 1.5rem;
   margin: auto;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px); /* Frosted glass effect */
   -webkit-backdrop-filter: blur(10px); /* Support for Safari */
   border: 1px solid rgba(255, 255, 255, 0.2); /* Optional border */
   max-width: 100rem;
+  min-width: 20rem;
   text-align: center;
 }
 
@@ -106,35 +122,8 @@ button:hover {
   gap: 1rem;
 }
 
-.gap-md {
-  gap: 3rem;
-}
-
-.gap-lg {
-  gap: 10rem;
-}
-
-.gap-xlg {
-  gap: 20rem;
-}
-
 .flex-row.no-gap {
   gap: 0.25rem
-}
-
-@media screen and (max-width: 992px) {
-  .gap-lg {
-    gap: 7rem;
-  }
-  .gap-xlg {
-    gap: 10rem;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .gap-lg, .gap-xlg {
-    gap: 3rem;
-  }
 }
 
 .flex-align-center {
@@ -216,6 +205,22 @@ button:hover {
 fieldset {
   border: none;
   padding: 0 !important;
+}
+
+input {
+  padding: .75rem;
+  background-color: var(--background-color);
+  border: none;
+  border-radius: .5rem;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+label {
+  font-size: 1rem;
+  color: var(--caption-color);
+  display: block;
+  margin-bottom: .5rem;
 }
 
 // Align utilities

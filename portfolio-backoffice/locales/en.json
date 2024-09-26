@@ -1,18 +1,30 @@
 {
   "edit": "Edit",
+  "email" : "Mail",
+  "footer": {
+    "copyright": "© 2024 Carolane Lefebvre. All rights reserved."
+  },
   "dashboard": {
     "title": "Dashboard",
     "users-list": "Users' List"
   },
   "login": {
-    "title": "Login To Backoffice",
-    "login": "Login",
+    "email": "Mail",
     "email-placeholder": "Enter your email",
-    "password-placeholder": "Enter your password"
+    "login": "Login",
+    "password": "Password",
+    "password-placeholder": "Enter your password",
+    "title": "Login To Backoffice"
   },
-  "email" : "Email",
-  "password": "Password",
-  "footer": {
-    "copyright": "© 2024 Carolane Lefebvre. All rights reserved."
-  }
+  "role": {
+    "admin": "Admin",
+    "member": "Member"
+  },
+  "user": {
+    "email": "Mail",
+    "firstName": "First Name",
+    "fullName": "Full Name",
+    "lastName": "Last Name",
+    "role": "Role",
+  },
 }

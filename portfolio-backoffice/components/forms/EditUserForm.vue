@@ -38,14 +38,41 @@ async function update() {
 }
 </script>
 
+
+
+
 <template>
   <div v-if="user">
-    <form @submit.prevent="update">
-      <p>Email : <input v-model="user.email" id="email" type="email" /></p>
-      <p>Prénom : <input v-model="user.firstName" id="firstName" type="text" /></p>
-      <p>Nom : <input v-model="user.lastName" id="lastName" type="text" /> </p>
-      <button type="submit">Mettre à jour</button>
-    </form>
+    <div class="full-height flex-column text-align-center">
+      <div class="card-container text-align-center">
+        <h1>{{ $t("edit") }} {{ user.firstName }}</h1>
+        <form @submit.prevent="update">
+          <div class="padding-bottom text-align-left">
+            <label for="email">{{ $t("login.email") }}</label>
+            <input class="full-width" id="email" type="email" v-model="user.email" required :placeholder="$t('login.email-placeholder')"/>
+          </div>
+
+          <div class="padding-bottom text-align-left">
+            <label for="firstName">{{ $t("user.firstName") }}</label>
+            <input class="full-width" id="firstName" type="text" v-model="user.firstName" required :placeholder="$t('login.email-placeholder')"/>
+          </div>
+
+          <div class="padding-bottom text-align-left">
+            <label for="lastName">{{ $t("user.lastName") }}</label>
+            <input class="full-width" id="lastName" type="text" v-model="user.lastName" required :placeholder="$t('login.email-placeholder')"/>
+          </div>
+
+          <div class="padding-bottom text-align-left">
+            <label for="lastName">{{ $t("user.role") }}</label>
+            <select class="full-width" id="role" v-model="user.role">
+              <option value="admin"> {{ $t("role.admin")}} </option>
+              <option value="member"> {{ $t("role.member")}} </option>
+            </select>
+          </div>
+          <button type="submit" class="padding full-width">Mettre à jour</button>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 

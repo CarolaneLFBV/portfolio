@@ -26,12 +26,12 @@ async function onLogin() {
       </div>
       <form @submit.prevent="onLogin">
         <div class="padding-bottom text-align-left">
-          <label for="email">{{ $t("email") }}</label>
+          <label for="email">{{ $t("login.email") }}</label>
           <input class="full-width" id="email" type="email" v-model="user.email" required :placeholder="$t('login.email-placeholder')"/>
         </div>
 
         <div class="padding-bottom margin-bottom text-align-left">
-          <label for="password">{{ $t("password") }}</label>
+          <label for="password">{{ $t("login.password") }}</label>
           <input class="full-width" id="password" type="password" v-model="user.password" required :placeholder="$t('login.password-placeholder')"/>
         </div>
 
@@ -43,21 +43,4 @@ async function onLogin() {
 
 <style scoped lang="scss">
 
-
-
-input {
-  padding: .75rem;
-  background-color: var(--background-color);
-  border: none;
-  border-radius: .5rem;
-  font-size: 1rem;
-  color: var(--text-color);
-}
-
-label {
-  font-size: 1rem;
-  color: var(--caption-color);
-  display: block;
-  margin-bottom: .5rem;
-}
 </style>
