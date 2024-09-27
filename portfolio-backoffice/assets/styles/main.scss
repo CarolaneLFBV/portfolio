@@ -26,14 +26,14 @@ body {
   background-size: 4rem 4rem;
 }
 
+.tst {
+  background-color: red;
+}
+
 // Title
 h1, h2, h3 {
   margin-bottom: 2rem;
   font-weight: normal;
-}
-
-.tst {
-  background-color: red;
 }
 
 // Buttons
@@ -65,7 +65,7 @@ li a {
 }
 
 li a:hover {
-  color: #a341ff;
+  color: var(--primary-color);
 }
 
 .active-link {
@@ -120,10 +120,6 @@ li a:hover {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-}
-
-.flex-row.no-gap {
-  gap: 0.25rem
 }
 
 .flex-align-center {

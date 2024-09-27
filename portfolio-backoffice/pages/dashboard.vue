@@ -15,13 +15,17 @@ const {getAuthenticatedUser} = useUserStore();
 const router = useRouter()
 
 onMounted(async () => {
+  await onInit();
+})
+
+async function onInit() {
   try {
     await getAuthenticatedUser();
   } catch (error) {
     console.log(error);
     await router.push('/auth/login');
   }
-})
+}
 </script>
 
 <template>

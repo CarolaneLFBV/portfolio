@@ -1,4 +1,5 @@
 {
+  "backoffice": "Backoffice",
   "edit": "Edit",
   "email" : "Mail",
   "footer": {
@@ -6,7 +7,11 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "users-list": "Users' List"
+    "users-list": "Users' List",
+  },
+  "experiences": {
+    "title": "Experiences",
+    "unique": "Experience"
   },
   "login": {
     "email": "Mail",
@@ -20,11 +25,19 @@
     "admin": "Admin",
     "member": "Member"
   },
+  "projects": {
+    "title": "Projects",
+    "unique": "Project"
+  },
+  "skills": {
+    "title": "Skills",
+    "unique": "Skill"
+  },
   "user": {
     "email": "Mail",
     "firstName": "First Name",
     "fullName": "Full Name",
     "lastName": "Last Name",
-    "role": "Role",
-  },
+    "role": "Role"
+  }
 }

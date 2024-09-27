@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <footer class="text-align-center">
+    <footer class="padding text-align-center">
       <p>{{ $t("footer.copyright") }}</p>
     </footer>
 </template>

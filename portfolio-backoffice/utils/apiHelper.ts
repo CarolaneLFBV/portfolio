@@ -45,6 +45,7 @@ const kyPrivatePost = async <T>(url: string, json: object): Promise<ApiResponse<
     }
 };
 
+/*
 // Requêtes GET publiques
 const kyPublicGet = async <T>(url: string): Promise<ApiResponse<T>> => {
     try {
@@ -55,6 +56,7 @@ const kyPublicGet = async <T>(url: string): Promise<ApiResponse<T>> => {
         return { success: false, data: null };
     }
 };
+*/
 
 // Requêtes GET privées
 const kyPrivateGet = async <T>(url: string): Promise<ApiResponse<T>> => {
@@ -90,4 +92,4 @@ const kyPrivateDelete = async <T>(url: string): Promise<ApiResponse<T>> => {
     }
 };
 
-export default { kyPublicGet, kyPrivateGet, kyPrivatePost, kyPublicPost, kyPrivatePatch, kyPrivateDelete };
+export default { /*kyPublicGet,*/ kyPrivateGet, kyPrivatePost, kyPublicPost, kyPrivatePatch, kyPrivateDelete };
