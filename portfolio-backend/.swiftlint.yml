@@ -1,0 +1,9 @@
+mode: autocorrect
+identifier_name:
+  excluded:
+    - db
+    - id
+nesting:
+  type_level:
+    warning: 2
+    error: 3
