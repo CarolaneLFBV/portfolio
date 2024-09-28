@@ -33,7 +33,7 @@ async function onInit() {
   <div v-for="skill in skills" :key="skill.id" class="card-container margin text-align-left">
     <p><strong>{{ $t("project.title") }}:</strong> {{ skill.name }} </p>
   </div>
-  <button>Add Skill</button>
+  <NuxtLink to="/skills/create">Create Skill</NuxtLink>
 </template>
 
 <style scoped>

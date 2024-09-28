@@ -10,3 +10,13 @@ export interface Project {
     progress: string;
     skill: Skill;
 }
+
+export interface ProjectCreation {
+    title: string;
+    presentation: string;
+    purpose: string;
+    milestone: string;
+    actor: string;
+    progress: string;
+    skill: Skill;
+}

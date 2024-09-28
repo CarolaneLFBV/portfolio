@@ -203,7 +203,7 @@ fieldset {
   padding: 0 !important;
 }
 
-input {
+input, textarea {
   padding: .75rem;
   background-color: var(--background-color);
   border: none;

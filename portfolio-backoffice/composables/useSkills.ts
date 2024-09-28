@@ -1,11 +1,11 @@
 import apiHelper from "~/utils/apiHelper";
 //import {ref} from "vue";
-import type {Skill} from "~/types/skill";
+import type {Skill, SkillCreation} from "~/types/skill";
 
 export default function () {
-    async function createSkill(skill: Skill) {
+    async function createSkill(skill: SkillCreation) {
         try {
-            const response = await apiHelper.kyPrivatePost<Skill>(`skill/${skill.id}`);
+            const response = await apiHelper.kyPrivatePost<SkillCreation>(`skills/create`, skill);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la création du skill:', error);
