@@ -28,7 +28,7 @@ export const useAuthStore = defineStore("authStore", {
         async authenticateUser(data: UserLogin) {
             try {
                 const response = await apiHelper.kyPublicPost<{token: string, user: User}>('auth/login', data);
-                const tokenStorage = localStorage.getItem("token") ?? "";
+                const tokenStorage = sessionStorage.getItem("token") ?? "";
                 const {token, user} = response.data;
                 if (!tokenStorage && response.success && response.data) {
                     const {setToken} = useSecurity()
@@ -42,7 +42,7 @@ export const useAuthStore = defineStore("authStore", {
         logout() {
             const {removeToken} = useSecurity();
             const {tokenExpired} = useAuthentication();
-            const tokenStorage = localStorage.getItem("token") ?? "";
+            const tokenStorage = sessionStorage.getItem("token") ?? "";
 
             if (tokenExpired(tokenStorage)) {
                 removeToken();

@@ -7,12 +7,11 @@ import apiHelper from "~/utils/apiHelper";
 export const useUserStore = defineStore('userStore', {
     state: (): UserStore => ({
         user: undefined,
-        users: []
     }),
     actions: {
         async getAuthenticatedUser(){
             try {
-                const tokenStorage = localStorage.getItem("token") ?? "";
+                const tokenStorage = sessionStorage.getItem("token") ?? "";
                 const {tokenExpired} = useAuthentication();
 
                 if (tokenExpired(tokenStorage)) {

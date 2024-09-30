@@ -1,10 +1,10 @@
 export default function () {
     function setToken(token: string) {
-        localStorage.setItem('token', token);
+        sessionStorage.setItem('token', token);
     }
 
     function removeToken() {
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
     }
 
     return {
