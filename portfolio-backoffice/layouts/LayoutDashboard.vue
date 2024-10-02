@@ -6,6 +6,7 @@ import LayoutNav from "~/layouts/LayoutNav.vue";
   <div class="full-height flex-row">
     <LayoutNav/>
     <div class="content">
+      <h1>{{ $t("dashboard.title") }}</h1>
       <slot />
     </div>
   </div>

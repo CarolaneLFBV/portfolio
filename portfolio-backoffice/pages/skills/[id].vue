@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import {definePageMeta} from "#imports";
+import EditSkillForm from "~/components/forms/EditSkillForm.vue";
 
 definePageMeta({
   layout: 'layout-dashboard',
-  middleware: 'auth',
+  middleware: ['auth'],
 })
+
 </script>
 
 <template>
-  <div>
-    <h2>{{ $t("experiences.title") }}</h2>
-  </div>
+  <EditSkillForm/>
 </template>
-
-<style scoped>
-
-</style>

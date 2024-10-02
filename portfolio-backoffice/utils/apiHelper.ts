@@ -1,8 +1,6 @@
 import ky from "ky";
 import type { ApiResponse } from "~/types/api";
-import useAuthentication from "~/composables/useAuthentication";
 
-// API pour les requêtes publiques (sans token)
 const publicApi = ky.create({
     prefixUrl: import.meta.env.VITE_API_URL,
     headers: {
@@ -10,13 +8,11 @@ const publicApi = ky.create({
     }
 });
 
-// API pour les requêtes privées (avec token JWT)
 const privateApi = publicApi.extend({
     hooks: {
         beforeRequest: [
             (request) => {
                 const token = sessionStorage.getItem("token") ?? "";
-                console.log('Token being sent:', token);
                 if (token) {
                     request.headers.set('Authorization', `Bearer ${token}`);
                 } else {
@@ -57,4 +53,4 @@ const kyPrivateDelete = <T>(url: string): Promise<ApiResponse<T>> => {
     return request(privateApi, "DELETE", url);
 };
 
-export default { /*kyPublicGet,*/ kyPrivateGet, kyPrivatePost, kyPublicPost, kyPrivatePatch, kyPrivateDelete };
+export default { kyPrivateGet, kyPrivatePost, kyPublicPost, kyPrivatePatch, kyPrivateDelete };

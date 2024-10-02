@@ -13,7 +13,7 @@ struct SkillDTO: Content {
     func toModel() -> Skill {
         let model = Skill()
 
-        model.id = self.id
+        model.id = self.id ?? UUID()
         model.name = self.name
         model.tags = self.tags
         model.context = self.context

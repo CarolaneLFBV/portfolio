@@ -25,15 +25,32 @@ async function onInit() {
     console.error(error);
   }
 }
+
+function editSkill(id: string) {
+  router.push(`/skills/${id}`);
+}
 </script>
 
 <template>
-  <h1>{{ $t("dashboard.title") }}</h1>
-  <h2>PROJECTS</h2>
-  <div v-for="skill in skills" :key="skill.id" class="card-container margin text-align-left">
-    <p><strong>{{ $t("project.title") }}:</strong> {{ skill.name }} </p>
+  <h2>{{ $t("skills.title") }}</h2>
+  <div v-if="skills" class="flex-row flex-wrap">
+    <div v-for="skill in skills" :key="skill.id" class="card-container margin text-align-left">
+      <p><strong>{{ $t("skills.unique") }}:</strong> {{ skill.name }} </p>
+      <div class="flex-row flex-wrap">
+        <strong>{{ $t("skills.tags") }}:</strong>
+        <p v-for="tag in skill.tags"> {{ tag }} </p>
+      </div>
+
+      <div class="text-align-right"><button @click="editSkill(skill.id)">Edit</button></div>
+    </div>
   </div>
-  <NuxtLink to="/skills/create">Create Skill</NuxtLink>
+  <div v-else>
+    <p>Chargement de la liste des compétences...</p>
+  </div>
+
+  <div class="margin">
+    <NuxtLink class="link-btn" to="/skills/create">Create Skill</NuxtLink>
+  </div>
 </template>
 
 <style scoped>

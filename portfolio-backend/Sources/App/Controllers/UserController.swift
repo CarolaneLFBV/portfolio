@@ -6,12 +6,14 @@ struct UserController: RouteCollection {
         let users = routes.grouped("users")
         users.get(use: self.index)
 
+        // JWT protection on users
         let protected = users.grouped([JWTAuthenticator()])
         protected.get("current", use: self.getAuthenticatedUser)
 
-        let elementProtectedRoute = protected.grouped(":userID")
-        elementProtectedRoute.get(use: self.getUserById)
-        elementProtectedRoute.patch(use: self.update)
+        // JWT protection on one user
+        let protectedElement = protected.grouped(":userID")
+        protectedElement.get(use: self.getUser)
+        protectedElement.patch(use: self.update)
 
     }
 
@@ -31,12 +33,8 @@ struct UserController: RouteCollection {
     }
 
     @Sendable
-    func getUserById(req: Request) async throws -> UserDTO {
-        guard let userID = req.parameters.get("userID"), let uuid = UUID(userID) else {
-            throw Abort(.badRequest)
-        }
-
-        guard let user = try await User.find(uuid, on: req.db) else {
+    func getUser(req: Request) async throws -> UserDTO {
+        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
             throw Abort(.notFound)
         }
 
@@ -45,15 +43,11 @@ struct UserController: RouteCollection {
 
     @Sendable
     func update(req: Request) async throws -> UserDTO {
-        guard let userID = req.parameters.get("userID"), let uuid = UUID(userID) else {
-            throw Abort(.badRequest)
+        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
+            throw Abort(.notFound)
         }
 
         let updatedData = try req.content.decode(UserDTO.self)
-
-        guard let user = try await User.find(uuid, on: req.db) else {
-            throw Abort(.notFound)
-        }
 
         user.firstName = updatedData.firstName
         user.lastName = updatedData.lastName
@@ -61,7 +55,6 @@ struct UserController: RouteCollection {
         user.role = updatedData.role
 
         try await user.save(on: req.db)
-
         return user.toDTO()
     }
 }

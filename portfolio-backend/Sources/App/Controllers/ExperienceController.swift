@@ -4,15 +4,18 @@ import Vapor
 struct ExperienceController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let experiences = routes.grouped("experiences")
-        let elementRoute = experiences.grouped(":expID")
+        let experience = experiences.grouped(":expID")
         experiences.get(use: self.index)
-        elementRoute.get(use: self.getExperience)
+        experience.get(use: self.getExperience)
 
+        // JWT protection on experiences
         let protected = experiences.grouped([JWTAuthenticator()])
         protected.post(use: self.create)
-        let elementProtectedRoute = protected.grouped(":expID")
-        elementProtectedRoute.patch(use: self.update)
-        elementProtectedRoute.delete(use: self.delete)
+
+        // JWT protection on one experience
+        let protectedElement = protected.grouped(":expID")
+        protectedElement.patch(use: self.update)
+        protectedElement.delete(use: self.delete)
     }
 
     @Sendable
@@ -24,14 +27,9 @@ struct ExperienceController: RouteCollection {
 
     @Sendable
     func getExperience(req: Request) async throws -> ExperienceDTO {
-        guard let expID = req.parameters.get("expID"), let uuid = UUID(expID) else {
-            throw Abort(.badRequest)
-        }
-
-        guard let experience = try await Experience.find(uuid, on: req.db) else {
+        guard let experience = try await Experience.find(req.parameters.get("expID"), on: req.db) else {
             throw Abort(.notFound)
         }
-
         return experience.toDTO()
     }
 
@@ -54,11 +52,7 @@ struct ExperienceController: RouteCollection {
 
     @Sendable
     func update(req: Request) async throws -> ExperienceDTO {
-        guard let experienceID = req.parameters.get("expID"), let uuid = UUID(experienceID) else {
-            throw Abort(.badRequest)
-        }
-
-        guard let experience = try await Experience.find(uuid, on: req.db) else {
+        guard let experience = try await Experience.find(req.parameters.get("expID"), on: req.db) else {
             throw Abort(.notFound)
         }
 

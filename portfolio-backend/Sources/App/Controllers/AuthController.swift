@@ -3,6 +3,7 @@ import JWTKit
 import Vapor
 
 struct AuthController: RouteCollection {
+
     func boot(routes: RoutesBuilder) throws {
         let auth = routes.grouped("auth")
         auth.post("login", use: login)
@@ -48,15 +49,14 @@ struct AuthController: RouteCollection {
         let passwordHash = try Bcrypt.hash(userRequest.password ?? "defaultPassword")
 
         // Check email
-        if let _ = try await User.query(on: req.db)
+        guard try await User.query(on: req.db)
             .filter(\.$email == userRequest.email)
-            .first() {
+            .first() != nil else {
                 throw Abort(.conflict, reason: "Email already exists")
             }
 
         // Create user
         let user = User(
-            id: UUID(),
             firstName: userRequest.firstName ?? "",
             lastName: userRequest.lastName ?? "",
             email: userRequest.email,

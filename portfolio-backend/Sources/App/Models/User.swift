@@ -36,8 +36,8 @@ final class User: Model, Content, @unchecked Sendable, Authenticatable {
     func toDTO() -> UserDTO {
         .init(
             id: self.id,
-            firstName: self.firstName ?? "",
-            lastName: self.lastName ?? "",
+            firstName: self.$firstName.value as? String,
+            lastName: self.$lastName.value as? String,
             email: self.email,
             password: nil,
             role: self.role

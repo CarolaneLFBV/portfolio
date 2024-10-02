@@ -28,12 +28,10 @@ async function onInit() {
 </script>
 
 <template>
-  <h1>{{ $t("dashboard.title") }}</h1>
-  <h2>PROJECTS</h2>
+  <h2>{{ $t("projects.title") }}</h2>
   <div v-for="project in projects" :key="project.id" class="card-container margin text-align-left">
-    <p><strong>{{ $t("project.title") }}:</strong> {{ project.title }} </p>
+    <p><strong>{{ $t("projects.unique") }}:</strong> {{ project.title }} </p>
   </div>
-  <button>Add Project</button>
 </template>
 
 <style scoped>

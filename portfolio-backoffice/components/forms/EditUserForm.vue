@@ -6,8 +6,10 @@ import {useRoute} from "#vue-router";
 import {definePageMeta} from "#imports";
 
 definePageMeta({
+  layout: 'layout-dashboard',
   middleware: ['auth'],
 })
+
 
 const { getUserById, updateUser } = useUsers();
 const user = ref<User | null>(null);

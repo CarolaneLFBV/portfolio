@@ -5,15 +5,20 @@ struct SkillController: RouteCollection {
 
     func boot(routes: any RoutesBuilder) throws {
         let skills = routes.grouped("skills")
-        let elementRoute = skills.grouped(":skillID")
+        let skill = skills.grouped(":skillID")
         skills.get(use: self.index)
-        elementRoute.get(use: self.getSkill)
+        skill.get(use: self.getSkill)
 
+        // JWT protection on skills
         let protected = skills.grouped([JWTAuthenticator()])
         protected.post("create", use: self.create)
-        let elementProtectedRoute = protected.grouped(":skillID")
-        elementProtectedRoute.patch(use: self.update)
-        elementProtectedRoute.delete(use: self.delete)
+
+        // JWT protection on one skill
+        let protectedElement = protected.grouped(":skillID")
+        protectedElement.patch(use: self.update)
+        protectedElement.delete(use: self.delete)
+
+        // TODO: - Add Admin Middleware for create/update/delete
     }
 
     @Sendable
@@ -25,11 +30,7 @@ struct SkillController: RouteCollection {
 
     @Sendable
     func getSkill(req: Request) async throws -> SkillDTO {
-        guard let skillID = req.parameters.get("skillID"), let uuid = UUID(skillID) else {
-            throw Abort(.notFound)
-        }
-
-        guard let skill = try await Skill.find(uuid, on: req.db) else {
+        guard let skill = try await Skill.find(req.parameters.get("skillID"), on: req.db) else {
             throw Abort(.notFound)
         }
 
@@ -38,15 +39,7 @@ struct SkillController: RouteCollection {
 
     @Sendable
     func create(req: Request) async throws -> SkillDTO {
-        let skillDTO = try req.content.decode(SkillDTO.self)
-        let skill = Skill(
-            name: skillDTO.name,
-            tags: skillDTO.tags,
-            context: skillDTO.context,
-            proofs: skillDTO.proofs,
-            retrospective: skillDTO.retrospective,
-            progress: skillDTO.progress
-        )
+        let skill = try req.content.decode(SkillDTO.self).toModel()
         try await skill.save(on: req.db)
         return skill.toDTO()
     }
@@ -63,15 +56,11 @@ struct SkillController: RouteCollection {
 
     @Sendable
     func update(req: Request) async throws -> SkillDTO {
-        guard let skillID = req.parameters.get("skillID"), let uuid = UUID(skillID) else {
-            throw Abort(.badRequest)
+        guard let skill = try await Skill.find(req.parameters.get("skillID"), on: req.db) else {
+            throw Abort(.notFound)
         }
 
         let updatedData = try req.content.decode(SkillDTO.self)
-
-        guard let skill = try await Skill.find(uuid, on: req.db) else {
-            throw Abort(.notFound)
-        }
 
         skill.name = updatedData.name
         skill.tags = updatedData.tags

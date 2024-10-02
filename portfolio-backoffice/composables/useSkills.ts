@@ -62,12 +62,17 @@ export default function () {
         }
     }
 
+    function splitTags(skill: Skill) {
+        skill.value.tags = skill.value.tags.join(',').split(',').map(tag => tag.trim());
+    }
+
     return {
         newSkill,
         createSkill,
         getSkillByID,
         getSkills,
         updateSkill,
-        deleteSkill
+        deleteSkill,
+        splitTags
     }
 }

@@ -21,34 +21,19 @@ struct ExperienceDTO: Content {
     func toModel() -> Experience {
         let model = Experience()
 
-        model.id = self.id
+        model.id = self.id ?? UUID()
         model.type = self.type
         model.startDate = self.startDate
         model.endDate = self.endDate
         model.$skill.id = self.skillID
         model.$project.id = self.projectID
-
-        if let position = self.position {
-            model.position = position
-        }
-        if let status = self.status {
-            model.status = status
-        }
-        if let missionDetails = self.missionDetails {
-            model.missionDetails = missionDetails
-        }
-        if let degree = self.degree {
-            model.degree = degree
-        }
-        if let misc = self.misc {
-            model.misc = misc
-        }
-        if let companyLogo = self.companyLogo {
-            model.companyLogo = companyLogo
-        }
-        if let companyName = self.companyName {
-            model.companyName = companyName
-        }
+        model.position = self.position
+        model.status = self.status
+        model.missionDetails = self.missionDetails
+        model.degree = self.degree
+        model.misc = self.misc
+        model.companyLogo = self.companyLogo
+        model.companyName = self.companyName
 
         return model
     }

@@ -11,17 +11,12 @@ struct UserDTO: Content {
 
     func toModel() -> User {
         let model = User()
-        model.id = self.id
+        model.id = self.id ?? UUID()
+        model.firstName = self.firstName
+        model.lastName = self.lastName
         model.email = self.email
         model.password = self.password ?? ""
         model.role = self.role
-
-        if let firstName = model.firstName {
-            model.firstName = firstName
-        }
-        if let lastName = model.lastName {
-            model.lastName = lastName
-        }
         return model
     }
 }

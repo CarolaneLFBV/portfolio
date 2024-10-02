@@ -14,7 +14,7 @@ struct ProjectDTO: Content {
     func toModel() -> Project {
         let model = Project()
 
-        model.id = self.id
+        model.id = self.id ?? UUID()
         model.title = self.title
         model.presentation = self.presentation
         model.purpose = self.purpose

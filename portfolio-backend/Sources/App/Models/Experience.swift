@@ -79,15 +79,15 @@ final class Experience: Model, @unchecked Sendable {
             type: self.type,
             startDate: self.startDate,
             endDate: self.endDate,
-            position: self.position,
-            companyName: self.companyName,
-            companyLogo: self.companyLogo,
-            status: self.status,
-            missionDetails: self.missionDetails,
+            position: self.$position.value as? String,
+            companyName: self.$companyName.value as? String,
+            companyLogo: self.$companyLogo.value as? String,
+            status: self.$status.value as? String,
+            missionDetails: self.$missionDetails.value as? String,
             skillID: self.$skill.id,
             projectID: self.$project.id,
-            degree: self.degree,
-            misc: self.misc
+            degree: self.$degree.value as? String,
+            misc: self.$misc.value as? String
         )
     }
 }

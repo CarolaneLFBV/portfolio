@@ -7,7 +7,7 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "users-list": "Users' List",
+    "users-list": "Users' List"
   },
   "experiences": {
     "title": "Experiences",
@@ -31,7 +31,8 @@
   },
   "skills": {
     "title": "Skills",
-    "unique": "Skill"
+    "unique": "Skill",
+    "tags": "Tags"
   },
   "user": {
     "email": "Mail",

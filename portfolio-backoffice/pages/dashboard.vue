@@ -29,7 +29,6 @@ async function onInit() {
 </script>
 
 <template>
-  <h1>{{ $t("dashboard.title") }}</h1>
   <div v-if="isAdmin">
     <h2>{{ $t("dashboard.users-list") }}</h2>
     <UserCard/>
