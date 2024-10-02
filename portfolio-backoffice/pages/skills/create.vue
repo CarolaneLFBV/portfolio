@@ -1,28 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { SkillCreation } from '~/types/skill'; // Import your SkillCreation type
 import useSkills from "~/composables/useSkills";
-import {definePageMeta} from "#imports"; // Assuming you have a composable to handle API interactions
+import {definePageMeta} from "#imports";
 
 definePageMeta({
   layout: 'layout-dashboard',
   middleware: 'auth',
 })
 
-// Initialize the form data
-const newSkill = ref<SkillCreation>({
-  name: '',
-  tags: [],
-  context: '',
-  proofs: '',
-  retrospective: '',
-  progress: ''
-});
-
-const { createSkill } = useSkills();
+const { createSkill, newSkill } = useSkills();
 
 async function onSubmit() {
   try {
+    newSkill.value.tags = newSkill.value.tags.split(',').map(tag => tag.trim());
     await createSkill(newSkill.value);
   } catch (error) {
     console.error("Error creating skill:", error);
@@ -36,7 +25,6 @@ async function onSubmit() {
       <div class="text-align-center">
           <h1>Create New Skill</h1>
           <form @submit.prevent="onSubmit" class="text-align-left">
-            <!-- Name input -->
             <div class="padding-bottom">
               <label for="name">Name</label>
               <input v-model="newSkill.name" id="name" type="text" required />
@@ -57,7 +45,6 @@ async function onSubmit() {
               <textarea v-model="newSkill.proofs" id="proofs" required></textarea>
             </div>
 
-            <!-- Retrospective input -->
             <div>
               <label for="retrospective">Retrospective</label>
               <textarea v-model="newSkill.retrospective" id="retrospective" required></textarea>

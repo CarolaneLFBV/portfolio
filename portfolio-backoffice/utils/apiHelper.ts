@@ -1,5 +1,6 @@
 import ky from "ky";
 import type { ApiResponse } from "~/types/api";
+import useAuthentication from "~/composables/useAuthentication";
 
 // API pour les requêtes publiques (sans token)
 const publicApi = ky.create({
@@ -15,8 +16,11 @@ const privateApi = publicApi.extend({
         beforeRequest: [
             (request) => {
                 const token = sessionStorage.getItem("token") ?? "";
+                console.log('Token being sent:', token);
                 if (token) {
                     request.headers.set('Authorization', `Bearer ${token}`);
+                } else {
+                    console.error("No token found in sessionStorage");
                 }
             }
         ]

@@ -1,8 +1,11 @@
-import {useAuthStore} from "~/stores/useAuthStore";
+import useAuthentication from "~/composables/useAuthentication";
 
 export default defineNuxtRouteMiddleware((to, from) => {
-    const authStore = useAuthStore();
-    if (!authStore.isAuth) {
-        return navigateTo('/auth/login');
+    if (import.meta.client) {
+        const token = sessionStorage.getItem("token");
+        const {tokenExpired} = useAuthentication();
+        if (!token || tokenExpired(token)) {
+            return navigateTo('/auth/login');
+        }
     }
 })

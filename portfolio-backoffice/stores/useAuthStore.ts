@@ -49,5 +49,14 @@ export const useAuthStore = defineStore("authStore", {
             }
             this.user = undefined;
         },
-    }
+    },
+    persist: {
+        enabled: true,
+        strategies: [
+            {
+                key: 'auth',
+                storage: import.meta.client ? sessionStorage : null,
+            },
+        ],
+    },
 })
