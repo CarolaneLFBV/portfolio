@@ -3,13 +3,12 @@ import LayoutNav from "~/layouts/LayoutNav.vue";
 </script>
 
 <template>
-  <div class="full-height flex-row">
+  <main class="full-height flex-row">
     <LayoutNav/>
     <div class="content">
-      <h1>{{ $t("dashboard.title") }}</h1>
       <slot />
     </div>
-  </div>
+  </main>
 </template>
 
 <style scoped>

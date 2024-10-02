@@ -7,10 +7,16 @@
   --caption-color: #6c6c6c;
 }
 
+.material-icons {
+  vertical-align: middle;
+  font-size: 1.8rem;
+}
+
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: "Quicksand", system-ui;
 }
 
 html {
@@ -19,7 +25,6 @@ html {
 
 body {
   font-size: 1.6rem !important;
-  font-family: "Quicksand", system-ui;
   color: var(--text-color);
   background-color: var(--background-color);
   background-image: radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px);
@@ -27,8 +32,12 @@ body {
 }
 
 // Title
-h1, h2, h3 {
+h1, h3 {
   margin-bottom: 2rem;
+  font-weight: normal;
+}
+
+h2 {
   font-weight: normal;
 }
 
@@ -40,6 +49,7 @@ button, .link-btn {
   padding: 1rem;
   border-radius: .5rem;
   cursor: pointer;
+  font-size: 1.5rem;
 }
 
 button:hover, .link-btn:hover {
@@ -187,6 +197,10 @@ li a:hover {
 
 .margin-bottom {
   margin-bottom: 1rem;
+}
+
+.margin-right {
+  margin-right: 1rem;
 }
 
 // Width utilities

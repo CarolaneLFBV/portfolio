@@ -1,25 +1,26 @@
 {
+  "auth": {
+    "email": "Mail",
+    "email-placeholder": "Enter your email",
+    "signin": "Sign in",
+    "signin-title": "Sign In To Backoffice",
+    "password": "Password",
+    "password-placeholder": "Enter your password",
+    "signup": "Sign up",
+    "signup-title": "Create an account"
+  },
   "backoffice": "Backoffice",
-  "edit": "Edit",
-  "email" : "Mail",
   "footer": {
     "copyright": "© 2024 Carolane Lefebvre. All rights reserved."
   },
   "dashboard": {
     "title": "Dashboard",
-    "users-list": "Users' List"
+    "users-list": "Users' List",
+    "bottom-dashboard": "Carolane Lefebvre"
   },
   "experiences": {
     "title": "Experiences",
     "unique": "Experience"
-  },
-  "login": {
-    "email": "Mail",
-    "email-placeholder": "Enter your email",
-    "login": "Login",
-    "password": "Password",
-    "password-placeholder": "Enter your password",
-    "title": "Login To Backoffice"
   },
   "role": {
     "admin": "Admin",
@@ -40,5 +41,13 @@
     "fullName": "Full Name",
     "lastName": "Last Name",
     "role": "Role"
+  },
+  "users": {
+    "title": "Users"
+  },
+  "utils": {
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit"
   }
 }

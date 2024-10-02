@@ -22,25 +22,31 @@ async function onLogin() {
     <div class="card-container">
       <div class="text-align-center">
         <img src="public/okeep.png" alt="User Profile" class="profile-image margin-bottom"/>
-        <h2> {{ $t("login.title") }}</h2>
+        <h2> {{ $t("auth.signin-title") }}</h2>
       </div>
       <form @submit.prevent="onLogin">
         <div class="padding-bottom text-align-left">
-          <label for="email">{{ $t("login.email") }}</label>
-          <input class="full-width" id="email" type="email" v-model="user.email" required :placeholder="$t('login.email-placeholder')"/>
+          <label for="email">{{ $t("auth.email") }}</label>
+          <input class="full-width" id="email" type="email" v-model="user.email" required :placeholder="$t('auth.email-placeholder')"/>
         </div>
 
         <div class="padding-bottom margin-bottom text-align-left">
-          <label for="password">{{ $t("login.password") }}</label>
-          <input class="full-width" id="password" type="password" v-model="user.password" required :placeholder="$t('login.password-placeholder')"/>
+          <label for="password">{{ $t("auth.password") }}</label>
+          <input class="full-width" id="password" type="password" v-model="user.password" required :placeholder="$t('auth.password-placeholder')"/>
         </div>
 
-        <button type="submit" class="padding full-width">{{ $t("login.login") }}</button>
+        <div class="flex-row">
+          <button type="submit">{{ $t("auth.signin") }}</button>
+          <NuxtLink class="link-btn" to="/auth/register">{{ $t("auth.signup") }}</NuxtLink>
+        </div>
+
       </form>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-
+button, .link-btn {
+  width: 100%;
+}
 </style>

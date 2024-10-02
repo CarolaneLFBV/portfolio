@@ -19,19 +19,35 @@ async function onRegister() {
 </script>
 
 <template>
-  <form @submit.prevent="onRegister">
-    <div>
-      <label for="email">Email</label>
-      <input type="email" id="email" v-model="user.email" required />
+  <div class="full-height flex-column text-align-center">
+    <div class="card-container">
+      <div class="text-align-center">
+        <img src="public/okeep.png" alt="User Profile" class="profile-image margin-bottom"/>
+        <h2> {{ $t("auth.signup-title") }}</h2>
+      </div>
+      <form @submit.prevent="onRegister">
+        <div class="padding-bottom text-align-left">
+          <label for="email">{{ $t("auth.email") }}</label>
+          <input class="full-width" id="email" type="email" v-model="user.email" required :placeholder="$t('auth.email-placeholder')"/>
+        </div>
+
+        <div class="padding-bottom margin-bottom text-align-left">
+          <label for="password">{{ $t("auth.password") }}</label>
+          <input class="full-width" id="password" type="password" v-model="user.password" required :placeholder="$t('auth.password-placeholder')"/>
+        </div>
+
+        <div class="flex-row">
+          <button type="submit">{{ $t("auth.signup") }}</button>
+          <NuxtLink class="link-btn" to="/auth/login">{{ $t("auth.signin") }}</NuxtLink>
+        </div>
+
+      </form>
     </div>
-    <div>
-      <label for="password">Mot de passe</label>
-      <input type="password" id="password" v-model="user.password" required />
-    </div>
-    <button type="submit">S'inscrire</button>
-  </form>
+  </div>
 </template>
 
 <style scoped>
-
+button, .link-btn {
+  width: 100%;
+}
 </style>

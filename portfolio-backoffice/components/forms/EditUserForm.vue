@@ -50,18 +50,18 @@ async function update() {
         <h1>{{ $t("edit") }} {{ user.firstName }}</h1>
         <form @submit.prevent="update">
           <div class="padding-bottom text-align-left">
-            <label for="email">{{ $t("login.email") }}</label>
-            <input class="full-width" id="email" type="email" v-model="user.email" required :placeholder="$t('login.email-placeholder')"/>
+            <label for="email">{{ $t("auth.email") }}</label>
+            <input class="full-width" id="email" type="email" v-model="user.email" required :placeholder="$t('auth.email-placeholder')"/>
           </div>
 
           <div class="padding-bottom text-align-left">
             <label for="firstName">{{ $t("user.firstName") }}</label>
-            <input class="full-width" id="firstName" type="text" v-model="user.firstName" required :placeholder="$t('login.email-placeholder')"/>
+            <input class="full-width" id="firstName" type="text" v-model="user.firstName" required :placeholder="$t('auth.email-placeholder')"/>
           </div>
 
           <div class="padding-bottom text-align-left">
             <label for="lastName">{{ $t("user.lastName") }}</label>
-            <input class="full-width" id="lastName" type="text" v-model="user.lastName" required :placeholder="$t('login.email-placeholder')"/>
+            <input class="full-width" id="lastName" type="text" v-model="user.lastName" required :placeholder="$t('auth.email-placeholder')"/>
           </div>
 
           <div class="padding-bottom text-align-left">

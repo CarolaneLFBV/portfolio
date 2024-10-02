@@ -51,7 +51,7 @@ struct AuthController: RouteCollection {
         // Check email
         guard try await User.query(on: req.db)
             .filter(\.$email == userRequest.email)
-            .first() != nil else {
+            .first() == nil else {
                 throw Abort(.conflict, reason: "Email already exists")
             }
 

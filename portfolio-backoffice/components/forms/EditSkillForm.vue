@@ -44,7 +44,7 @@ async function update() {
   <div v-if="skill">
     <div class="full-height flex-column text-align-center">
       <div class="card-container text-align-center">
-          <h1>{{ $t("edit") }} {{ skill.name }}</h1>
+          <h1>{{ $t("utils.edit") }} {{ skill.name }}</h1>
           <form @submit.prevent="update" class="skill-form">
             <!-- Name -->
             <div class="padding-bottom text-align-left">
