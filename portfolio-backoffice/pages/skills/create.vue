@@ -50,7 +50,6 @@ async function onSubmit() {
               <textarea v-model="newSkill.retrospective" id="retrospective" required></textarea>
             </div>
 
-            <!-- Progress input -->
             <div>
               <label for="progress">Progress</label>
               <textarea v-model="newSkill.progress" id="progress" type="text" required />
@@ -64,5 +63,4 @@ async function onSubmit() {
 </template>
 
 <style scoped>
-
 </style>

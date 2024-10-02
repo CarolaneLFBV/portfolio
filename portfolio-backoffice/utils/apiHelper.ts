@@ -27,73 +27,34 @@ const privateApi = publicApi.extend({
     }
 });
 
-// Requêtes publiques (pour login et register)
-const kyPublicPost = async <T>(url: string, json: object): Promise<ApiResponse<T>> => {
+const request = async <T>(api: typeof ky, method: string, url: string, json?: object): Promise<ApiResponse<T>> => {
     try {
-        const response = await publicApi.post(url, { json }).json<T>();
+        const response = await api(url, {method, json}).json<T>();
         return { success: true, data: response };
     } catch (error) {
-        console.log("Error in public POST request:", error);
+        console.log(`Error during ${method} request to ${url}`, error);
         return { success: false, data: null };
     }
+}
+
+const kyPublicPost = <T>(url: string, json: object): Promise<ApiResponse<T>> => {
+    return request(publicApi, "POST", url, json);
 };
 
-// Requêtes privées (pour l'administration ou les utilisateurs authentifiés)
-const kyPrivatePost = async <T>(url: string, json: object): Promise<ApiResponse<T>> => {
-    try {
-        const response = await privateApi.post(url, { json }).json<T>();
-        return { success: true, data: response };
-    } catch (error) {
-        console.log("Error in private POST request:", error);
-        return { success: false, data: null };
-    }
+const kyPrivatePost = <T>(url: string, json: object): Promise<ApiResponse<T>> => {
+    return request(privateApi, "POST", url, json);
 };
 
-/*
-// Requêtes GET publiques
-const kyPublicGet = async <T>(url: string): Promise<ApiResponse<T>> => {
-    try {
-        const response = await publicApi.get(url).json<T>();
-        return { success: true, data: response };
-    } catch (error) {
-        console.log("Error getting data", error);
-        return { success: false, data: null };
-    }
-};
-*/
-
-// Requêtes GET privées
-const kyPrivateGet = async <T>(url: string): Promise<ApiResponse<T>> => {
-    try {
-        const response = await privateApi.get(url).json<T>();
-        return { success: true, data: response };
-    } catch (error) {
-        console.log("Error getting data", error);
-        return { success: false, data: null };
-    }
+const kyPrivateGet = <T>(url: string): Promise<ApiResponse<T>> => {
+    return request(privateApi, "GET", url);
 };
 
-
-// Requêtes PATCH pour les mises à jour privées
-const kyPrivatePatch = async <T>(url: string, json: object): Promise<ApiResponse<T>> => {
-    try {
-        const response = await privateApi.patch(url, { json }).json<T>();
-        return { success: true, data: response };
-    } catch (error) {
-        console.log("Error patching data", error);
-        return { success: false, data: null };
-    }
+const kyPrivatePatch = <T>(url: string, json: object): Promise<ApiResponse<T>> => {
+    return request(privateApi, "PATCH", url, json);
 };
 
-// Requêtes DELETE pour les suppressions privées
-const kyPrivateDelete = async <T>(url: string): Promise<ApiResponse<T>> => {
-    try {
-        const response = await privateApi.delete(url).json<T>();
-        return { success: true, data: response };
-    } catch (error) {
-        console.log("Error deleting data", error);
-        return { success: false, data: null };
-    }
+const kyPrivateDelete = <T>(url: string): Promise<ApiResponse<T>> => {
+    return request(privateApi, "DELETE", url);
 };
 
 export default { /*kyPublicGet,*/ kyPrivateGet, kyPrivatePost, kyPublicPost, kyPrivatePatch, kyPrivateDelete };

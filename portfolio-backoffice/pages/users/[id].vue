@@ -3,7 +3,7 @@ import {definePageMeta} from "#imports";
 import EditUserForm from "~/components/forms/EditUserForm.vue";
 
 definePageMeta({
-  title: 'Edit',
+  layout: 'layout-dashboard',
   middleware: ['auth'],
 })
 
