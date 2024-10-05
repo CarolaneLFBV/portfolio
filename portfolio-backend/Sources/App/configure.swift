@@ -35,6 +35,9 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(CreateSkill())
     app.migrations.add(CreateProject())
     app.migrations.add(CreateExperience())
+    app.migrations.add(CreateProjectSkill())
+    app.migrations.add(CreateSkillExperience())
+    app.migrations.add(CreateProjectExperience())
     try await app.autoMigrate()
 
     // register routes

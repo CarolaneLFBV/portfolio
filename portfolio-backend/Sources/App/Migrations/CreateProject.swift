@@ -10,7 +10,6 @@ struct CreateProject: AsyncMigration {
             .field("milestone", .string)
             .field("actor", .string)
             .field("progress", .string)
-            .field("skillID", .uuid, .required, .references("skills", "id"))
             .create()
     }
 

@@ -4,6 +4,7 @@ import Vapor
 struct UserController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let users = routes.grouped("users")
+        let user = users.grouped(":userID")
         users.get(use: self.index)
 
         // JWT protection on users
@@ -14,6 +15,7 @@ struct UserController: RouteCollection {
         let protectedElement = protected.grouped(":userID")
         protectedElement.get(use: self.getUser)
         protectedElement.patch(use: self.update)
+        protectedElement.delete(use: self.delete)
 
     }
 
@@ -56,5 +58,15 @@ struct UserController: RouteCollection {
 
         try await user.save(on: req.db)
         return user.toDTO()
+    }
+
+    @Sendable
+    func delete(req: Request) async throws -> HTTPStatus {
+        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
+            throw Abort(.notFound)
+        }
+
+        try await user.delete(on: req.db)
+        return .noContent
     }
 }

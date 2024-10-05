@@ -1,0 +1,37 @@
+meta {
+  name: Update Experience
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:8080/experiences/154D448A-1D90-45CA-AC54-1B1249FD873C
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDQTUwRTAxQy01MDA0LTRBODYtQkZFQy03MjhEMjk5MUQ3NTAiLCJleHAiOjE3MjgxMzI5OTIuNDQzODgyLCJyb2xlIjoiYWRtaW4ifQ.jX5ldQhwi2EryMGiT13MErRSws-7HHik6cEPsPnGUhI
+}
+
+body:json {
+  {
+    "skills": [
+      "73C01929-1986-40B5-9F3F-28AC99C6B0EF"
+    ],
+    "projects": [
+      "4567E5DE-B64F-4252-8D95-9B3C79C2BC70"
+    ],
+    "id": "154D448A-1D90-45CA-AC54-1B1249FD873C",
+    "degree": "education",
+    "misc": "education",
+    "missionDetails": "education",
+    "status": "education",
+    "position": "education",
+    "companyName": "education",
+    "companyLogo": "https://example.com/logo.png",
+    "startDate": "2023-01-01",
+    "type": "education",
+    "endDate": "2023-12-31"
+  }
+}

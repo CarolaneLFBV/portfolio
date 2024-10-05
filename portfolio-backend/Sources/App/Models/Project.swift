@@ -25,8 +25,11 @@ final class Project: Model, @unchecked Sendable {
     @Field(key: "progress")
     var progress: String
 
-    @Parent(key: "skillID")
-    var skill: Skill
+    @Siblings(through: ProjectSkill.self, from: \.$project, to: \.$skill)
+    var skills: [Skill]
+
+    @Siblings(through: ProjectExperience.self, from: \.$project, to: \.$experience)
+    var experiences: [Experience]
 
     init() {}
 
@@ -36,8 +39,7 @@ final class Project: Model, @unchecked Sendable {
          purpose: String,
          milestone: String,
          actor: String,
-         progress: String,
-         skill: Skill) {
+         progress: String) {
         self.id = id
         self.title = title
         self.presentation = presentation
@@ -45,7 +47,6 @@ final class Project: Model, @unchecked Sendable {
         self.milestone = milestone
         self.actor = actor
         self.progress = progress
-        self.skill = skill
     }
 
     func toDTO() -> ProjectDTO {
@@ -57,7 +58,8 @@ final class Project: Model, @unchecked Sendable {
             milestone: self.milestone,
             actor: self.actor,
             progress: self.progress,
-            skillID: self.$skill.id
+            skills: self.skills.compactMap({$0.id}),
+            experiences: self.experiences.compactMap({$0.id})
         )
     }
 }

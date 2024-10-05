@@ -1,0 +1,30 @@
+meta {
+  name: Create Project
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/projects/create
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDQTUwRTAxQy01MDA0LTRBODYtQkZFQy03MjhEMjk5MUQ3NTAiLCJleHAiOjE3MjgxMzI5OTIuNDQzODgyLCJyb2xlIjoiYWRtaW4ifQ.jX5ldQhwi2EryMGiT13MErRSws-7HHik6cEPsPnGUhI
+}
+
+body:json {
+  {
+    "title": "Another Project Title",
+    "presentation": "aze",
+    "purpose": "aze",
+    "milestone": "aze",
+    "actor": "aze",
+    "progress": "azeaze",
+    "skills": [
+      "73C01929-1986-40B5-9F3F-28AC99C6B0EF"
+    ],
+    "experiences": []
+  }
+}

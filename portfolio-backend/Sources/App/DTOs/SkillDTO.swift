@@ -9,6 +9,8 @@ struct SkillDTO: Content {
     var proofs: String
     var retrospective: String
     var progress: String
+    var projects: [Project.IDValue]
+    var experiences: [Experience.IDValue]
 
     func toModel() -> Skill {
         let model = Skill()

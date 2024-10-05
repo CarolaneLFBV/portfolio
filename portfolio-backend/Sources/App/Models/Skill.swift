@@ -1,5 +1,5 @@
 import Fluent
-import Foundation
+import Vapor
 
 final class Skill: Model, @unchecked Sendable {
     static let schema = "skills"
@@ -24,6 +24,12 @@ final class Skill: Model, @unchecked Sendable {
 
     @Field(key: "progress")
     var progress: String
+
+    @Siblings(through: ProjectSkill.self, from: \.$skill, to: \.$project)
+    var projects: [Project]
+
+    @Siblings(through: SkillExperience.self, from: \.$skill, to: \.$experience)
+    var experiences: [Experience]
 
     init() {}
 
@@ -51,7 +57,9 @@ final class Skill: Model, @unchecked Sendable {
             context: self.context,
             proofs: self.proofs,
             retrospective: self.retrospective,
-            progress: self.progress
+            progress: self.progress,
+            projects: self.projects.compactMap({$0.id}),
+            experiences: self.experiences.compactMap({$0.id})
         )
     }
 }

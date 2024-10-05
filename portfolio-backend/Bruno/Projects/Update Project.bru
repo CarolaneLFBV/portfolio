@@ -1,0 +1,31 @@
+meta {
+  name: Update Project
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:8080/projects/4567E5DE-B64F-4252-8D95-9B3C79C2BC70
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDQTUwRTAxQy01MDA0LTRBODYtQkZFQy03MjhEMjk5MUQ3NTAiLCJleHAiOjE3MjgxMzI5OTIuNDQzODgyLCJyb2xlIjoiYWRtaW4ifQ.jX5ldQhwi2EryMGiT13MErRSws-7HHik6cEPsPnGUhI
+}
+
+body:json {
+  {
+    "actor": "Updated",
+    "progress": "Updated",
+    "experiences": [],
+    "presentation": "Updated",
+    "title": "Updated",
+    "id": "4567E5DE-B64F-4252-8D95-9B3C79C2BC70",
+    "purpose": "Updated",
+    "milestone": "Updated",
+    "skills": [
+      "60F069A6-26C3-4918-B565-F2752BEEDD4A"
+    ]
+  }
+}

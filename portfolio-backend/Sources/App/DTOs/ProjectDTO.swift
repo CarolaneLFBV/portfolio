@@ -9,7 +9,8 @@ struct ProjectDTO: Content {
     var milestone: String
     var actor: String
     var progress: String
-    var skillID: UUID
+    var skills: [Skill.IDValue]
+    var experiences: [Experience.IDValue]
 
     func toModel() -> Project {
         let model = Project()
@@ -21,7 +22,6 @@ struct ProjectDTO: Content {
         model.milestone = self.milestone
         model.actor = self.actor
         model.progress = self.progress
-        model.$skill.id = self.skillID
 
         return model
     }
