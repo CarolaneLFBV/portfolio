@@ -3,16 +3,20 @@ import type {Skill} from "~/types/skill";
 
 export interface Experience {
     id: string;
-    type: 'professional' | 'education';
-    startDate: Date;
-    endDate: Date;
+    type: Type;
+    startDate: string;
+    endDate: string;
     position?: string;
     companyName?: string;
     companyLogo?: string;
-    skill: Skill;
-    project: Project;
     degree?: string;
     misc?: string;
     status?: string;
     missionDetails?: string;
+    projects: Project[];
+    skills: Skill[];
+}
+
+interface Type {
+    type: 'professional' | 'education';
 }

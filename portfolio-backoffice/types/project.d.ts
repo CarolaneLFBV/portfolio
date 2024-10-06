@@ -1,4 +1,5 @@
 import type {Skill} from "~/types/skill";
+import type {Experience} from "~/types/experience";
 
 export interface Project {
     id: string;
@@ -8,7 +9,8 @@ export interface Project {
     milestone: string;
     actor: string;
     progress: string;
-    skill: Skill;
+    skills: Skill[];
+    experiences: Experience[];
 }
 
 export interface ProjectCreation {
@@ -18,5 +20,6 @@ export interface ProjectCreation {
     milestone: string;
     actor: string;
     progress: string;
-    skill: Skill;
+    skills: Skill[];
+    experiences: Experience[];
 }

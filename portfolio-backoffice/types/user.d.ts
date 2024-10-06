@@ -4,21 +4,19 @@ export interface User {
     lastName: string;
     email: string;
     password: string;
-    role: 'admin' | 'member';
+    role: Role | undefined;
 }
 
 export interface UserStore {
     user: User | undefined;
 }
 
-export interface UserRegister {
+export interface UserCredentials {
     email: string;
     password: string;
-    role: 'admin' | 'member';
+    role: Role | undefined;
 }
 
-export interface UserLogin {
-    email: string;
-    password: string;
+interface Role {
     role: 'admin' | 'member';
 }

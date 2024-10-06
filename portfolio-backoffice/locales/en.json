@@ -2,8 +2,8 @@
   "auth": {
     "email": "Mail",
     "email-placeholder": "Enter your email",
-    "signin": "Sign in",
-    "signin-title": "Sign In To Backoffice",
+    "login": "Log in",
+    "login-title": "Log In To Backoffice",
     "password": "Password",
     "password-placeholder": "Enter your password",
     "signup": "Sign up",

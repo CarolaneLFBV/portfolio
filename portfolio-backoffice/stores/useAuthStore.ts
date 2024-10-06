@@ -1,6 +1,5 @@
 import {defineStore} from "pinia";
-import useSecurity from "~/composables/useSecurity";
-import type {User, UserLogin, UserRegister, UserStore} from "~/types/user";
+import type {User, UserCredentials, UserStore} from "~/types/user";
 import useAuthentication from "~/composables/useAuthentication";
 
 export const useAuthStore = defineStore("authStore", {
@@ -12,12 +11,12 @@ export const useAuthStore = defineStore("authStore", {
         isAdmin: (state: UserStore): boolean => state.user?.role === "admin",
     },
     actions: {
-        async register(data: UserRegister) {
+        async register(data: UserCredentials) {
           try {
               const response = await apiHelper.kyPublicPost<{ token: string, user: User }>('auth/register', data);
               if (response.success && response.data) {
                   const {token, user} = response.data;
-                  const {setToken} = useSecurity()
+                  const {setToken} = useAuthentication();
                   setToken(token);
                   this.user = user;
               }
@@ -25,13 +24,13 @@ export const useAuthStore = defineStore("authStore", {
               console.log("Error registering user", error);
           }
         },
-        async authenticateUser(data: UserLogin) {
+        async authenticateUser(data: UserCredentials) {
             try {
                 const response = await apiHelper.kyPublicPost<{token: string, user: User}>('auth/login', data);
                 const tokenStorage = sessionStorage.getItem("token") ?? "";
                 const {token, user} = response.data;
                 if (!tokenStorage && response.success && response.data) {
-                    const {setToken} = useSecurity()
+                    const {setToken} = useAuthentication();
                     setToken(token);
                 }
                 this.user = user;
@@ -40,8 +39,7 @@ export const useAuthStore = defineStore("authStore", {
             }
         },
         logout() {
-            const {removeToken} = useSecurity();
-            const {tokenExpired} = useAuthentication();
+            const {tokenExpired, removeToken} = useAuthentication();
             const tokenStorage = sessionStorage.getItem("token") ?? "";
 
             if (tokenExpired(tokenStorage)) {

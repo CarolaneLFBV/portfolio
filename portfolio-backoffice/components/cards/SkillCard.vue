@@ -3,10 +3,15 @@ import {ref} from "vue";
 import type {Skill} from "~/types/skill";
 import useSkills from "~/composables/useSkills";
 import {useRouter} from "#vue-router";
+import useProjects from "~/composables/useProjects";
+import type {Project} from "~/types/project";
 
 const skills = ref<Skill[]>([]);
 const { getSkills, deleteSkill } = useSkills()
+const { getProjects } = useProjects()
 const router = useRouter();
+const projects = ref<Project[]>([]);
+const projectsMap = ref({});
 
 onMounted(async () => {
   await onInit();
@@ -14,7 +19,10 @@ onMounted(async () => {
 
 async function onInit() {
   try {
+    projects.value = await getProjects();
     skills.value = await getSkills();
+    // Map skills with ids in project.skills
+    projectsMap.value = Object.fromEntries(projects.value.map(project => [project.id, project]));
   } catch (error) {
     console.error(error);
   }

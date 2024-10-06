@@ -1,3 +1,6 @@
+import type {Project} from "~/types/project";
+import type {Experience} from "~/types/experience";
+
 export interface Skill {
     id: string;
     name: string;
@@ -6,6 +9,8 @@ export interface Skill {
     proofs: string;
     retrospective: string;
     progress: string;
+    projects: Project[];
+    experiences: Experience[];
 }
 
 export interface SkillCreation {
@@ -15,4 +20,6 @@ export interface SkillCreation {
     proofs: string;
     retrospective: string;
     progress: string;
+    projects: Project[];
+    experiences: Experience[];
 }

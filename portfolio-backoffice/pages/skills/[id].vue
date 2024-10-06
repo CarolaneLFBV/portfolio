@@ -4,7 +4,7 @@ import EditSkillForm from "~/components/forms/EditSkillForm.vue";
 
 definePageMeta({
   layout: 'layout-dashboard',
-  middleware: ['auth'],
+  middleware: 'auth',
 })
 
 </script>

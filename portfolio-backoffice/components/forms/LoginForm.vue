@@ -22,7 +22,7 @@ async function onLogin() {
     <div class="card-container">
       <div class="text-align-center">
         <img src="public/okeep.png" alt="User Profile" class="profile-image margin-bottom"/>
-        <h2> {{ $t("auth.signin-title") }}</h2>
+        <h2> {{ $t("auth.login-title") }}</h2>
       </div>
       <form @submit.prevent="onLogin">
         <div class="padding-bottom text-align-left">
@@ -35,10 +35,7 @@ async function onLogin() {
           <input class="full-width" id="password" type="password" v-model="user.password" required :placeholder="$t('auth.password-placeholder')"/>
         </div>
 
-        <div class="flex-row">
-          <button type="submit">{{ $t("auth.signin") }}</button>
-          <NuxtLink class="link-btn" to="/auth/register">{{ $t("auth.signup") }}</NuxtLink>
-        </div>
+        <button type="submit">{{ $t("auth.login") }}</button>
 
       </form>
     </div>

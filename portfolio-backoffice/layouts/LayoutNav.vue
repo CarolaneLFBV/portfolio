@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <nav class="sidebar full-height flex-column flex-row-center flex-space-between">
+  <nav class="sidebar flex-column flex-row-center flex-space-between">
     <h1 class="flex-align-start">{{ $t("dashboard.title") }}</h1>
     <ul>
       <li><NuxtLink to="/dashboard" active-class="active-link">{{ $t("users.title") }}</NuxtLink></li>
@@ -20,5 +20,6 @@
   background-color: var(--secondary-background-color);
   padding: 2rem;
   position: fixed;
+  height: 100%;
 }
 </style>

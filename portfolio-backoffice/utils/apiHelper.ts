@@ -53,4 +53,5 @@ const kyPrivateDelete = <T>(url: string): Promise<ApiResponse<T>> => {
     return request(privateApi, "DELETE", url);
 };
 
+
 export default { kyPrivateGet, kyPrivatePost, kyPublicPost, kyPrivatePatch, kyPrivateDelete };

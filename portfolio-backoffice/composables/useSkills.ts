@@ -8,7 +8,9 @@ const newSkill = ref<SkillCreation>({
     context: '',
     proofs: '',
     retrospective: '',
-    progress: ''
+    progress: '',
+    projects: [],
+    experiences: []
 });
 
 export default function () {
@@ -22,7 +24,7 @@ export default function () {
         }
     }
 
-    async function getSkillByID(skillID: string) {
+    async function getSkillById(skillID: string) {
         try {
             const response = await apiHelper.kyPrivateGet<Skill>(`skills/${skillID}`);
             return response.data;
@@ -62,17 +64,12 @@ export default function () {
         }
     }
 
-    function splitTags(skill: Skill) {
-        skill.value.tags = skill.value.tags.join(',').split(',').map(tag => tag.trim());
-    }
-
     return {
         newSkill,
         createSkill,
-        getSkillByID,
+        getSkillById,
         getSkills,
         updateSkill,
         deleteSkill,
-        splitTags
     }
 }

@@ -11,11 +11,11 @@ definePageMeta({
 
 <template>
   <main>
-    <h2>{{ $t("skills.title") }}</h2>
-    <SkillCard />
-    <div class="margin">
+    <div class="flex-space-between">
+      <h2>{{ $t("skills.title") }}</h2>
       <NuxtLink class="link-btn" to="/skills/create">{{ $t("utils.create") }}</NuxtLink>
     </div>
+    <SkillCard />
   </main>
 </template>
 

@@ -36,10 +36,7 @@ async function onRegister() {
           <input class="full-width" id="password" type="password" v-model="user.password" required :placeholder="$t('auth.password-placeholder')"/>
         </div>
 
-        <div class="flex-row">
-          <button type="submit">{{ $t("auth.signup") }}</button>
-          <NuxtLink class="link-btn" to="/auth/login">{{ $t("auth.signin") }}</NuxtLink>
-        </div>
+        <button type="submit">{{ $t("auth.signup") }}</button>
 
       </form>
     </div>

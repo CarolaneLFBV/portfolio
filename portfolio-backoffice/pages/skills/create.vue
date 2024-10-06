@@ -1,18 +1,38 @@
 <script setup lang="ts">
 import useSkills from "~/composables/useSkills";
 import {definePageMeta} from "#imports";
+import {ref} from "vue";
+import type {Project} from "~/types/project";
+import useProjects from "~/composables/useProjects";
 
 definePageMeta({
   layout: 'layout-dashboard',
   middleware: 'auth',
 })
 
+const { getProjects } = useProjects()
 const { createSkill, newSkill } = useSkills();
+const projects = ref<Project[]>([]);
+const selectedProjectIDs = ref([]);
+
+onMounted(async () => {
+  await onInit();
+});
+
+async function onInit() {
+  try {
+    projects.value = await getProjects();
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 async function onSubmit() {
   try {
     newSkill.value.tags = newSkill.value.tags.split(',').map(tag => tag.trim());
+    newSkill.value.projects = selectedProjectIDs.value;
     await createSkill(newSkill.value);
+    await navigateTo("/skills");
   } catch (error) {
     console.error("Error creating skill:", error);
   }
@@ -54,6 +74,15 @@ async function onSubmit() {
               <label for="progress">Progress</label>
               <textarea v-model="newSkill.progress" id="progress" type="text" required />
             </div>
+
+            <div>
+              <label>Skills:</label>
+              <div v-for="project in projects" :key="project.id">
+                <input type="checkbox" :value="project.id" v-model="selectedProjectIDs" />
+                {{ project.name }}
+              </div>
+            </div>
+
 
             <button type="submit">Create Skill</button>
           </form>

@@ -4,14 +4,17 @@ import {useRoute} from "#vue-router";
 import {definePageMeta} from "#imports";
 import type {Skill} from "~/types/skill";
 import useSkills from "~/composables/useSkills";
+import useProjects from "~/composables/useProjects";
+import type {Project} from "~/types/project";
 
 definePageMeta({
   layout: 'layout-dashboard',
 })
 
 
-const { getSkillByID, updateSkill, splitTags } = useSkills();
+const { getSkillByID, updateSkill } = useSkills();
 const skill = ref<Skill | null>(null);
+const projects = ref<Project[]>
 const route = useRoute();
 
 onMounted(async () => {
@@ -26,7 +29,7 @@ async function onInit() {
       skill.value = skillData;
     }
   } catch (error) {
-    console.error("Erreur lors de la récupération de l'utilisateur :", error);
+    console.error("Erreur lors de la récupération du skill :", error);
   }
 }
 
@@ -46,13 +49,11 @@ async function update() {
       <div class="card-container text-align-center">
           <h1>{{ $t("utils.edit") }} {{ skill.name }}</h1>
           <form @submit.prevent="update" class="skill-form">
-            <!-- Name -->
             <div class="padding-bottom text-align-left">
               <label for="name">Name</label>
               <input v-model="skill.name" id="name" type="text" required />
             </div>
 
-            <!-- Tags -->
             <div class="padding-bottom text-align-left full-width">
               <label for="tags">Tags (comma-separated)</label>
               <input
@@ -64,31 +65,26 @@ async function update() {
               />
             </div>
 
-            <!-- Context -->
             <div class="padding-bottom text-align-left">
               <label for="context">Context</label>
               <textarea v-model="skill.context" id="context" required></textarea>
             </div>
 
-            <!-- Proofs -->
             <div class="padding-bottom text-align-left">
               <label for="proofs">Proofs</label>
               <textarea v-model="skill.proofs" id="proofs" required></textarea>
             </div>
 
-            <!-- Retrospective -->
             <div class="padding-bottom text-align-left">
               <label for="retrospective">Retrospective</label>
               <textarea v-model="skill.retrospective" id="retrospective" required></textarea>
             </div>
 
-            <!-- Progress -->
             <div class="padding-bottom text-align-left">
               <label for="progress">Progress</label>
               <textarea v-model="skill.progress" id="progress" required></textarea>
             </div>
 
-            <!-- Submit button -->
             <button type="submit">Update Skill</button>
           </form>
       </div>

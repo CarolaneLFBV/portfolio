@@ -1,11 +1,22 @@
 import apiHelper from "~/utils/apiHelper";
-//import {ref} from "vue";
-import type {Project} from "~/types/project";
+import type {Project, ProjectCreation} from "~/types/project";
+import {ref} from "vue";
+
+const newProject = ref<ProjectCreation>({
+    title: '',
+    presentation: '',
+    purpose: '',
+    milestone: '',
+    actor: '',
+    progress: '',
+    skills: [],
+    experiences: []
+});
 
 export default function () {
     async function createProject(project: Project) {
         try {
-            const response = await apiHelper.kyPrivatePost<Project>(`projects/${project.id}`);
+            const response = await apiHelper.kyPrivatePost<Project>(`projects/create`, project);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la création du projet:', error);
@@ -34,7 +45,7 @@ export default function () {
 
     async function updateProject(project: Project) {
         try {
-            const response = await apiHelper.kyPrivatePatch<User>(`projects/${project.id}`, project);
+            const response = await apiHelper.kyPrivatePatch<Project>(`projects/${project.id}`, project);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la mise à jour du projet:', error);
@@ -54,6 +65,7 @@ export default function () {
     }
 
     return {
+        newProject,
         createProject,
         getProjectById,
         getProjects,
