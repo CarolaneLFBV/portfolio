@@ -8,30 +8,30 @@ struct UserJWT: JWTPayload {
         case role
     }
 
+    enum TokenExpiration: TimeInterval {
+        case oneHour = 3600
+        case oneDay = 86400
+        case oneWeek = 604800
+    }
+
     var subject: SubjectClaim
     var expiration: ExpirationClaim
-    var role: User.Role
+    var role: UserRole
 
-    // Mandatory to validate JWT token
     func verify(using signer: JWTKit.JWTSigner) throws {
         try self.expiration.verifyNotExpired()
     }
 }
 
 extension UserJWT {
-    // Route to generate a JWT after the user's login
     static func generateToken(for user: User, req: Request) throws -> String {
 
-        // Payload JWT
         let userJWT = UserJWT(
             subject: .init(value: user.id!.uuidString),
-            expiration: .init(value: Date().addingTimeInterval(3600)),
+            expiration: .init(value: Date().addingTimeInterval(TokenExpiration.oneHour.rawValue)),
             role: user.role
         )
 
-        let secretKey = Environment.get("JWT_SECRET")!
-
-        // Generate & Sign JWT
         let jwt = try req.application.jwt.signers.sign(userJWT)
         return jwt
     }

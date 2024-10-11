@@ -1,6 +1,8 @@
 import Fluent
 import Vapor
 
+typealias ProjectsDTO = [ProjectDTO]
+
 struct ProjectDTO: Content {
     var id: UUID?
     var title: String

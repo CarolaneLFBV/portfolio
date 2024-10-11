@@ -4,6 +4,10 @@ import Vapor
 final class Experience: Model, @unchecked Sendable {
     static let schema = "experiences"
 
+    enum ExperienceType: String, Codable {
+        case professionnal, education
+    }
+
     @ID(key: .id)
     var id: UUID?
 
@@ -85,11 +89,5 @@ final class Experience: Model, @unchecked Sendable {
             skills: self.skills.compactMap({$0.id}),
             projects: self.projects.compactMap({$0.id})
         )
-    }
-}
-
-extension Experience {
-    enum Category: String, Codable {
-        case professionnal, education
     }
 }

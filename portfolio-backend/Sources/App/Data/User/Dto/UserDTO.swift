@@ -1,13 +1,15 @@
 import Fluent
 import Vapor
 
+typealias UsersDTO = [UserDTO]
+
 struct UserDTO: Content {
     var id: UUID?
     var firstName: String?
     var lastName: String?
     var email: String
     var password: String?
-    var role: User.Role
+    var role: UserRole
 
     func toModel() -> User {
         let model = User()

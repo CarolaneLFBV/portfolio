@@ -1,6 +1,8 @@
 import Fluent
 import Vapor
 
+typealias UserRole = User.Role
+
 final class User: Model, Content, @unchecked Sendable, Authenticatable {
     static let schema = "users"
 

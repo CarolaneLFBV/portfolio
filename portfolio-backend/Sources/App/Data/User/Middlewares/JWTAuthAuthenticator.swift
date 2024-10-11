@@ -4,22 +4,18 @@ import JWT
 struct JWTAuthAuthenticator: AsyncMiddleware {
     func respond(to request: Vapor.Request, chainingTo next: any Vapor.AsyncResponder) async throws -> Vapor.Response {
 
-        // Extract token from headers
         guard let token = request.headers.bearerAuthorization?.token else {
-            throw Abort(.unauthorized, reason: "Token missing from headers")
+            throw Failed.invalidData
         }
 
-        // Validate token from secretKey
         let secretKey = Environment.get("JWT_SECRET")!
         let signer = JWTSigner.hs256(key: secretKey)
         let payload = try signer.verify(token, as: UserJWT.self)
 
-        // Retrieve user from JWT (sub field)
         guard let userJWT = try await User.find(UUID(payload.subject.value), on: request.db) else {
-            throw Abort(.notFound, reason: "User not found")
+            throw Failed.idNotFound
         }
 
-        // Authenticate user in request
         let user = User(
             id: userJWT.id,
             firstName: userJWT.firstName ?? "",
@@ -30,7 +26,6 @@ struct JWTAuthAuthenticator: AsyncMiddleware {
         )
         request.auth.login(user)
 
-        // Continue request treatment
         return try await next.respond(to: request)
     }
 }

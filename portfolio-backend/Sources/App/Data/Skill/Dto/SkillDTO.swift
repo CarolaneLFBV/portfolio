@@ -1,6 +1,8 @@
 import Fluent
 import Vapor
 
+typealias SkillsDTO = [SkillDTO]
+
 struct SkillDTO: Content {
     var id: UUID?
     var name: String

@@ -4,14 +4,17 @@ import Vapor
 struct ExperienceController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let experiences = routes.grouped("experiences")
-        let experience = experiences.grouped(":experience_id")
+        let experience = experiences.grouped(":experienceId")
         experiences.get(use: self.index)
         experience.get(use: self.getExperience)
 
-        let protected = experiences.grouped([JWTAuthAuthenticator(), RoleMiddleware(requiredRole: .admin), User.guardMiddleware()])
+        let protected = experiences.grouped([
+            JWTAuthAuthenticator(),
+            RoleMiddleware(requiredRole: .admin),
+            User.guardMiddleware()])
         protected.post("create", use: self.create)
 
-        let protectedElement = protected.grouped(":experience_id")
+        let protectedElement = protected.grouped(":experienceId")
         protectedElement.patch(use: self.update)
         protectedElement.delete(use: self.delete)
     }
@@ -31,7 +34,7 @@ extension ExperienceController {
 
     @Sendable
     func getExperience(req: Request) async throws -> ExperienceDTO {
-        guard let experienceIDString = req.parameters.get("experience_id"),
+        guard let experienceIDString = req.parameters.get("experienceId"),
               let experienceID = UUID(uuidString: experienceIDString) else {
             throw Abort(.badRequest)
         }
@@ -41,7 +44,7 @@ extension ExperienceController {
             .with(\.$skills)
             .with(\.$projects)
             .first() else {
-            throw Abort(.notFound)
+            throw Failed.idNotFound
         }
         return experience.toDTO()
     }
@@ -74,8 +77,8 @@ extension ExperienceController {
 
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let experience = try await Experience.find(req.parameters.get("experience_id"), on: req.db) else {
-            throw Abort(.badRequest)
+        guard let experience = try await Experience.find(req.parameters.get("experienceId"), on: req.db) else {
+            throw Failed.invalidData
         }
 
         try await experience.delete(on: req.db)
@@ -84,9 +87,8 @@ extension ExperienceController {
 
     @Sendable
     func update(req: Request) async throws -> ExperienceDTO {
-        guard let experienceIDString = req.parameters.get("experience_id"),
-              let experienceID = UUID(uuidString: experienceIDString),
-              let experience = try await Experience.find(experienceID, on: req.db) else {
+        guard let experienceId = req.parameters.get("experienceId", as: UUID.self),
+              let experience = try await Experience.find(experienceId, on: req.db) else {
             throw Abort(.notFound)
         }
 
@@ -103,30 +105,35 @@ extension ExperienceController {
         experience.degree = updatedData.degree ?? "N/A"
         experience.misc = updatedData.misc ?? "N/A"
 
-        try await experience.$skills.load(on: req.db)
-        try await experience.$projects.load(on: req.db)
-
-        if !updatedData.skills.isEmpty {
-            let skills = try await Skill.query(on: req.db)
-                .filter(\.$id ~~ updatedData.skills)
-                .all()
-            try await experience.$skills.detachAll(on: req.db)
-            try await experience.$skills.attach(skills, on: req.db)
-        } else {
-            try await experience.$skills.detachAll(on: req.db)
-        }
-
-        if !updatedData.projects.isEmpty {
-            let projects = try await Project.query(on: req.db)
-                .filter(\.$id ~~ updatedData.projects)
-                .all()
-            try await experience.$projects.detachAll(on: req.db)
-            try await experience.$projects.attach(projects, on: req.db)
-        } else {
-            try await experience.$projects.detachAll(on: req.db)
-        }
-
+        try await Helpers.updateRelations(for: experience, skills: updatedData.skills, projects: updatedData.projects, db: req.db)
         try await experience.save(on: req.db)
         return experience.toDTO()
+    }
+
+}
+
+extension ExperienceController {
+    struct Helpers {
+        static func updateRelations(for experience: Experience, skills: [UUID], projects: [UUID], db: Database) async throws {
+            if skills.isEmpty {
+                try await experience.$skills.detachAll(on: db)
+            } else {
+                let skills = try await Skill.query(on: db)
+                    .filter(\.$id ~~ skills)
+                    .all()
+                try await experience.$skills.detachAll(on: db)
+                try await experience.$skills.attach(skills, on: db)
+            }
+
+            if projects.isEmpty {
+                try await experience.$projects.detachAll(on: db)
+            } else {
+                let projects = try await Project.query(on: db)
+                    .filter(\.$id ~~ projects)
+                    .all()
+                try await experience.$projects.detachAll(on: db)
+                try await experience.$projects.attach(projects, on: db)
+            }
+        }
     }
 }

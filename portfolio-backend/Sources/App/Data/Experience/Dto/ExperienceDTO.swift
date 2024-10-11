@@ -5,7 +5,7 @@ typealias ExperiencesDTO = [ExperienceDTO]
 
 struct ExperienceDTO: Content {
     var id: UUID?
-    var type: ExperienceType
+    var type: Experience.ExperienceType
     var startDate: String
     var endDate: String
     var position: String?

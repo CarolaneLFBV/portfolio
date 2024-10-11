@@ -8,7 +8,7 @@ struct RoleMiddleware: AsyncMiddleware {
         let user = try request.auth.require(User.self)
 
         guard user.role == requiredRole else {
-            throw Abort(.forbidden, reason: "Restricted access")
+            throw Failed.accessDenied
         }
 
         return try await next.respond(to: request)

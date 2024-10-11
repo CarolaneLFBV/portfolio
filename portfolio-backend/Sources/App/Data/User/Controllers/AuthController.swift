@@ -15,17 +15,15 @@ extension AuthController {
     func login(req: Request) async throws -> TokenDTO {
         let userRequest = try req.content.decode(User.LoginCredentials.self)
 
-        // Verify mail
         guard let user = try await User.query(on: req.db)
             .filter(\.$email == userRequest.email)
             .first() else {
-            throw Abort(.notFound, reason: "User not found")
+            throw Failed.idNotFound
         }
 
-        // Verify password
         let isValidPassword = try Bcrypt.verify(userRequest.password, created: user.password)
         guard isValidPassword else {
-            throw Abort(.unauthorized, reason: "Invalid password")
+            throw Failed.invalidData
         }
 
         let token = try UserJWT.generateToken(for: user, req: req)
@@ -35,16 +33,18 @@ extension AuthController {
     @Sendable
     func register(req: Request) async throws -> TokenDTO {
         let userRequest = try req.content.decode(UserDTO.self)
-        let passwordHash = try Bcrypt.hash(userRequest.password ?? "defaultPassword")
 
-        // Check email
+        guard let password = userRequest.password, !password.isEmpty else {
+            throw Failed.invalidData
+        }
+        let passwordHash = try Bcrypt.hash(password)
+
         guard try await User.query(on: req.db)
             .filter(\.$email == userRequest.email)
             .first() == nil else {
                 throw Abort(.conflict, reason: "Email already exists")
             }
 
-        // Create user
         let user = User(
             firstName: userRequest.firstName ?? "",
             lastName: userRequest.lastName ?? "",

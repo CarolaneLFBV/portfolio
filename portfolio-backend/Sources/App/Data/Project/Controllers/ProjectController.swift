@@ -19,7 +19,7 @@ struct ProjectController: RouteCollection {
 
 extension ProjectController {
     @Sendable
-    func index(req: Request) async throws -> [ProjectDTO] {
+    func index(req: Request) async throws -> ProjectsDTO {
         try await Project.query(on: req.db)
             .with(\.$skills)
             .with(\.$experiences)
@@ -31,9 +31,8 @@ extension ProjectController {
 
     @Sendable
     func getProject(req: Request) async throws -> ProjectDTO {
-        guard let projectIDString = req.parameters.get("projectID"),
-              let projectID = UUID(uuidString: projectIDString) else {
-            throw Abort(.badRequest)
+        guard let projectID = req.parameters.get("projectID", as: UUID.self) else {
+            throw Failed.idNotFound
         }
 
         guard let project = try await Project.query(on: req.db)
@@ -41,7 +40,7 @@ extension ProjectController {
             .with(\.$skills)
             .with(\.$experiences)
             .first() else {
-            throw Abort(.notFound)
+            throw Failed.idNotFound
         }
         return project.toDTO()
     }
@@ -75,7 +74,7 @@ extension ProjectController {
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
         guard let project = try await Project.find(req.parameters.get("projectID"), on: req.db) else {
-            throw Abort(.notFound)
+            throw Failed.idNotFound
         }
 
         try await project.delete(on: req.db)
@@ -84,10 +83,9 @@ extension ProjectController {
 
     @Sendable
     func update(req: Request) async throws -> ProjectDTO {
-        guard let projectIDString = req.parameters.get("projectID"),
-              let projectID = UUID(uuidString: projectIDString),
+        guard let projectID = req.parameters.get("projectID", as: UUID.self),
               let project = try await Project.find(projectID, on: req.db) else {
-            throw Abort(.notFound)
+            throw Failed.idNotFound
         }
 
         let updatedData = try req.content.decode(ProjectDTO.self)
@@ -99,31 +97,34 @@ extension ProjectController {
         project.actor = updatedData.actor
         project.progress = updatedData.progress
 
-        try await project.$skills.load(on: req.db)
-        try await project.$experiences.load(on: req.db)
-
-        if !updatedData.skills.isEmpty {
-            let skills = try await Skill.query(on: req.db)
-                .filter(\.$id ~~ updatedData.skills)
-                .all()
-
-            try await project.$skills.detachAll(on: req.db)
-            try await project.$skills.attach(skills, on: req.db)
-        } else {
-            try await project.$skills.detachAll(on: req.db)
-        }
-
-        if !updatedData.experiences.isEmpty {
-            let experiences = try await Experience.query(on: req.db)
-                .filter(\.$id ~~ updatedData.experiences)
-                .all()
-            try await project.$experiences.detachAll(on: req.db)
-            try await project.$experiences.attach(experiences, on: req.db)
-        } else {
-            try await project.$experiences.detachAll(on: req.db)
-        }
-
+        try await Helpers.updateRelation(for: project, skills: updatedData.skills, experiences: updatedData.experiences, db: req.db)
         try await project.save(on: req.db)
         return project.toDTO()
+    }
+}
+
+extension ProjectController {
+    struct Helpers {
+        static func updateRelation(for project: Project, skills: [UUID], experiences: [UUID], db: Database) async throws {
+            if skills.isEmpty {
+                try await project.$skills.detachAll(on: db)
+            } else {
+                let skills = try await Skill.query(on: db)
+                    .filter(\.$id ~~ skills)
+                    .all()
+                try await project.$skills.detachAll(on: db)
+                try await project.$skills.attach(skills, on: db)
+            }
+
+            if experiences.isEmpty {
+                try await project.$experiences.detachAll(on: db)
+            } else {
+                let experiences = try await Experience.query(on: db)
+                    .filter(\.$id ~~ experiences)
+                    .all()
+                try await project.$experiences.detachAll(on: db)
+                try await project.$experiences.attach(experiences, on: db)
+            }
+        }
     }
 }

@@ -23,7 +23,7 @@ struct UserController: RouteCollection {
 
 extension UserController {
     @Sendable
-    func index(req: Request) async throws -> [UserDTO] {
+    func index(req: Request) async throws -> UsersDTO {
         try await User.query(on: req.db).all().map {
             $0.toDTO()
         }
@@ -32,7 +32,7 @@ extension UserController {
     @Sendable
     func getAuthenticatedUser(req: Request) async throws -> UserDTO {
         guard let user = req.auth.get(User.self) else {
-            throw Abort(.unauthorized, reason: "User is not authenticated")
+            throw Failed.accessDenied
         }
         return user.toDTO()
     }
@@ -40,7 +40,7 @@ extension UserController {
     @Sendable
     func getUser(req: Request) async throws -> UserDTO {
         guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
-            throw Abort(.notFound)
+            throw Failed.idNotFound
         }
 
         return user.toDTO()
@@ -49,7 +49,7 @@ extension UserController {
     @Sendable
     func update(req: Request) async throws -> UserDTO {
         guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
-            throw Abort(.notFound)
+            throw Failed.idNotFound
         }
 
         let updatedData = try req.content.decode(UserDTO.self)
@@ -66,7 +66,7 @@ extension UserController {
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
         guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
-            throw Abort(.notFound)
+            throw Failed.idNotFound
         }
 
         try await user.delete(on: req.db)
