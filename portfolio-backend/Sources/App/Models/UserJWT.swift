@@ -30,7 +30,7 @@ extension UserJWT {
         )
 
         let secretKey = Environment.get("JWT_SECRET")!
- w
+
         // Generate & Sign JWT
         let jwt = try req.application.jwt.signers.sign(userJWT)
         return jwt
