@@ -8,14 +8,16 @@ struct ProjectController: RouteCollection {
         projects.get(use: self.index)
         project.get(use: self.getProject)
 
-        let protected = projects.grouped([JWTAuthenticator()])
+        let protected = projects.grouped([JWTAuthAuthenticator(), RoleMiddleware(requiredRole: .admin), User.guardMiddleware()])
         protected.post("create", use: self.create)
 
         let protectedElement = protected.grouped(":projectID")
         protectedElement.patch(use: self.update)
         protectedElement.delete(use: self.delete)
     }
+}
 
+extension ProjectController {
     @Sendable
     func index(req: Request) async throws -> [ProjectDTO] {
         try await Project.query(on: req.db)

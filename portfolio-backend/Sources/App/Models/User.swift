@@ -4,6 +4,10 @@ import Vapor
 final class User: Model, Content, @unchecked Sendable, Authenticatable {
     static let schema = "users"
 
+    enum Role: String, Codable {
+        case admin, member
+    }
+
     @ID(key: .id)
     var id: UUID?
 
@@ -50,10 +54,5 @@ extension User {
     struct LoginCredentials: Content {
         var email: String
         var password: String
-    }
-
-    struct TokenResponse: Content {
-        let user: UserDTO
-        let token: String
     }
 }

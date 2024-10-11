@@ -8,17 +8,16 @@ struct ExperienceController: RouteCollection {
         experiences.get(use: self.index)
         experience.get(use: self.getExperience)
 
-        // JWT protection on skills
-        let protected = experiences.grouped([JWTAuthenticator()])
+        let protected = experiences.grouped([JWTAuthAuthenticator(), RoleMiddleware(requiredRole: .admin), User.guardMiddleware()])
         protected.post("create", use: self.create)
 
-        // JWT protection on one skill
         let protectedElement = protected.grouped(":experience_id")
         protectedElement.patch(use: self.update)
         protectedElement.delete(use: self.delete)
-
     }
+}
 
+extension ExperienceController {
     @Sendable
     func index(req: Request) async throws -> ExperiencesDTO {
         try await Experience.query(on: req.db)

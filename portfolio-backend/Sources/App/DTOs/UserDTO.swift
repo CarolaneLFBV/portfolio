@@ -7,7 +7,7 @@ struct UserDTO: Content {
     var lastName: String?
     var email: String
     var password: String?
-    var role: Role
+    var role: User.Role
 
     func toModel() -> User {
         let model = User()

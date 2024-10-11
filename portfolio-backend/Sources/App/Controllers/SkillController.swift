@@ -2,24 +2,23 @@ import Fluent
 import Vapor
 
 struct SkillController: RouteCollection {
-
     func boot(routes: any RoutesBuilder) throws {
         let skills = routes.grouped("skills")
         let skill = skills.grouped(":skillID")
         skills.get(use: self.index)
         skill.get(use: self.getSkill)
 
-        // JWT protection on skills
-        let protected = skills.grouped([JWTAuthenticator()])
+        let protected = skills.grouped([JWTAuthAuthenticator(), RoleMiddleware(requiredRole: .admin), User.guardMiddleware()])
         protected.post("create", use: self.create)
 
-        // JWT protection on one skill
         let protectedElement = protected.grouped(":skillID")
         protectedElement.patch(use: self.update)
         protectedElement.delete(use: self.delete)
 
     }
+}
 
+extension SkillController {
     @Sendable
     func index(req: Request) async throws -> [SkillDTO] {
         try await Skill.query(on: req.db)

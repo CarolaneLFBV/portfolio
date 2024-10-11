@@ -4,21 +4,24 @@ import Vapor
 struct UserController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let users = routes.grouped("users")
-        let user = users.grouped(":userID")
+        // let user = users.grouped(":userID")
         users.get(use: self.index)
 
-        // JWT protection on users
-        let protected = users.grouped([JWTAuthenticator()])
+        let protected = users.grouped([
+            JWTAuthAuthenticator(),
+             RoleMiddleware(requiredRole: .admin),
+             User.guardMiddleware()
+        ])
         protected.get("current", use: self.getAuthenticatedUser)
 
-        // JWT protection on one user
         let protectedElement = protected.grouped(":userID")
         protectedElement.get(use: self.getUser)
         protectedElement.patch(use: self.update)
         protectedElement.delete(use: self.delete)
-
     }
+}
 
+extension UserController {
     @Sendable
     func index(req: Request) async throws -> [UserDTO] {
         try await User.query(on: req.db).all().map {

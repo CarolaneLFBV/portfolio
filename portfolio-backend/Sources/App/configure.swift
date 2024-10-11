@@ -20,7 +20,7 @@ public func configure(_ app: Application) async throws {
 
     app.logger.logLevel = .debug
     let secretKey = Environment.get("JWT_SECRET")!
-    app.jwt.signers.use(.hs256(key: secretKey))
+    app.jwt.signers.use(.hs256(key: secretKey), kid: .init(string: "basic"))
 
     app.databases.use(DatabaseConfigurationFactory.postgres(configuration: .init(
         hostname: Environment.get("DATABASE_HOST")!,

@@ -3,48 +3,37 @@ import JWTKit
 import Vapor
 
 struct AuthController: RouteCollection {
-
     func boot(routes: RoutesBuilder) throws {
         let auth = routes.grouped("auth")
         auth.post("login", use: login)
         auth.post("register", use: register)
     }
+}
 
+extension AuthController {
     @Sendable
-    func login(req: Request) async throws -> User.TokenResponse {
+    func login(req: Request) async throws -> TokenDTO {
         let userRequest = try req.content.decode(User.LoginCredentials.self)
 
-        // Check user by mail
+        // Verify mail
         guard let user = try await User.query(on: req.db)
             .filter(\.$email == userRequest.email)
             .first() else {
             throw Abort(.notFound, reason: "User not found")
         }
 
-        // Check if password is valid
+        // Verify password
         let isValidPassword = try Bcrypt.verify(userRequest.password, created: user.password)
         guard isValidPassword else {
             throw Abort(.unauthorized, reason: "Invalid password")
         }
 
-        // Generate JWT payload
-        let payload = UserPayload(
-            subject: .init(value: user.id!.uuidString),
-            expiration: .init(value: Date().addingTimeInterval(3600)),
-            role: user.role
-        )
-
-        // Sign JWT
-        let token = try req.jwt.sign(payload)
-
-        // Convert user to DTO for response data
-        let userDTO = user.toDTO()
-        let response = User.TokenResponse(user: userDTO, token: token)
-        return response
+        let token = try UserJWT.generateToken(for: user, req: req)
+        return .init(jwt: token)
     }
 
     @Sendable
-    func register(req: Request) async throws -> User.TokenResponse {
+    func register(req: Request) async throws -> TokenDTO {
         let userRequest = try req.content.decode(UserDTO.self)
         let passwordHash = try Bcrypt.hash(userRequest.password ?? "defaultPassword")
 
@@ -66,17 +55,7 @@ struct AuthController: RouteCollection {
 
         try await user.save(on: req.db)
 
-        // Generate JWT
-        let payload = UserPayload(
-            subject: SubjectClaim(value: user.id!.uuidString),
-            expiration: ExpirationClaim(value: Date().addingTimeInterval(3600)),
-            role: user.role
-        )
-
-        let token = try req.jwt.sign(payload)
-        let response = User.TokenResponse(user: user.toDTO(), token: token)
-
-        // Return user and token
-        return response
+        let token = try UserJWT.generateToken(for: user, req: req)
+        return .init(jwt: token)
     }
 }
