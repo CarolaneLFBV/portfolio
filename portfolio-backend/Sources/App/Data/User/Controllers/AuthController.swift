@@ -5,8 +5,14 @@ import Vapor
 struct AuthController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let auth = routes.grouped("auth")
-        auth.post("login", use: login)
-        auth.post("register", use: register)
+        auth.post("login", use: self.login)
+        
+        let protected = auth.grouped([
+            JWTAuthAuthenticator(),
+            User.guardMiddleware(),
+            RoleMiddleware(requiredRole: .admin)
+        ])
+        protected.post("register", use: self.register)
     }
 }
 

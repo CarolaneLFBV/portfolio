@@ -124,6 +124,8 @@ extension ExperienceController {
             skills: [UUID], projects: [UUID],
             db: Database
         ) async throws {
+            try await experience.$skills.load(on: db)
+            try await experience.$projects.load(on: db)
             if skills.isEmpty {
                 try await experience.$skills.detachAll(on: db)
             } else {

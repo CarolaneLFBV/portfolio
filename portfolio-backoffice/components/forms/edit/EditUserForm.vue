@@ -3,6 +3,7 @@ import useUsers from "~/composables/useUsers";
 import {ref} from "vue";
 import type {User} from "~/types/user";
 import {useRoute} from "#vue-router";
+import BaseButton from "~/components/buttons/BaseButton.vue";
 
 const route = useRoute();
 const { getUserById, updateUser } = useUsers();
@@ -41,22 +42,22 @@ async function onUpdate() {
 
 <template>
   <div v-if="user">
-    <div class="h-screen flex mx-auto text-center">
+    <div class="flex flex-col">
       <div class="card-container">
-        <h1>{{ $t("utils.edit") }} {{ user.firstName }}</h1>
+        <h1 class="text-center">{{ $t("utils.edit") }} {{ user.firstName }}</h1>
         <form @submit.prevent="onUpdate" class="text-left">
           <div class="flex flex-col mb-2">
-            <label for="email">{{ $t("auth.email") }}</label>
+            <label class="text-white text-opacity-50 text-sm mb-1" for="email">{{ $t("auth.email") }}</label>
             <input id="email" type="email" v-model="user.email" required :placeholder="$t('auth.email-placeholder')" class="rounded-lg"/>
           </div>
 
           <div class="flex flex-col mb-2">
-            <label for="firstName">{{ $t("user.firstName") }}</label>
+            <label class="text-white text-opacity-50 text-sm mb-1" for="firstName">{{ $t("user.firstName") }}</label>
             <input id="firstName" type="text" v-model="user.firstName" required :placeholder="$t('auth.email-placeholder')" class="rounded-lg"/>
           </div>
 
           <div class="flex flex-col mb-1">
-            <label for="lastName">{{ $t("user.lastName") }}</label>
+            <label class="text-white text-opacity-50 text-sm mb-1" for="lastName">{{ $t("user.lastName") }}</label>
             <input id="lastName" type="text" v-model="user.lastName" required :placeholder="$t('auth.email-placeholder')" class="rounded-lg"/>
           </div>
 

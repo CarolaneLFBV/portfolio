@@ -120,6 +120,9 @@ extension ProjectController {
             experiences: [UUID],
             db: Database
         ) async throws {
+            try await project.$skills.load(on: db)
+            try await project.$experiences.load(on: db)
+
             if skills.isEmpty {
                 try await project.$skills.detachAll(on: db)
             } else {
