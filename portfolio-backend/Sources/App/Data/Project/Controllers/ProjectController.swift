@@ -4,7 +4,7 @@ import Vapor
 struct ProjectController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let projects = routes.grouped("projects")
-        let project = projects.grouped(":projectID")
+        let project = projects.grouped(":projectId")
         projects.get(use: self.index)
         project.get(use: self.getProject)
 
@@ -15,7 +15,7 @@ struct ProjectController: RouteCollection {
         ])
         protected.post("create", use: self.create)
 
-        let protectedElement = protected.grouped(":projectID")
+        let protectedElement = protected.grouped(":projectId")
         protectedElement.patch(use: self.update)
         protectedElement.delete(use: self.delete)
     }
@@ -35,7 +35,7 @@ extension ProjectController {
 
     @Sendable
     func getProject(req: Request) async throws -> ProjectDTO {
-        guard let projectID = req.parameters.get("projectID", as: UUID.self) else {
+        guard let projectID = req.parameters.get("projectId", as: UUID.self) else {
             throw Failed.idNotFound
         }
 
@@ -77,7 +77,7 @@ extension ProjectController {
 
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let project = try await Project.find(req.parameters.get("projectID"), on: req.db) else {
+        guard let project = try await Project.find(req.parameters.get("projectId"), on: req.db) else {
             throw Failed.idNotFound
         }
 
@@ -87,7 +87,7 @@ extension ProjectController {
 
     @Sendable
     func update(req: Request) async throws -> ProjectDTO {
-        guard let projectID = req.parameters.get("projectID", as: UUID.self),
+        guard let projectID = req.parameters.get("projectId", as: UUID.self),
               let project = try await Project.find(projectID, on: req.db) else {
             throw Failed.idNotFound
         }

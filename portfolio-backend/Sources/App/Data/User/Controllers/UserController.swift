@@ -14,7 +14,7 @@ struct UserController: RouteCollection {
         ])
         protected.get("current", use: self.getAuthenticatedUser)
 
-        let protectedElement = protected.grouped(":userID")
+        let protectedElement = protected.grouped(":userId")
         protectedElement.get(use: self.getUser)
         protectedElement.patch(use: self.update)
         protectedElement.delete(use: self.delete)
@@ -39,7 +39,7 @@ extension UserController {
 
     @Sendable
     func getUser(req: Request) async throws -> UserDTO {
-        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
+        guard let user = try await User.find(req.parameters.get("userId"), on: req.db) else {
             throw Failed.idNotFound
         }
 
@@ -48,7 +48,7 @@ extension UserController {
 
     @Sendable
     func update(req: Request) async throws -> UserDTO {
-        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
+        guard let user = try await User.find(req.parameters.get("userId"), on: req.db) else {
             throw Failed.idNotFound
         }
 
@@ -65,7 +65,7 @@ extension UserController {
 
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
+        guard let user = try await User.find(req.parameters.get("userId"), on: req.db) else {
             throw Failed.idNotFound
         }
 
