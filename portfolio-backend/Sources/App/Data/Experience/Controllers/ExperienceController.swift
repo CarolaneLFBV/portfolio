@@ -105,7 +105,12 @@ extension ExperienceController {
         experience.degree = updatedData.degree ?? "N/A"
         experience.misc = updatedData.misc ?? "N/A"
 
-        try await Helpers.updateRelations(for: experience, skills: updatedData.skills, projects: updatedData.projects, db: req.db)
+        try await Helpers.updateRelations(
+            for: experience, skills:
+                updatedData.skills,
+            projects: updatedData.projects,
+            db: req.db
+        )
         try await experience.save(on: req.db)
         return experience.toDTO()
     }
@@ -114,7 +119,11 @@ extension ExperienceController {
 
 extension ExperienceController {
     struct Helpers {
-        static func updateRelations(for experience: Experience, skills: [UUID], projects: [UUID], db: Database) async throws {
+        static func updateRelations(
+            for experience: Experience,
+            skills: [UUID], projects: [UUID],
+            db: Database
+        ) async throws {
             if skills.isEmpty {
                 try await experience.$skills.detachAll(on: db)
             } else {

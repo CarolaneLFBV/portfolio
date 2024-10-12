@@ -8,7 +8,11 @@ struct ProjectController: RouteCollection {
         projects.get(use: self.index)
         project.get(use: self.getProject)
 
-        let protected = projects.grouped([JWTAuthAuthenticator(), RoleMiddleware(requiredRole: .admin), User.guardMiddleware()])
+        let protected = projects.grouped([
+            JWTAuthAuthenticator(),
+            RoleMiddleware(requiredRole: .admin),
+            User.guardMiddleware()
+        ])
         protected.post("create", use: self.create)
 
         let protectedElement = protected.grouped(":projectID")
@@ -97,7 +101,12 @@ extension ProjectController {
         project.actor = updatedData.actor
         project.progress = updatedData.progress
 
-        try await Helpers.updateRelation(for: project, skills: updatedData.skills, experiences: updatedData.experiences, db: req.db)
+        try await Helpers.updateRelation(
+            for: project,
+            skills: updatedData.skills,
+            experiences: updatedData.experiences,
+            db: req.db
+        )
         try await project.save(on: req.db)
         return project.toDTO()
     }
@@ -105,7 +114,12 @@ extension ProjectController {
 
 extension ProjectController {
     struct Helpers {
-        static func updateRelation(for project: Project, skills: [UUID], experiences: [UUID], db: Database) async throws {
+        static func updateRelation(
+            for project: Project,
+            skills: [UUID],
+            experiences: [UUID],
+            db: Database
+        ) async throws {
             if skills.isEmpty {
                 try await project.$skills.detachAll(on: db)
             } else {

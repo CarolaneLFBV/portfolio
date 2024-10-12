@@ -102,7 +102,12 @@ extension SkillController {
         skill.retrospective = updatedData.retrospective
         skill.progress = updatedData.progress
 
-        try await Helpers.updateRelations(for: skill, projects: updatedData.projects, experiences: updatedData.experiences, db: req.db)
+        try await Helpers.updateRelations(
+            for: skill,
+            projects: updatedData.projects,
+            experiences: updatedData.experiences,
+            db: req.db
+        )
         try await skill.save(on: req.db)
         return skill.toDTO()
     }
@@ -110,8 +115,12 @@ extension SkillController {
 
 extension SkillController {
     struct Helpers {
-        static func updateRelations(for skill: Skill, projects: [UUID], experiences: [UUID], db: Database) async throws {
-
+        static func updateRelations(
+            for skill: Skill,
+            projects: [UUID],
+            experiences: [UUID],
+            db: Database)
+        async throws {
             if projects.isEmpty {
                 try await skill.$projects.detachAll(on: db)
             } else {
