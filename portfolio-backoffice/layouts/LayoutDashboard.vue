@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import LayoutNav from "~/layouts/LayoutNav.vue";
+import LayoutFooter from "~/layouts/LayoutFooter.vue";
 </script>
 
 <template>

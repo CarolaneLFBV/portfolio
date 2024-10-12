@@ -1,7 +1,9 @@
 import type {User, UserRegister} from "~/types/user";
 import apiHelper from "~/utils/apiHelper";
 import {ref} from "vue";
+import {useRouter} from "#vue-router";
 
+const router = useRouter();
 const user = ref<UserRegister>({
     email: '',
     password: '',
@@ -37,10 +39,21 @@ export default function () {
         }
     }
 
+    async function deleteUser(userID: string) {
+        try {
+            const response = await apiHelper.kyPrivateDelete(`users/${userID}`);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     return {
         user,
         getUserById,
         getUsers,
         updateUser,
+        deleteUser
     }
 }

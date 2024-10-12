@@ -17,6 +17,21 @@ export interface Experience {
     skills: Skill[];
 }
 
+export interface ExperienceCreation {
+    type: Type;
+    startDate: string;
+    endDate: string;
+    position?: string;
+    companyName?: string;
+    companyLogo?: string;
+    degree?: string;
+    misc?: string;
+    status?: string;
+    missionDetails?: string;
+    projects: Project[];
+    skills: Skill[];
+}
+
 interface Type {
     type: 'professional' | 'education';
 }

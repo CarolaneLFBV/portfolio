@@ -4,7 +4,7 @@ export interface User {
     lastName: string;
     email: string;
     password: string;
-    role: Role | undefined;
+    role: Role;
 }
 
 export interface UserStore {
@@ -14,7 +14,7 @@ export interface UserStore {
 export interface UserCredentials {
     email: string;
     password: string;
-    role: Role | undefined;
+    role: Role;
 }
 
 interface Role {

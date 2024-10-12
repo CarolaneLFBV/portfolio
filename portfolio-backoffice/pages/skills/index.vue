@@ -7,14 +7,21 @@ definePageMeta({
   middleware: 'auth',
 })
 
+function createProject() {
+  navigateTo("/skills/create");
+}
+
 </script>
 
 <template>
   <main>
-    <div class="flex-space-between">
-      <h2>{{ $t("skills.title") }}</h2>
-      <NuxtLink class="link-btn" to="/skills/create">{{ $t("utils.create") }}</NuxtLink>
+    <div class="mb-4">
+      <h1>{{ $t("skills.title") }}</h1>
+      <BaseButton @click="createProject">
+        {{ $t("utils.create") }}
+      </BaseButton>
     </div>
+
     <SkillCard />
   </main>
 </template>

@@ -5,6 +5,8 @@ import useSkills from "~/composables/useSkills";
 import {useRouter} from "#vue-router";
 import useProjects from "~/composables/useProjects";
 import type {Project} from "~/types/project";
+import BaseButton from "~/components/buttons/BaseButton.vue";
+import DeleteButton from "~/components/buttons/DeleteButton.vue";
 
 const skills = ref<Skill[]>([]);
 const { getSkills, deleteSkill } = useSkills()
@@ -28,11 +30,11 @@ async function onInit() {
   }
 }
 
-function edit(id: string) {
+function onEdit(id: string) {
   router.push(`/skills/${id}`);
 }
 
-async function deleteID(id: string) {
+async function onDelete(id: string) {
   try {
     await deleteSkill(id);
   } catch (error) {
@@ -43,22 +45,28 @@ async function deleteID(id: string) {
 </script>
 
 <template>
-  <div v-if="skills" class="flex-row flex-wrap">
-    <div v-for="skill in skills" :key="skill.id" class="card-container margin text-align-left">
-      <p><strong>{{ $t("skills.unique") }}:</strong> {{ skill.name }} </p>
-      <div class="flex-row flex-wrap">
-        <p v-for="tag in skill.tags"> {{ tag }} </p>
+  <div v-if="skills" class="flex flex-wrap">
+    <div v-for="skill in skills" :key="skill.id" class="card-container text-white">
+      <div class="flex flex-row mb-2">
+        <h3 class="text-violet font-semibold text-xl"> {{ skill.name }} </h3>
       </div>
-      <div class="text-align-right">
-        <button class="margin-right" @click="edit(skill.id)">
-          <span class="material-icons">edit</span>
+
+      <div class="flex flex-row">
+        <div v-for="tag in skill.tags" :key="skillId">
+          <p class="text-sm bg-violet-light p-1 rounded"> {{ tag }} </p>
+        </div>
+      </div>
+
+      <div class="text-right">
+        <BaseButton @click="onEdit(skill.id)">
           {{ $t("utils.edit") }}
-        </button>
-        <button @click="deleteID(skill.id)">
-          <span class="material-icons">delete</span>
+        </BaseButton>
+
+        <DeleteButton @click="onDelete(skill.id)">
           {{ $t("utils.delete") }}
-        </button>
+        </DeleteButton>
       </div>
+
     </div>
   </div>
 </template>

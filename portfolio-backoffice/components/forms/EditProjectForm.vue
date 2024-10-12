@@ -45,7 +45,7 @@ async function onUpdate() {
     <div class="full-height flex-column text-align-center">
       <div class="card-container text-align-center">
 
-        <h1>Modifier Projet: {{ project.title }}</h1>
+        <h1>{{ $t("utils.edit") }} {{ project.title }}</h1>
         <form @submit.prevent="onUpdate">
           <div>
             <label for="title">Titre</label>
@@ -77,7 +77,6 @@ async function onUpdate() {
             <input v-model="project.progress" id="progress" type="text" />
           </div>
 
-          <!-- Skills Selection -->
           <fieldset>
             <legend>Compétences :</legend>
             <div class="checkboxes flex-row flex-wrap">
@@ -88,15 +87,9 @@ async function onUpdate() {
             </div>
           </fieldset>
 
-          <button type="submit">Mettre à jour</button>
+          <BaseButton type="submit"> {{ $t("utils.update") }} </BaseButton>
         </form>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.checkboxes {
-
-}
-</style>

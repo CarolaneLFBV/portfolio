@@ -13,8 +13,10 @@ definePageMeta({
 
 
 const { getSkillByID, updateSkill } = useSkills();
+const { getProjects } = useProjects();
 const skill = ref<Skill | null>(null);
 const projects = ref<Project[]>
+const selectedProjectsIDs = ref<Project[]>([]);
 const route = useRoute();
 
 onMounted(async () => {
@@ -22,20 +24,20 @@ onMounted(async () => {
 });
 
 async function onInit() {
+  const skillId = route.params.id;
   try {
-    const skillId = route.params.id;
-    if (skillId) {
-      const skillData = await getSkillByID(skillId);
-      skill.value = skillData;
-    }
+    skill.value = await getSkillByID(skillId);
+    projects.value = await getProjects();
+    selectedProjectsIDs.value = skill.value.projects || [];
   } catch (error) {
     console.error("Erreur lors de la récupération du skill :", error);
   }
 }
 
-async function update() {
+async function onUpdate() {
   try {
     skill.value.tags = skill.value.tags.split(',').map(tag => tag.trim());
+    skill.value.projects = selectedProjectsIDs.value;
     await updateSkill(skill.value);
   } catch (error) {
     console.error(error);
@@ -47,8 +49,9 @@ async function update() {
   <div v-if="skill">
     <div class="full-height flex-column text-align-center">
       <div class="card-container text-align-center">
+        
           <h1>{{ $t("utils.edit") }} {{ skill.name }}</h1>
-          <form @submit.prevent="update" class="skill-form">
+          <form @submit.prevent="onUpdate" class="skill-form">
             <div class="padding-bottom text-align-left">
               <label for="name">Name</label>
               <input v-model="skill.name" id="name" type="text" required />

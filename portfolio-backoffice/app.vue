@@ -3,11 +3,11 @@ import LayoutFooter from "~/layouts/LayoutFooter.vue";
 </script>
 
 <template>
-  <main class="full-height flex-column">
+  <main class="h-screen flex flex-col">
     <NuxtLayout>
       <NuxtPage />
+      <LayoutFooter/>
     </NuxtLayout>
-    <LayoutFooter />
   </main>
 </template>
 

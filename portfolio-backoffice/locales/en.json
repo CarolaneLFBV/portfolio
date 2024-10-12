@@ -48,6 +48,7 @@
   "utils": {
     "create": "Create",
     "delete": "Delete",
-    "edit": "Edit"
+    "edit": "Edit",
+    "update": "Update"
   }
 }

@@ -3,6 +3,7 @@ import {definePageMeta} from "#imports";
 import {useAuthStore} from "~/stores/useAuthStore";
 import { useRouter } from 'vue-router';
 import {useUserStore} from "~/stores/useUserStore";
+import UsersCards from "~/components/cards/UsersCards.vue";
 import UserCard from "~/components/cards/UserCard.vue";
 
 definePageMeta({
@@ -29,24 +30,17 @@ async function onInit() {
 </script>
 
 <template>
-  <div v-if="isAdmin">
-    <h2>{{ $t("dashboard.users-list") }}</h2>
-    <UserCard/>
-  </div>
-
-  <div>
-    <h2>Your Informations</h2>
-    <div v-if="user">
-      <p><strong>First Name:</strong>{{ user.firstName }}</p>
-      <p><strong>Last Name:</strong>{{ user.lastName }}</p>
-      <p><strong>Email:</strong>{{ user.email }}</p>
-      <p><strong>Role:</strong>{{ user.role }}</p>
+  <main>
+    <div v-if="isAdmin">
+      <h1>{{ $t("dashboard.users-list") }}</h1>
+      <UsersCards/>
     </div>
 
     <div v-else>
-      <p>Loading user data...</p>
+      <h1>Your Informations</h1>
+      <UserCard/>
     </div>
-  </div>
+  </main>
 </template>
 
 <style scoped>
