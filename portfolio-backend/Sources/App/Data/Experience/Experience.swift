@@ -10,6 +10,9 @@ final class Experience: Model, @unchecked Sendable {
 
     @ID(key: .id)
     var id: UUID?
+    
+    @Field(key: "name")
+    var name: String
 
     @Field(key: "type")
     var type: ExperienceType

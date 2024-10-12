@@ -6,13 +6,7 @@ struct AuthController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let auth = routes.grouped("auth")
         auth.post("login", use: self.login)
-        
-        let protected = auth.grouped([
-            JWTAuthAuthenticator(),
-            User.guardMiddleware(),
-            RoleMiddleware(requiredRole: .admin)
-        ])
-        protected.post("register", use: self.register)
+        auth.post("register", use: self.register)
     }
 }
 
@@ -37,7 +31,7 @@ extension AuthController {
     }
 
     @Sendable
-    func register(req: Request) async throws -> TokenDTO {
+    func register(req: Request) async throws -> UserDTO {
         let userRequest = try req.content.decode(UserDTO.self)
 
         guard let password = userRequest.password, !password.isEmpty else {
@@ -60,8 +54,6 @@ extension AuthController {
         )
 
         try await user.save(on: req.db)
-
-        let token = try UserJWT.generateToken(for: user, req: req)
-        return .init(jwt: token)
+        return user.toDTO()
     }
 }

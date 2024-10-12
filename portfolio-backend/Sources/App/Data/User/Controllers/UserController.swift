@@ -6,14 +6,13 @@ struct UserController: RouteCollection {
         let users = routes.grouped("users")
         // let user = users.grouped(":userID")
         users.get(use: self.index)
+        users.get("current", use: self.getAuthenticatedUser)
 
         let protected = users.grouped([
             JWTAuthAuthenticator(),
              RoleMiddleware(requiredRole: .admin),
              User.guardMiddleware()
         ])
-        protected.get("current", use: self.getAuthenticatedUser)
-
         let protectedElement = protected.grouped(":userId")
         protectedElement.get(use: self.getUser)
         protectedElement.patch(use: self.update)
