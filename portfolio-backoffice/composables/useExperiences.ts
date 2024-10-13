@@ -3,14 +3,18 @@ import {ref} from "vue";
 import type {Experience, ExperienceCreation} from "~/types/experience";
 
 const newExperience = ref<ExperienceCreation>({
-    name: '',
-    tags: [],
-    context: '',
-    proofs: '',
-    retrospective: '',
-    progress: '',
+    type: '',
+    startDate: '',
+    endDate: '',
+    position: '',
+    companyName: '',
+    companyLogo: '',
+    degree: '',
+    misc: '',
+    status: '',
+    missionDetails: '',
     projects: [],
-    experiences: []
+    skills: []
 });
 
 export default function () {
@@ -66,11 +70,11 @@ export default function () {
     }
 
     return {
-        newSkill,
-        createSkill,
-        getSkillById,
-        getSkills,
-        updateSkill,
-        deleteSkill,
+        newExperience,
+        createExperience,
+        getExperienceById,
+        getExperiences,
+        updateExperience,
+        deleteExperience,
     }
 }

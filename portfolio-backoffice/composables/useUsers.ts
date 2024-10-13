@@ -1,19 +1,17 @@
-import type {User, UserRegister} from "~/types/user";
+import type {User, UserCredentials} from "~/types/user";
 import apiHelper from "~/utils/apiHelper";
 import {ref} from "vue";
-import {useRouter} from "#vue-router";
 
-const router = useRouter();
-const user = ref<UserRegister>({
+const user = ref<UserCredentials>({
     email: '',
     password: '',
     role: '',
 })
 
 export default function () {
-    async function getUserById(userID: string) {
+    async function getUserById(userId: string) {
         try {
-            const response = await apiHelper.kyPrivateGet<User>(`users/${userID}`);
+            const response = await apiHelper.kyPrivateGet<User>(`users/${userId}`);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la récupération de l\'utilisateur:', error);
@@ -39,9 +37,9 @@ export default function () {
         }
     }
 
-    async function deleteUser(userID: string) {
+    async function deleteUser(userId: string) {
         try {
-            const response = await apiHelper.kyPrivateDelete(`users/${userID}`);
+            const response = await apiHelper.kyPrivateDelete(`users/${userId}`);
             return response;
         } catch (error) {
             console.error(error);

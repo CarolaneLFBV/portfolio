@@ -12,7 +12,7 @@ const privateApi = publicApi.extend({
     hooks: {
         beforeRequest: [
             (request) => {
-                const token = sessionStorage.getItem("token") ?? "";
+                const token = sessionStorage.getItem("jwt") ?? "";
                 if (token) {
                     request.headers.set('Authorization', `Bearer ${token}`);
                 } else {

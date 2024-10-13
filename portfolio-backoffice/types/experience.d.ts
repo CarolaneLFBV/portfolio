@@ -3,6 +3,7 @@ import type {Skill} from "~/types/skill";
 
 export interface Experience {
     id: string;
+    name: string;
     type: Type;
     startDate: string;
     endDate: string;
@@ -18,6 +19,7 @@ export interface Experience {
 }
 
 export interface ExperienceCreation {
+    name: string;
     type: Type;
     startDate: string;
     endDate: string;

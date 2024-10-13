@@ -3,7 +3,7 @@ import type {Experience} from "~/types/experience";
 
 export interface Project {
     id: string;
-    title: string;
+    name: string;
     presentation: string;
     purpose: string;
     milestone: string;
@@ -14,7 +14,7 @@ export interface Project {
 }
 
 export interface ProjectCreation {
-    title: string;
+    name: string;
     presentation: string;
     purpose: string;
     milestone: string;

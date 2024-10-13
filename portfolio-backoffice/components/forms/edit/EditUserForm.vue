@@ -4,6 +4,7 @@ import {ref} from "vue";
 import type {User} from "~/types/user";
 import {useRoute} from "#vue-router";
 import BaseButton from "~/components/buttons/BaseButton.vue";
+import CancelButton from "~/components/buttons/CancelButton.vue";
 
 const route = useRoute();
 const { getUserById, updateUser } = useUsers();
@@ -37,9 +38,6 @@ async function onUpdate() {
 }
 </script>
 
-
-
-
 <template>
   <div v-if="user">
     <div class="flex flex-col">
@@ -52,28 +50,31 @@ async function onUpdate() {
           </div>
 
           <div class="flex flex-col mb-2">
-            <label class="text-white text-opacity-50 text-sm mb-1" for="firstName">{{ $t("user.firstName") }}</label>
+            <label class="text-white text-opacity-50 text-sm mb-1" for="firstName">{{ $t("users.firstName") }}</label>
             <input id="firstName" type="text" v-model="user.firstName" required :placeholder="$t('auth.email-placeholder')" class="rounded-lg"/>
           </div>
 
           <div class="flex flex-col mb-1">
-            <label class="text-white text-opacity-50 text-sm mb-1" for="lastName">{{ $t("user.lastName") }}</label>
+            <label class="text-white text-opacity-50 text-sm mb-1" for="lastName">{{ $t("users.lastName") }}</label>
             <input id="lastName" type="text" v-model="user.lastName" required :placeholder="$t('auth.email-placeholder')" class="rounded-lg"/>
           </div>
 
           <fieldset class="flex flex-row justify-around border rounded mb-2">
-            <legend class="p-0.5 ml-2">{{ $t("user.role") }}</legend>
+            <legend class="p-0.5 ml-2">{{ $t("users.role.title") }}</legend>
               <div class="mb-2">
                 <input type="radio" class="rounded text-violet" value="admin" v-model="selectedRole"/>
-                <label class="ml-1"> {{ $t("role.admin") }}</label>
+                <label class="ml-1"> {{ $t("users.role.admin") }}</label>
               </div>
               <div class="mb-3 ml-2">
                 <input type="radio" class="rounded text-violet" value="member" v-model="selectedRole"/>
-                <label class="ml-1"> {{ $t("role.member") }}</label>
+                <label class="ml-1"> {{ $t("users.role.member") }}</label>
               </div>
           </fieldset>
 
-          <BaseButton type="submit"> {{ $t("utils.update") }} </BaseButton>
+          <div class="text-center">
+            <BaseButton type="submit"> {{ $t("utils.update") }} </BaseButton>
+            <CancelButton/>
+          </div>
         </form>
       </div>
     </div>

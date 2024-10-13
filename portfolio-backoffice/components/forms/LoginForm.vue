@@ -4,13 +4,13 @@ import useUsers from "~/composables/useUsers";
 import {useRouter} from "#vue-router";
 import BaseButton from "~/components/buttons/BaseButton.vue";
 
-const {authenticateUser} = useAuthStore()
+const {logIn} = useAuthStore()
 const {user} = useUsers();
 const router = useRouter();
 
 async function onLogin() {
   try {
-    await authenticateUser({email: user.value.email, password: user.value.password})
+    await logIn({email: user.value.email, password: user.value.password})
     await navigateTo("/dashboard");
   } catch (error) {
     console.log(error);
@@ -36,7 +36,9 @@ async function onLogin() {
           <input id="password" type="password" v-model="user.password" required :placeholder="$t('auth.password-placeholder')" class="form-input rounded-lg"/>
         </div>
 
-        <BaseButton type="submit"> {{ $t("auth.login") }} </BaseButton>
+        <div class="text-center">
+          <BaseButton type="submit"> {{ $t("auth.login") }} </BaseButton>
+        </div>
       </form>
     </div>
   </div>

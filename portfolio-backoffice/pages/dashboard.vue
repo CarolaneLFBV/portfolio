@@ -1,45 +1,25 @@
 <script setup lang="ts">
 import {definePageMeta} from "#imports";
-import {useAuthStore} from "~/stores/useAuthStore";
-import { useRouter } from 'vue-router';
-import {useUserStore} from "~/stores/useUserStore";
-import UsersCards from "~/components/cards/UsersCards.vue";
-import UserCard from "~/components/cards/UserCard.vue";
+import UsersCards from "~/components/cards/UserCard.vue";
+import BaseButton from "~/components/buttons/BaseButton.vue";
 
 definePageMeta({
   layout: 'layout-dashboard',
-  middleware: 'auth',
+  middleware: ['auth'],
 })
 
-const {user, isAdmin} = useAuthStore();
-const {getAuthenticatedUser} = useUserStore();
-const router = useRouter()
-
-onMounted(async () => {
-  await onInit();
-})
-
-async function onInit() {
-  try {
-    await getAuthenticatedUser();
-  } catch (error) {
-    console.log(error);
-    await router.push('/auth/login');
-  }
+function createUser() {
+  navigateTo("/auth/register");
 }
 </script>
 
 <template>
   <main>
-    <div v-if="isAdmin">
-      <h1>{{ $t("dashboard.users-list") }}</h1>
-      <UsersCards/>
+    <div class="mb-4">
+      <h1>{{ $t("users.list") }}</h1>
+      <BaseButton @click="createUser">{{ $t("utils.create") }}</BaseButton>
     </div>
-
-    <div v-else>
-      <h1>Your Informations</h1>
-      <UserCard/>
-    </div>
+    <UsersCards/>
   </main>
 </template>
 

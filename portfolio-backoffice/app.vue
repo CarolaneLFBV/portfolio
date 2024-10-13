@@ -3,10 +3,9 @@ import LayoutFooter from "~/layouts/LayoutFooter.vue";
 </script>
 
 <template>
-  <main class="h-screen flex flex-col">
-    <NuxtLayout>
-      <NuxtPage />
-      <LayoutFooter/>
+  <main class="flex flex-col">
+    <NuxtLayout >
+      <NuxtPage/>
     </NuxtLayout>
   </main>
 </template>

@@ -1,52 +1,64 @@
 import {defineStore} from "pinia";
 import type {User, UserCredentials, UserStore} from "~/types/user";
 import useAuthentication from "~/composables/useAuthentication";
+import {useRouter} from "#vue-router";
+import apiHelper from "~/utils/apiHelper";
 
 export const useAuthStore = defineStore("authStore", {
     state: (): UserStore => ({
         user: undefined,
     }),
-    getters: {
-        isAuth: (state: UserStore): boolean => !!state.user,
-        isAdmin: (state: UserStore): boolean => state.user?.role === "admin",
-    },
     actions: {
         async register(data: UserCredentials) {
           try {
-              const response = await apiHelper.kyPublicPost<{ token: string, user: User }>('auth/register', data);
+              const response = await apiHelper.kyPublicPost<{ jwt: string }>('auth/register', data);
               if (response.success && response.data) {
-                  const {token, user} = response.data;
+                  const {jwt} = response.data;
                   const {setToken} = useAuthentication();
-                  setToken(token);
-                  this.user = user;
+                  setToken(jwt);
               }
           } catch (error) {
               console.log("Error registering user", error);
           }
         },
-        async authenticateUser(data: UserCredentials) {
+        async logIn(data: UserCredentials) {
             try {
-                const response = await apiHelper.kyPublicPost<{token: string, user: User}>('auth/login', data);
-                const tokenStorage = sessionStorage.getItem("token") ?? "";
-                const {token, user} = response.data;
+                const response = await apiHelper.kyPublicPost<{ jwt: string }>('auth/login', data);
+                const tokenStorage = sessionStorage.getItem("jwt") ?? "";
                 if (!tokenStorage && response.success && response.data) {
+                    const {jwt} = response.data;
                     const {setToken} = useAuthentication();
-                    setToken(token);
+                    setToken(jwt);
                 }
-                this.user = user;
             } catch (error) {
                 console.error("Error authenticating user", error);
             }
         },
-        logout() {
+        logOut() {
             const {tokenExpired, removeToken} = useAuthentication();
-            const tokenStorage = sessionStorage.getItem("token") ?? "";
+            const tokenStorage = sessionStorage.getItem("jwt") ?? "";
 
             if (tokenExpired(tokenStorage)) {
                 removeToken();
             }
             this.user = undefined;
         },
+        async getAuthenticatedUser() {
+            try {
+                const jwt = sessionStorage.getItem('jwt') ?? '';
+                const { tokenExpired } = useAuthentication();
+                const router = useRouter();
+
+                if (tokenExpired(jwt)) {
+                    await router.push('/disconnect');
+                    return;
+                }
+                const response = await apiHelper.kyPrivateGet<User>('users/current');
+                this.user = response;
+            } catch (error) {
+                console.error('Error while fetching user: ', error);
+            }
+        }
     },
     persist: {
         enabled: true,

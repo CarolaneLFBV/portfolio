@@ -1,20 +1,29 @@
-export default function () {
-    const tokenExpired = (token: string): boolean => {
-        if (!token) return true;
-        return JSON.parse(window.atob(token.split('.')[1])).exp < Math.trunc(Date.now() / 1000);
+export default function useAuthentication() {
+    const tokenExpired = (jwt: string): boolean => {
+        if (!jwt) return true;
+        return JSON.parse(window.atob(jwt.split('.')[1])).exp < Math.trunc(Date.now() / 1000);
     }
 
-    function setToken(token: string) {
-        sessionStorage.setItem('token', token);
-    }
+    const isAdmin = (jwt: string): boolean => {
+        if (!jwt) return false;
+        try {
+            const base64Url = jwt.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const payload = JSON.parse(window.atob(base64));
+            return payload.role === 'admin';
+        } catch (error) {
+            console.error("Invalid token:", error);
+            return false;
+        }
+    };
 
-    function removeToken() {
-        sessionStorage.removeItem('token');
-    }
+    const setToken = (jwt: string) => {
+        sessionStorage.setItem('jwt', jwt);
+    };
 
-    return {
-        tokenExpired,
-        setToken,
-        removeToken,
-    }
+    const removeToken = () => {
+        sessionStorage.removeItem('jwt');
+    };
+
+    return { tokenExpired, isAdmin, setToken, removeToken };
 }

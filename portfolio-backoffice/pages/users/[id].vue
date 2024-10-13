@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {definePageMeta} from "#imports";
-import EditUserForm from "~/components/forms/EditUserForm.vue";
+import EditUserForm from "~/components/forms/edit/EditUserForm.vue";
 
 definePageMeta({
   layout: 'layout-dashboard',
-  middleware: ['auth'],
+  middleware: ['auth', 'admin'],
 })
 
 </script>

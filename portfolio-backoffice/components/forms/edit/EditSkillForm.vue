@@ -1,21 +1,17 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {useRoute} from "#vue-router";
-import {definePageMeta} from "#imports";
 import type {Skill} from "~/types/skill";
 import useSkills from "~/composables/useSkills";
 import useProjects from "~/composables/useProjects";
 import type {Project} from "~/types/project";
+import BaseButton from "~/components/buttons/BaseButton.vue";
+import CancelButton from "~/components/buttons/CancelButton.vue";
 
-definePageMeta({
-  layout: 'layout-dashboard',
-})
-
-
-const { getSkillByID, updateSkill } = useSkills();
+const { getSkillById, updateSkill } = useSkills();
 const { getProjects } = useProjects();
 const skill = ref<Skill | null>(null);
-const projects = ref<Project[]>
+const projects = ref<Project[]>([]);
 const selectedProjectsIDs = ref<Project[]>([]);
 const route = useRoute();
 
@@ -26,7 +22,7 @@ onMounted(async () => {
 async function onInit() {
   const skillId = route.params.id;
   try {
-    skill.value = await getSkillByID(skillId);
+    skill.value = await getSkillById(skillId);
     projects.value = await getProjects();
     selectedProjectsIDs.value = skill.value.projects || [];
   } catch (error) {
@@ -47,48 +43,61 @@ async function onUpdate() {
 
 <template>
   <div v-if="skill">
-    <div class="full-height flex-column text-align-center">
-      <div class="card-container text-align-center">
-        
-          <h1>{{ $t("utils.edit") }} {{ skill.name }}</h1>
-          <form @submit.prevent="onUpdate" class="skill-form">
-            <div class="padding-bottom text-align-left">
-              <label for="name">Name</label>
+    <div class="flex flex-col">
+      <div class="card-container items-center">
+          <h1 class="text-center">{{ $t("utils.edit") }} {{ skill.name }}</h1>
+          <form @submit.prevent="onUpdate" class="text-left">
+            <div class="flex flex-col mb-2">
+              <label class="text-white text-opacity-50 text-sm mb-1"  for="name">Name</label>
               <input v-model="skill.name" id="name" type="text" required />
             </div>
 
-            <div class="padding-bottom text-align-left full-width">
-              <label for="tags">Tags (comma-separated)</label>
+            <div class="flex flex-col mb-2">
+              <label class="text-white text-opacity-50 text-sm mb-1"  for="tags">Tags (comma-separated)</label>
               <input
                   v-model="skill.tags"
                   id="tags"
                   type="text"
+                  class="form-input rounded-lg"
                   placeholder="e.g. JavaScript, Web Development"
                   required
               />
             </div>
 
-            <div class="padding-bottom text-align-left">
-              <label for="context">Context</label>
-              <textarea v-model="skill.context" id="context" required></textarea>
+            <div class="flex flex-col mb-2">
+              <label class="text-white text-opacity-50 text-sm mb-1"  for="context">Context</label>
+              <textarea class="form-input rounded-lg" v-model="skill.context" id="context" required></textarea>
             </div>
 
-            <div class="padding-bottom text-align-left">
-              <label for="proofs">Proofs</label>
-              <textarea v-model="skill.proofs" id="proofs" required></textarea>
+            <div class="flex flex-col mb-2">
+              <label class="text-white text-opacity-50 text-sm mb-1"  for="proofs">Proofs</label>
+              <textarea class="form-input rounded-lg" v-model="skill.proofs" id="proofs" required></textarea>
             </div>
 
-            <div class="padding-bottom text-align-left">
-              <label for="retrospective">Retrospective</label>
-              <textarea v-model="skill.retrospective" id="retrospective" required></textarea>
+            <div class="flex flex-col mb-2">
+              <label class="text-white text-opacity-50 text-sm mb-1"  for="retrospective">Retrospective</label>
+              <textarea class="form-input rounded-lg" v-model="skill.retrospective" id="retrospective" required></textarea>
             </div>
 
-            <div class="padding-bottom text-align-left">
-              <label for="progress">Progress</label>
-              <textarea v-model="skill.progress" id="progress" required></textarea>
+            <div class="flex flex-col mb-2">
+              <label class="text-white text-opacity-50 text-sm mb-1"  for="progress">Progress</label>
+              <textarea class="form-input rounded-lg" v-model="skill.progress" id="progress" required></textarea>
             </div>
 
-            <button type="submit">Update Skill</button>
+            <fieldset class="flex flex-row justify-around border rounded mb-2">
+              <legend class="p-0.5 ml-2">{{ $t("projects.title") }}</legend>
+              <div class="grid grid-cols-2 gap-4 mb-2 ">
+                <div v-for="project in projects" :key="project.id" class="flex flex-row items-center">
+                  <input type="checkbox" class="rounded text-violet" :value="project.id" v-model="selectedProjectIDs" />
+                  <p class="ml-1">{{ project.name }}</p>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="text-center">
+              <BaseButton type="submit"> {{ $t("utils.update") }} </BaseButton>
+              <CancelButton/>
+            </div>
           </form>
       </div>
     </div>

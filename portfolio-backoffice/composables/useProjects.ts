@@ -3,7 +3,7 @@ import type {Project, ProjectCreation} from "~/types/project";
 import {ref} from "vue";
 
 const newProject = ref<ProjectCreation>({
-    title: '',
+    name: '',
     presentation: '',
     purpose: '',
     milestone: '',

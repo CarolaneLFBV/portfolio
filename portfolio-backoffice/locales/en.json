@@ -1,5 +1,7 @@
 {
   "auth": {
+    "disconnected": "Disconnected",
+    "disconnected-desc": "You have been disconnected from back office",
     "email": "Mail",
     "email-placeholder": "Enter your email",
     "login": "Log in",
@@ -10,42 +12,79 @@
     "signup-title": "Create an account"
   },
   "backoffice": "Backoffice",
+  "errors": {
+    "back-to-login": "Back to Login",
+    "loading": "Chargement...",
+    "not-found": "Not Found",
+    "not-found-desc": "The page you are looking for has been deleted or moved to another page"
+  },
   "footer": {
     "copyright": "© 2024 Carolane Lefebvre. All rights reserved."
   },
   "dashboard": {
     "title": "Dashboard",
-    "users-list": "Users' List",
-    "bottom-dashboard": "Carolane Lefebvre"
+    "name": "Carolane Lefebvre"
   },
   "experiences": {
+    "company": {
+      "info": "Company's Informations",
+      "name": "Name",
+      "logo": "Logo"
+    },
+    "degree": "Degree",
+    "endDate": "End Date",
+    "missionDetails": "Mission's Details",
+    "misc": "Misc",
+    "name": "Name",
+    "new": "New Experience",
+    "optional": "(Optional)",
+    "position": "Position",
+    "startDate": "Start Date",
+    "status": "Status",
     "title": "Experiences",
+    "type": {
+      "title": "Type of experience",
+      "educational": "Education",
+      "professional": "Professional"
+    },
     "unique": "Experience"
   },
-  "role": {
-    "admin": "Admin",
-    "member": "Member"
-  },
   "projects": {
+    "actors": "Actors",
+    "goal": "Goal",
+    "intro": "Introduction",
     "title": "Projects",
-    "unique": "Project"
+    "unique": "Project",
+    "milestones": "Milestones",
+    "name": "Name",
+    "new": "New Project",
+    "progress": "Progress"
   },
   "skills": {
+    "context": "Context",
+    "new": "New Skill",
+    "progress": "Progress",
+    "proofs": "Proofs",
+    "retrospective": "Retrospective",
+    "tags": "Tags",
     "title": "Skills",
-    "unique": "Skill",
-    "tags": "Tags"
+    "unique": "Skill"
   },
-  "user": {
+  "users": {
     "email": "Mail",
     "firstName": "First Name",
     "fullName": "Full Name",
     "lastName": "Last Name",
-    "role": "Role"
-  },
-  "users": {
+    "list": "User's List",
+    "role": {
+      "title": "Role",
+      "admin": "Admin",
+      "member": "Member"
+    },
     "title": "Users"
   },
   "utils": {
+    "cancel": "Cancel",
     "create": "Create",
     "delete": "Delete",
     "edit": "Edit",

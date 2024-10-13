@@ -37,6 +37,7 @@ function onEdit(id: string) {
 async function onDelete(id: string) {
   try {
     await deleteSkill(id);
+    skills.value = await getSkills();
   } catch (error) {
     console.error(error);
   }
@@ -45,26 +46,21 @@ async function onDelete(id: string) {
 </script>
 
 <template>
-  <div v-if="skills" class="flex flex-wrap">
+  <div v-if="skills" class="flex flex-row flex-wrap">
     <div v-for="skill in skills" :key="skill.id" class="card-container text-white">
       <div class="flex flex-row mb-2">
         <h3 class="text-violet font-semibold text-xl"> {{ skill.name }} </h3>
       </div>
 
-      <div class="flex flex-row">
-        <div v-for="tag in skill.tags" :key="skillId">
-          <p class="text-sm bg-violet-light p-1 rounded"> {{ tag }} </p>
+      <div class="flex flex-row mb-2">
+        <div v-for="tag in skill.tags" :key="skillId" class="items-center">
+          <p class="text-sm bg-violet p-1 mr-1 rounded" > {{ tag }} </p>
         </div>
       </div>
 
       <div class="text-right">
-        <BaseButton @click="onEdit(skill.id)">
-          {{ $t("utils.edit") }}
-        </BaseButton>
-
-        <DeleteButton @click="onDelete(skill.id)">
-          {{ $t("utils.delete") }}
-        </DeleteButton>
+        <BaseButton @click="onEdit(skill.id)">{{ $t("utils.edit") }}</BaseButton>
+        <DeleteButton @click="onDelete(skill.id)">{{ $t("utils.delete") }}</DeleteButton>
       </div>
 
     </div>

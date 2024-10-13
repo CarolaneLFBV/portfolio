@@ -41,27 +41,27 @@ async function onDelete(id: string) {
   <div v-if="users" class="flex flex-row flex-wrap">
     <div v-for="user in users" :key="user.id" class="card-container text-white">
       <div class="flex flex-row">
-        <h3 class="text-violet font-semibold"> {{ $t("user.fullName") }}: </h3>
+        <h3 class="text-violet font-semibold"> {{ $t("users.fullName") }}: </h3>
         <p class="ml-1"> {{ user.firstName }} {{ user.lastName }} </p>
       </div>
 
       <div class="flex flex-row">
-        <h3 class="text-violet font-semibold"> {{ $t("user.email") }}: </h3>
+        <h3 class="text-violet font-semibold"> {{ $t("users.email") }}: </h3>
         <p class="ml-1"> {{ user.email }} </p>
       </div>
 
       <div class="flex flex-row">
-        <h3 class="text-violet font-semibold"> {{ $t("user.role") }}: </h3>
+        <h3 class="text-violet font-semibold"> {{ $t("users.role.title") }}: </h3>
         <p class="ml-1"> {{ user.role }} </p>
       </div>
 
       <div class="text-right">
-        <BaseButton class="mx-2" @click="onEdit(user.id)">{{ $t("utils.edit") }}</BaseButton>
+        <BaseButton @click="onEdit(user.id)">{{ $t("utils.edit") }}</BaseButton>
         <DeleteButton @click="onDelete(user.id)">{{ $t("utils.delete") }}</DeleteButton>
       </div>
     </div>
   </div>
   <div v-else>
-    <p>Chargement de la liste des utilisateurs...</p>
+    <p>{{ $t("errors.loading") }}</p>
   </div>
 </template>

@@ -3,16 +3,21 @@ import {useRoute} from "#vue-router";
 import {ref} from "vue";
 import type {Skill} from "~/types/skill";
 import type {Project} from "~/types/project";
+//import type {Experience} from "~/types/experience";
 import useProjects from "~/composables/useProjects";
 import useSkills from "~/composables/useSkills";
 import BaseButton from "~/components/buttons/BaseButton.vue";
+import CancelButton from "~/components/buttons/CancelButton.vue";
 
 const route = useRoute();
 const { getProjectById, updateProject } = useProjects();
 const { getSkills } = useSkills();
+const { getExperiences } = useExperiences();
 const project = ref<Project>(null);
 const skills = ref<Skill[]>([]);
+const experiences = ref<Experience[]>([]);
 const selectedSkillIDs = ref<Skill[]>([]);
+const selectedExperienceIDs = ref<Experience[]>([]);
 
 onMounted(async () => {
   await onInit();
@@ -23,7 +28,9 @@ async function onInit() {
   try {
     project.value = await getProjectById(projectId);
     skills.value = await getSkills();
+    experiences.value = await getExperiences();
     selectedSkillIDs.value = project.value.skills || [];
+    selectedExperienceIDs.value = project.value.experiences || [];
   } catch (error) {
     console.error(error);
   }
@@ -32,6 +39,7 @@ async function onInit() {
 async function onUpdate() {
   try {
     project.value.skills = selectedSkillIDs.value;
+    project.value.experiences = selectedExperienceIDs.value;
     await updateProject(project.value);
     navigateTo('/projects');
   } catch (error) {
@@ -45,11 +53,11 @@ async function onUpdate() {
   <div v-if="project">
     <div class="flex flex-col">
       <div class="card-container items-center">
-        <h1 class="text-center">{{ $t("utils.edit") }} {{ project.title }}</h1>
+        <h1 class="text-center">{{ $t("utils.edit") }} {{ project.name }}</h1>
         <form @submit.prevent="onUpdate" class="text-left">
           <div class="flex flex-col mb-2">
             <label class="text-white text-opacity-50 text-sm mb-1" for="title">{{ $t("projects.name") }}</label>
-            <input class="form-input rounded-lg" v-model="project.title" id="title" type="text" required />
+            <input class="form-input rounded-lg" v-model="project.name" id="title" type="text" required />
           </div>
 
           <div class="flex flex-col mb-2">
@@ -77,7 +85,7 @@ async function onUpdate() {
             <input class="form-input rounded-lg" v-model="project.progress" id="progress" type="text" />
           </div>
 
-          <fieldset class="flex flex-row justify-around border rounded mb-2">
+          <fieldset v-if="skills.length > 0" class="flex flex-row justify-around border rounded mb-2">
             <legend class="p-0.5 ml-2">{{ $t("skills.title") }}</legend>
             <div class="grid grid-cols-2 gap-4 mb-2 ">
               <div v-for="skill in skills" :key="skill.id" class="flex flex-row items-center">
@@ -87,8 +95,19 @@ async function onUpdate() {
             </div>
           </fieldset>
 
+          <fieldset v-if="experiences.length > 0" class="flex flex-row justify-around border rounded mb-2">
+            <legend class="p-0.5 ml-2">{{ $t("experiences.title") }}</legend>
+            <div class="grid grid-cols-2 gap-4 mb-2 ">
+              <div v-for="exp in experiences" :key="exp.id" class="flex flex-row items-center">
+                <input type="checkbox" class="rounded text-violet" :value="exp.id" v-model="selectedExperienceIDs" />
+                <p class="ml-1">{{ exp.name }}</p>
+              </div>
+            </div>
+          </fieldset>
+
           <div class="text-center">
-            <BaseButton type="submit" class="w-full"> {{ $t("utils.update") }} </BaseButton>
+            <BaseButton type="submit"> {{ $t("utils.update") }} </BaseButton>
+            <CancelButton/>
           </div>
         </form>
       </div>

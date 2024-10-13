@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useAuthStore} from "~/stores/useAuthStore";
 import useUsers from "~/composables/useUsers";
+import BaseButton from "~/components/buttons/BaseButton.vue";
 
 const {register} = useAuthStore();
 const {user} = useUsers();
@@ -19,10 +20,9 @@ async function onRegister() {
 </script>
 
 <template>
-  <div class="flex items-center justify-center h-screen">
+  <div class="flex items-center justify-center">
     <div class="card-container">
       <div class="text-align-center">
-        <img src="public/okeep.png" alt="User Profile" class="rounded-full mx-auto mb-2 size-32"/>
         <h1 class="flex justify-center text-2xl mb-4 text-white"> {{ $t("auth.signup-title") }}</h1>
       </div>
       <form @submit.prevent="onRegister">
@@ -36,7 +36,9 @@ async function onRegister() {
           <input class="form-input rounded-lg" id="password" type="password" v-model="user.password" required :placeholder="$t('auth.password-placeholder')"/>
         </div>
 
-        <BaseButton type="submit"> {{ $t("auth.signup") }} </BaseButton>
+        <div class="text-center">
+          <BaseButton type="submit"> {{ $t("auth.signup") }} </BaseButton>
+        </div>
       </form>
     </div>
   </div>

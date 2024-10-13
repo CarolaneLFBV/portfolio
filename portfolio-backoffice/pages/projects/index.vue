@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {definePageMeta} from "#imports";
 import ProjectCard from "~/components/cards/ProjectCard.vue";
+import BaseButton from "~/components/buttons/BaseButton.vue";
 
 definePageMeta({
   layout: 'layout-dashboard',
@@ -15,10 +16,12 @@ function createProject() {
 
 <template>
   <main>
-    <h1>{{ $t("projects.title") }}</h1>
-    <BaseButton @click="createProject">
-      {{ $t("utils.create") }}
-    </BaseButton>
+    <div class="mb-4">
+      <h1>{{ $t("projects.title") }}</h1>
+      <BaseButton @click="createProject">
+        {{ $t("utils.create") }}
+      </BaseButton>
+    </div>
     <ProjectCard />
   </main>
 </template>

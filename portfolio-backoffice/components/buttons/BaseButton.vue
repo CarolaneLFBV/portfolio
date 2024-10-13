@@ -9,7 +9,7 @@ const props = defineProps({
   },
   classes: {
     type: String,
-    default: 'bg-violet-dark hover:bg-violet text-white py-2 px-4 rounded-lg',
+    default: 'bg-violet-dark hover:bg-violet text-white py-2 px-4 mx-2 rounded-lg',
   },
 });
 
