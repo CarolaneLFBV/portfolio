@@ -56,20 +56,26 @@ async function onDelete(id: string) {
         <h3 class="text-violet font-semibold text-xl"> {{ project.name }} </h3>
       </div>
 
-      <div class="flex flex-row mb-2">
-        <div v-for="skillId in project.skills" :key="skillId">
-          <p class="text-sm bg-violet p-1 rounded" v-if="skillsMap[skillId]">{{ skillsMap[skillId].name }}</p>
+      <div class="flex flex-col mb-2">
+        <label class="mr-1 font-semibold">{{ $t("skills.title")}}</label>
+        <div class="flex flex-wrap gap-2">
+          <div v-for="skillId in project.skills" :key="skillId">
+            <p class="w-fit mt-0.5 text-sm bg-violet-dark p-1 rounded" v-if="skillsMap[skillId]">{{ skillsMap[skillId].name }}</p>
+          </div>
         </div>
       </div>
 
-      <div class="flex flex-row mb-2">
-        <div v-for="expId in project.experiences" :key="expId">
-          <p class="text-sm bg-violet p-1 rounded" v-if="experiencesMap[expId]">{{ experiencesMap[expId].name }}</p>
+      <div class="flex flex-col mb-2">
+        <label class="mr-1 font-semibold">{{ $t("experiences.title")}}</label>
+        <div class="flex flex-wrap gap-2">
+          <div v-for="expId in project.experiences" :key="expId">
+            <p class="w-fit mt-0.5 text-sm bg-violet-dark p-1 rounded" v-if="experiencesMap[expId]">{{ experiencesMap[expId].name }}</p>
+          </div>
         </div>
       </div>
 
       <div class="text-right">
-        <BaseButton @click="onEdit(project.id)">{{ $t("utils.edit") }} </BaseButton>
+        <BaseButton class="bg-violet hover:bg-violet-dark" @click="onEdit(project.id)">{{ $t("utils.edit") }} </BaseButton>
         <DeleteButton @click="onDelete(project.id)">{{ $t("utils.delete") }} </DeleteButton>
       </div>
     </div>

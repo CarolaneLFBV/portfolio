@@ -17,7 +17,7 @@ function createUser() {
   <main>
     <div class="mb-4">
       <h1>{{ $t("users.list") }}</h1>
-      <BaseButton @click="createUser">{{ $t("utils.create") }}</BaseButton>
+      <BaseButton class="bg-violet hover:bg-violet-dark" @click="createUser">{{ $t("utils.create") }}</BaseButton>
     </div>
     <UsersCards/>
   </main>

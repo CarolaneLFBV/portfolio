@@ -55,23 +55,29 @@ async function onDelete(id: string) {
   <div v-if="experiences" class="flex flex-row flex-wrap">
     <div v-for="exp in experiences" :key="exp.id" class="card-container text-white">
       <div class="flex flex-row mb-2">
-        <h3 class="text-violet font-semibold text-xl"> {{ exp.name }} </h3>
+        <h3 class="text-indigo font-semibold text-xl"> {{ exp.name }} </h3>
       </div>
 
-      <div class="flex flex-row mb-2">
-        <div v-for="skillId in experiences.skills" :key="skillId">
-          <p class="text-sm bg-violet p-1 rounded" v-if="skillsMap[skillId]">{{ skillsMap[skillId].name }}</p>
+      <div class="flex flex-col mb-2">
+        <label class="mr-1 font-semibold">{{ $t("skills.title")}}</label>
+        <div class="flex flex-wrap gap-2">
+          <div v-for="skillId in exp.skills" :key="skillId">
+            <p class="w-fit mt-0.5 text-sm bg-indigo-dark p-1 rounded" v-if="skillsMap[skillId]">{{ skillsMap[skillId].name }}</p>
+          </div>
         </div>
       </div>
 
-      <div class="flex flex-row">
-        <div v-for="projectId in experiences.skills" :key="projectId">
-          <p class="text-sm bg-violet p-1 rounded" v-if="projectsMap[projectId]">{{ projectsMap[projectId].name }}</p>
+      <div class="flex flex-col mb-2">
+        <label class="mr-1 font-semibold">{{ $t("projects.title")}}</label>
+        <div class="flex flex-wrap gap-2">
+          <div v-for="projectId in exp.projects" :key="projectId">
+            <p class="w-fit mt-0.5 text-sm bg-indigo-dark p-1 rounded" v-if="projectsMap[projectId]">{{ projectsMap[projectId].name }}</p>
+          </div>
         </div>
       </div>
 
       <div class="text-right">
-        <BaseButton @click="onEdit(exp.id)">{{ $t("utils.edit") }} </BaseButton>
+        <BaseButton class="bg-indigo hover:bg-indigo-dark" @click="onEdit(exp.id)">{{ $t("utils.edit") }} </BaseButton>
         <DeleteButton @click="onDelete(exp.id)">{{ $t("utils.delete") }} </DeleteButton>
       </div>
 

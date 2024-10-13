@@ -8,7 +8,7 @@ const props = defineProps({
   },
   classes: {
     type: String,
-    default: 'bg-pink hover:bg-pink-dark text-white py-2 px-4 mx-2 rounded-lg',
+    default: 'bg-red hover:bg-red-dark text-white py-2 px-4 mx-2 rounded-lg',
   },
 });
 

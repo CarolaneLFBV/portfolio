@@ -7,12 +7,17 @@ import useProjects from "~/composables/useProjects";
 import type {Project} from "~/types/project";
 import BaseButton from "~/components/buttons/BaseButton.vue";
 import CancelButton from "~/components/buttons/CancelButton.vue";
+import useExperiences from "~/composables/useExperiences";
+import type {Experience} from "~/types/experience";
 
 const { getSkillById, updateSkill } = useSkills();
 const { getProjects } = useProjects();
+const { getExperiences } = useExperiences();
 const skill = ref<Skill | null>(null);
 const projects = ref<Project[]>([]);
-const selectedProjectsIDs = ref<Project[]>([]);
+const selectedProjectIDs = ref<Project[]>([]);
+const experiences = ref<Experience[]>([]);
+const selectedExperienceIDs = ref<Experience[]>([]);
 const route = useRoute();
 
 onMounted(async () => {
@@ -24,7 +29,9 @@ async function onInit() {
   try {
     skill.value = await getSkillById(skillId);
     projects.value = await getProjects();
-    selectedProjectsIDs.value = skill.value.projects || [];
+    experiences.value = await getExperiences();
+    selectedProjectIDs.value = skill.value.projects || [];
+    selectedExperienceIDs.value = skill.value.experiences || [];
   } catch (error) {
     console.error("Erreur lors de la récupération du skill :", error);
   }
@@ -33,7 +40,8 @@ async function onInit() {
 async function onUpdate() {
   try {
     skill.value.tags = skill.value.tags.split(',').map(tag => tag.trim());
-    skill.value.projects = selectedProjectsIDs.value;
+    skill.value.projects = selectedProjectIDs.value;
+    skill.value.experiences = selectedExperienceIDs.value;
     await updateSkill(skill.value);
   } catch (error) {
     console.error(error);
@@ -88,14 +96,24 @@ async function onUpdate() {
               <legend class="p-0.5 ml-2">{{ $t("projects.title") }}</legend>
               <div class="grid grid-cols-2 gap-4 mb-2 ">
                 <div v-for="project in projects" :key="project.id" class="flex flex-row items-center">
-                  <input type="checkbox" class="rounded text-violet" :value="project.id" v-model="selectedProjectIDs" />
+                  <input type="checkbox" class="rounded text-pink" :value="project.id" v-model="selectedProjectIDs" />
                   <p class="ml-1">{{ project.name }}</p>
                 </div>
               </div>
             </fieldset>
 
+            <fieldset class="flex flex-row justify-around border rounded mb-2">
+              <legend class="p-0.5 ml-2">{{ $t("projects.title") }}</legend>
+              <div class="grid grid-cols-2 gap-4 mb-2 ">
+                <div v-for="exp in experiences" :key="exp.id" class="flex flex-row items-center">
+                  <input type="checkbox" class="rounded text-pink" :value="exp.id" v-model="selectedExperienceIDs" />
+                  <p class="ml-1">{{ exp.name }}</p>
+                </div>
+              </div>
+            </fieldset>
+
             <div class="text-center">
-              <BaseButton type="submit"> {{ $t("utils.update") }} </BaseButton>
+              <BaseButton class="bg-pink hover:bg-pink-dark" type="submit"> {{ $t("utils.update") }} </BaseButton>
               <CancelButton/>
             </div>
           </form>

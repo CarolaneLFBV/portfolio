@@ -37,7 +37,7 @@ async function onRegister() {
         </div>
 
         <div class="text-center">
-          <BaseButton type="submit"> {{ $t("auth.signup") }} </BaseButton>
+          <BaseButton class="bg-violet hover:bg-violet-dark" type="submit"> {{ $t("auth.signup") }} </BaseButton>
         </div>
       </form>
     </div>

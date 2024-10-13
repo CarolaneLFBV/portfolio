@@ -32,6 +32,7 @@ async function onUpdate() {
   try {
     user.value.role = selectedRole.value;
     await updateUser(user.value);
+    await navigateTo("/dashboard")
   } catch (error) {
     console.error(error);
   }
@@ -72,7 +73,7 @@ async function onUpdate() {
           </fieldset>
 
           <div class="text-center">
-            <BaseButton type="submit"> {{ $t("utils.update") }} </BaseButton>
+            <BaseButton class="bg-violet hover:bg-violet-dark" type="submit"> {{ $t("utils.update") }} </BaseButton>
             <CancelButton/>
           </div>
         </form>

@@ -17,7 +17,7 @@ function createExperience() {
   <main>
     <div class="mb-4">
       <h1>{{ $t("experiences.title") }}</h1>
-      <BaseButton @click="createExperience">
+      <BaseButton class="bg-indigo"  @click="createExperience">
         {{ $t("utils.create") }}
       </BaseButton>
     </div>

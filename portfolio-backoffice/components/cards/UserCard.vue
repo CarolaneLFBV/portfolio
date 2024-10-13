@@ -56,7 +56,7 @@ async function onDelete(id: string) {
       </div>
 
       <div class="text-right">
-        <BaseButton @click="onEdit(user.id)">{{ $t("utils.edit") }}</BaseButton>
+        <BaseButton class="bg-violet hover:bg-violet-dark" @click="onEdit(user.id)">{{ $t("utils.edit") }}</BaseButton>
         <DeleteButton @click="onDelete(user.id)">{{ $t("utils.delete") }}</DeleteButton>
       </div>
     </div>

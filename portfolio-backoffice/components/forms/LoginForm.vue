@@ -37,7 +37,7 @@ async function onLogin() {
         </div>
 
         <div class="text-center">
-          <BaseButton type="submit"> {{ $t("auth.login") }} </BaseButton>
+          <BaseButton class="bg-violet hover:bg-violet-dark" type="submit"> {{ $t("auth.login") }} </BaseButton>
         </div>
       </form>
     </div>

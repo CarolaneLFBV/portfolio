@@ -126,7 +126,7 @@ async function onUpdate() {
             <legend class="p-0.5 ml-2">{{ $t("skills.title") }}</legend>
             <div class="grid grid-cols-2 gap-4 mb-2 ">
               <div v-for="skill in skills" :key="skill.id" class="flex flex-row items-center">
-                <input type="checkbox" class="rounded text-violet" :value="skill.id" v-model="selectedSkillIDs" />
+                <input type="checkbox" class="rounded text-indigo" :value="skill.id" v-model="selectedSkillIDs" />
                 <p class="ml-1">{{ skill.name }}</p>
               </div>
             </div>
@@ -136,14 +136,14 @@ async function onUpdate() {
             <legend class="p-0.5 ml-2">{{ $t("projects.title") }}</legend>
             <div class="grid grid-cols-2 gap-4 mb-2 ">
               <div v-for="project in projects" :key="project.id" class="flex flex-row items-center">
-                <input type="checkbox" class="rounded text-violet" :value="project.id" v-model="selectedProjectIDs" />
+                <input type="checkbox" class="rounded text-indigo" :value="project.id" v-model="selectedProjectIDs" />
                 <p class="ml-1">{{ project.name }}</p>
               </div>
             </div>
           </fieldset>
 
           <div class="text-center">
-            <BaseButton type="submit"> {{ $t("utils.update") }} </BaseButton>
+            <BaseButton class="bg-indigo hover:bg-indigo-dark" type="submit"> {{ $t("utils.update") }} </BaseButton>
             <CancelButton/>
           </div>
         </form>

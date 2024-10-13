@@ -49,17 +49,20 @@ async function onDelete(id: string) {
   <div v-if="skills" class="flex flex-row flex-wrap">
     <div v-for="skill in skills" :key="skill.id" class="card-container text-white">
       <div class="flex flex-row mb-2">
-        <h3 class="text-violet font-semibold text-xl"> {{ skill.name }} </h3>
+        <h3 class="text-pink font-semibold text-xl"> {{ skill.name }} </h3>
       </div>
 
-      <div class="flex flex-row mb-2">
-        <div v-for="tag in skill.tags" :key="skillId" class="items-center">
-          <p class="text-sm bg-violet p-1 mr-1 rounded" > {{ tag }} </p>
+      <div class="flex flex-col mb-2">
+        <label class="mr-1 font-semibold">{{ $t("skills.tags")}}</label>
+        <div class="flex flex-wrap gap-2">
+          <div v-for="tag in skill.tags" :key="skillId" class="items-center flex flex-row">
+            <p class="w-fit mt-1 text-sm bg-pink-dark p-1 rounded flex-row"> {{ tag }} </p>
+          </div>
         </div>
       </div>
 
       <div class="text-right">
-        <BaseButton @click="onEdit(skill.id)">{{ $t("utils.edit") }}</BaseButton>
+        <BaseButton class="bg-pink hover:bg-pink-dark" @click="onEdit(skill.id)">{{ $t("utils.edit") }}</BaseButton>
         <DeleteButton @click="onDelete(skill.id)">{{ $t("utils.delete") }}</DeleteButton>
       </div>
 

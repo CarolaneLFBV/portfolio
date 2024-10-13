@@ -18,7 +18,7 @@ function createProject() {
   <main>
     <div class="mb-4">
       <h1>{{ $t("projects.title") }}</h1>
-      <BaseButton @click="createProject">
+      <BaseButton class="bg-violet hover:bg-violet-dark" @click="createProject">
         {{ $t("utils.create") }}
       </BaseButton>
     </div>

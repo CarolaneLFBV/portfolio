@@ -25,6 +25,10 @@ export default {
         DEFAULT: "#818cf8",
         dark: "#6366f1",
       },
+      "red": {
+        DEFAULT: "#f87171",
+        dark: "#ef4444",
+      }
     }
   },
   plugins: [
