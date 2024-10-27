@@ -2,6 +2,12 @@ import Fluent
 import Vapor
 
 struct ExperienceController: RouteCollection {
+    private let repository: ExperienceRepository
+
+    init(repository: ExperienceRepository) {
+        self.repository = repository
+    }
+
     func boot(routes: any RoutesBuilder) throws {
         let experiences = routes.grouped("experiences")
         let experience = experiences.grouped(":experienceId")
@@ -23,27 +29,14 @@ struct ExperienceController: RouteCollection {
 extension ExperienceController {
     @Sendable
     func index(req: Request) async throws -> ExperiencesDTO {
-        try await Experience.query(on: req.db)
-            .with(\.$skills)
-            .with(\.$projects)
-            .all()
-            .map {
-            $0.toDTO()
-        }
+        let experiences = try await repository.findAll()
+        return experiences.map { $0.toDTO() }
     }
 
     @Sendable
     func getExperience(req: Request) async throws -> ExperienceDTO {
-        guard let experienceIDString = req.parameters.get("experienceId"),
-              let experienceID = UUID(uuidString: experienceIDString) else {
-            throw Abort(.badRequest)
-        }
-
-        guard let experience = try await Experience.query(on: req.db)
-            .filter(\.$id == experienceID)
-            .with(\.$skills)
-            .with(\.$projects)
-            .first() else {
+        guard let experienceId = req.parameters.get("experienceId", as: UUID.self),
+              let experience = try await repository.findById(experienceId) else {
             throw Failed.idNotFound
         }
         return experience.toDTO()
@@ -54,34 +47,27 @@ extension ExperienceController {
         let experienceDTO = try req.content.decode(ExperienceDTO.self)
         let experience = experienceDTO.toModel()
 
-        try await experience.save(on: req.db)
-
-        if !experienceDTO.skills.isEmpty {
-            let skills = try await Skill.query(on: req.db)
-                .filter(\.$id ~~ experienceDTO.skills)
-                .all()
-            try await experience.$skills.attach(skills, on: req.db)
+        if let image = try? req.content.decode(File.self) {
+            let imageURL = try await ImageUseCase().upload(image, on: req)
+            experience.imageURL = imageURL
         }
 
-        if !experienceDTO.projects.isEmpty {
-            let projects = try await Project.query(on: req.db)
-                .filter(\.$id ~~ experienceDTO.projects)
-                .all()
-            try await experience.$projects.attach(projects, on: req.db)
-        }
-
-        try await experience.$skills.load(on: req.db)
-        try await experience.$projects.load(on: req.db)
+        try await repository.create(
+            experience,
+            skills: experienceDTO.skills,
+            projects: experienceDTO.projects
+        )
         return experience.toDTO()
     }
 
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let experience = try await Experience.find(req.parameters.get("experienceId"), on: req.db) else {
-            throw Failed.invalidData
+        guard let experienceId = req.parameters.get("experienceId", as: UUID.self),
+                let experience = try await repository.findById(experienceId) else {
+            throw Failed.idNotFound
         }
 
-        try await experience.delete(on: req.db)
+        try await repository.delete(experience)
         return .noContent
     }
 
@@ -93,58 +79,20 @@ extension ExperienceController {
         }
 
         let updatedData = try req.content.decode(ExperienceDTO.self)
-
+        // TODO: image handling
+        experience.name = updatedData.name
         experience.type = updatedData.type
-        experience.startDate = updatedData.startDate
-        experience.endDate = updatedData.endDate
-        experience.position = updatedData.position ?? "N/A"
-        experience.companyLogo = updatedData.companyLogo ?? "N/A"
-        experience.companyName = updatedData.companyName ?? "N/A"
-        experience.status = updatedData.status ?? "N/A"
-        experience.missionDetails = updatedData.missionDetails ?? "N/A"
-        experience.degree = updatedData.degree ?? "N/A"
-        experience.misc = updatedData.misc ?? "N/A"
+        experience.introduction = updatedData.introduction
+        experience.period = updatedData.period
+        experience.companyName = updatedData.companyName
+        experience.missionDetails = updatedData.missionDetails
 
-        try await Helpers.updateRelations(
-            for: experience, skills:
-                updatedData.skills,
-            projects: updatedData.projects,
-            db: req.db
+        try await repository.update(
+            experience,
+            skills: updatedData.skills,
+            projects: updatedData.projects
         )
-        try await experience.save(on: req.db)
         return experience.toDTO()
     }
 
-}
-
-extension ExperienceController {
-    struct Helpers {
-        static func updateRelations(
-            for experience: Experience,
-            skills: [UUID], projects: [UUID],
-            db: Database
-        ) async throws {
-            try await experience.$skills.load(on: db)
-            try await experience.$projects.load(on: db)
-            if skills.isEmpty {
-                try await experience.$skills.detachAll(on: db)
-            } else {
-                let skills = try await Skill.query(on: db)
-                    .filter(\.$id ~~ skills)
-                    .all()
-                try await experience.$skills.detachAll(on: db)
-                try await experience.$skills.attach(skills, on: db)
-            }
-
-            if projects.isEmpty {
-                try await experience.$projects.detachAll(on: db)
-            } else {
-                let projects = try await Project.query(on: db)
-                    .filter(\.$id ~~ projects)
-                    .all()
-                try await experience.$projects.detachAll(on: db)
-                try await experience.$projects.attach(projects, on: db)
-            }
-        }
-    }
 }

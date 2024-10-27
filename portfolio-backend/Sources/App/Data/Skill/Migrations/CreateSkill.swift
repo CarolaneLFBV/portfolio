@@ -4,12 +4,12 @@ struct CreateSkill: AsyncMigration {
     func prepare(on database: any Database) async throws {
         try await database.schema("skills")
             .id()
+            .field("imageURL", .string)
             .field("name", .string, .required)
-            .field("tags", .array(of: .string))
-            .field("context", .string)
-            .field("proofs", .string)
-            .field("retrospective", .string)
-            .field("progress", .string)
+            .field("tags", .array(of: .string), .required)
+            .field("introduction_definition", .string)
+            .field("introduction_context", .string)
+            .field("history", .string)
             .create()
     }
 

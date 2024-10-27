@@ -7,8 +7,7 @@ import JWT
 // configures your application
 public func configure(_ app: Application) async throws {
     // uncomment to serve files from /Public folder
-    // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
-
+    app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
     app.middleware.use(CustomErrorMiddleware())
 
     // CORS
@@ -33,6 +32,7 @@ public func configure(_ app: Application) async throws {
         tls: .prefer(try .init(configuration: .clientDefault)))
     ), as: .psql)
 
+    // Migrations
     app.migrations.add(CreateUser())
     app.migrations.add(CreateSkill())
     app.migrations.add(CreateProject())

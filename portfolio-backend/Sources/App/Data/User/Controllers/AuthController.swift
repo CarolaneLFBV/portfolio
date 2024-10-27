@@ -3,6 +3,8 @@ import JWTKit
 import Vapor
 
 struct AuthController: RouteCollection {
+    let repository: AuthRepository
+
     func boot(routes: RoutesBuilder) throws {
         let auth = routes.grouped("auth")
         auth.post("login", use: self.login)
@@ -15,9 +17,7 @@ extension AuthController {
     func login(req: Request) async throws -> TokenDTO {
         let userRequest = try req.content.decode(User.LoginCredentials.self)
 
-        guard let user = try await User.query(on: req.db)
-            .filter(\.$email == userRequest.email)
-            .first() else {
+        guard let user = try await repository.findUserByEmail(userRequest.email) else {
             throw Failed.idNotFound
         }
 
@@ -39,21 +39,22 @@ extension AuthController {
         }
         let passwordHash = try Bcrypt.hash(password)
 
-        guard try await User.query(on: req.db)
-            .filter(\.$email == userRequest.email)
-            .first() == nil else {
-                throw Abort(.conflict, reason: "Email already exists")
-            }
+        guard try await repository.findUserByEmail(userRequest.email) == nil else {
+               throw Abort(.conflict, reason: "Email already exists")
+        }
 
         let user = User(
-            firstName: userRequest.firstName ?? "",
-            lastName: userRequest.lastName ?? "",
+            imageURL: userRequest.imageURL ?? "",
+            fullName: userRequest.fullName,
+            bio: userRequest.bio ?? "",
+            role: userRequest.role,
             email: userRequest.email,
             password: passwordHash,
-            role: userRequest.role
+            introduction: userRequest.introduction ?? "",
+            interests: userRequest.interests ?? []
         )
 
-        try await user.save(on: req.db)
+        try await repository.saveUser(user)
         return user.toDTO()
     }
 }

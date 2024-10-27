@@ -7,23 +7,23 @@ final class Project: Model, @unchecked Sendable {
     @ID(key: .id)
     var id: UUID?
 
-    @Field(key: "title")
-    var title: String
+    @Field(key: "imageURL")
+    var imageURL: String?
+
+    @Field(key: "name")
+    var name: String
+
+    @Field(key: "introduction")
+    var introduction: String?
 
     @Field(key: "presentation")
-    var presentation: String
+    var presentation: String?
 
-    @Field(key: "purpose")
-    var purpose: String
+    @Group(key: "context")
+    var context: ContextProject
 
-    @Field(key: "milestone")
-    var milestone: String
-
-    @Field(key: "actor")
-    var actor: String
-
-    @Field(key: "progress")
-    var progress: String
+    @Group(key: "technicalDetails")
+    var technicalDetails: TechnicalDetails
 
     @Siblings(through: ProjectSkill.self, from: \.$project, to: \.$skill)
     var skills: [Skill]
@@ -34,30 +34,30 @@ final class Project: Model, @unchecked Sendable {
     init() {}
 
     init(id: UUID? = nil,
-         title: String,
-         presentation: String,
-         purpose: String,
-         milestone: String,
-         actor: String,
-         progress: String) {
+         imageURL: String?,
+         name: String,
+         introduction: String?,
+         presentation: String?,
+         context: ContextProject,
+         technicalDetails: TechnicalDetails
+    ) {
         self.id = id
-        self.title = title
+        self.imageURL = imageURL
+        self.name = name
+        self.introduction = introduction
         self.presentation = presentation
-        self.purpose = purpose
-        self.milestone = milestone
-        self.actor = actor
-        self.progress = progress
+        self.context = context
+        self.technicalDetails = technicalDetails
     }
 
     func toDTO() -> ProjectDTO {
         .init(
             id: self.id,
-            title: self.title,
+            name: self.name,
+            introduction: self.introduction,
             presentation: self.presentation,
-            purpose: self.purpose,
-            milestone: self.milestone,
-            actor: self.actor,
-            progress: self.progress,
+            context: self.context,
+            technicalDetails: self.technicalDetails,
             skills: self.skills.compactMap({$0.id}),
             experiences: self.experiences.compactMap({$0.id})
         )

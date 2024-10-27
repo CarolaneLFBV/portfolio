@@ -5,27 +5,26 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/experiences/create
+  url: {{url}}/experiences/create
   body: json
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJGOUUwNDFCNC02NjgxLTQ1NUYtODNCQS0xQTI5MTc0QjA3Q0UiLCJleHAiOjE3Mjg2NzczMDYuNzE3NDU5LCJyb2xlIjoiYWRtaW4ifQ.WEWVAMCem9NNQ09rlqhCnLLxE0y3aX_tpWSoP_V0ew8
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjk5Njk2MTguOTg2NDAwMSwic3ViIjoiNkRFQTU2QzktOEJGQi00ODdDLUI0MDMtQUFFM0JCNTVDOEMwIiwicm9sZSI6ImFkbWluIn0.VRYtRpLmhbhhWLJ8dctmJImw79wPRoI37cATxvRGtXs
 }
 
 body:json {
   {
-    "type": "education",
-    "startDate": "2023-01-01",
-    "endDate": "2023-12-31",
-    "position": "education",
-    "companyName": "education",
-    "companyLogo": "https://example.com/logo.png",
-    "status": "education",
-    "missionDetails": "education",
-    "degree": "education",
-    "misc": "education",
+    "name": "Soqeqweqwer",
+    "type": "professional",
+    "introduction": "Soqeqweqwer",
+    "period": {
+      "startDate": "2021-06-01",
+      "endDate": "2023-03-31"
+    },
+    "companyName": "Soqeqweqwer",
+    "missionDetails": "Soqeqweqwer",
     "skills": [],
     "projects": []
   }

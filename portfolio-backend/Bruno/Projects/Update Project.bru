@@ -5,27 +5,33 @@ meta {
 }
 
 patch {
-  url: http://localhost:8080/projects/0EF7D243-B239-4A63-80B9-CAA951F70902
+  url: {{url}}/projects/123e4567-e89b-12d3-a456-426614174000
   body: json
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg3NDQ0MjIuNjYxOTU3LCJyb2xlIjoiYWRtaW4iLCJzdWIiOiJGOUUwNDFCNC02NjgxLTQ1NUYtODNCQS0xQTI5MTc0QjA3Q0UifQ.sBd-oPu09yRWNak4irech1hpvCjTnIDYYqm1uLZtdrw
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjk5Njk2MTguOTg2NDAwMSwic3ViIjoiNkRFQTU2QzktOEJGQi00ODdDLUI0MDMtQUFFM0JCNTVDOEMwIiwicm9sZSI6ImFkbWluIn0.VRYtRpLmhbhhWLJ8dctmJImw79wPRoI37cATxvRGtXs
 }
 
 body:json {
-    {
-      "presentation": "Ceci est un nouveau projet",
-      "milestone": "Les étapes : \n- Un\n- Deux",
-      "actor": "Pas d'acteurs",
-      "title": "Nouveau Projet",
-      "id": "0EF7D243-B239-4A63-80B9-CAA951F70902",
-      "experiences": [],
-      "skills": [
-        "F1E34EE9-0DDA-4DE7-9BAE-29C2069FB5ED",
-      ],
-      "purpose": "Le but de ce projet est d'aboutir au projet",
-      "progress": "Quasiment fini"
-    }
+  {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "My Project Updated",
+    "introduction": "An introduction to the project",
+    "presentation": "Detailed presentation about the project",
+    "context": {
+      "situation": "professional",
+      "problemStatement": "Problem statement describing the issue",
+      "projectRole": "Lead Developer",
+      "achievedGoals": "Achieved goals in this project"
+    },
+    "technicalDetails": {
+      "technicalChoices": "Choices made regarding technology stack",
+      "challenges": "Challenges faced during the project",
+      "solutions": "Solutions implemented to overcome challenges"
+    },
+    "skills": [],
+    "experiences": []
+  }
 }

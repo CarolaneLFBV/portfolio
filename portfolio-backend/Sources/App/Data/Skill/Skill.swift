@@ -7,23 +7,20 @@ final class Skill: Model, @unchecked Sendable {
     @ID(key: .id)
     var id: UUID?
 
+    @OptionalField(key: "imageURL")
+    var imageURL: String?
+
     @Field(key: "name")
     var name: String
 
     @Field(key: "tags")
     var tags: [String]
 
-    @Field(key: "context")
-    var context: String
+    @Group(key: "introduction")
+    var introduction: Introduction
 
-    @Field(key: "proofs")
-    var proofs: String
-
-    @Field(key: "retrospective")
-    var retrospective: String
-
-    @Field(key: "progress")
-    var progress: String
+    @OptionalField(key: "history")
+    var history: String?
 
     @Siblings(through: ProjectSkill.self, from: \.$skill, to: \.$project)
     var projects: [Project]
@@ -34,30 +31,27 @@ final class Skill: Model, @unchecked Sendable {
     init() {}
 
     init(id: UUID? = nil,
+         imageURL: String? = nil,
          name: String,
          tags: [String],
-         context: String,
-         proofs: String,
-         retrospective: String,
-         progress: String) {
+         introduction: Introduction,
+         history: String?) {
         self.id = id
+        self.imageURL = imageURL
         self.name = name
         self.tags = tags
-        self.context = context
-        self.proofs = proofs
-        self.retrospective = retrospective
-        self.progress = progress
+        self.introduction = introduction
+        self.history = history
     }
 
     func toDTO() -> SkillDTO {
         .init(
             id: self.id,
+            imageURL: self.imageURL,
             name: self.name,
             tags: self.tags,
-            context: self.context,
-            proofs: self.proofs,
-            retrospective: self.retrospective,
-            progress: self.progress,
+            introduction: self.introduction,
+            history: self.history,
             projects: self.projects.compactMap({$0.id}),
             experiences: self.experiences.compactMap({$0.id})
         )

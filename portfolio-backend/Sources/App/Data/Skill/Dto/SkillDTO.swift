@@ -5,12 +5,11 @@ typealias SkillsDTO = [SkillDTO]
 
 struct SkillDTO: Content {
     var id: UUID?
+    var imageURL: String?
     var name: String
     var tags: [String]
-    var context: String
-    var proofs: String
-    var retrospective: String
-    var progress: String
+    var introduction: Introduction
+    var history: String?
     var projects: [Project.IDValue]
     var experiences: [Experience.IDValue]
 
@@ -18,13 +17,11 @@ struct SkillDTO: Content {
         let model = Skill()
 
         model.id = self.id ?? UUID()
+        model.imageURL = self.imageURL ?? ""
         model.name = self.name
         model.tags = self.tags
-        model.context = self.context
-        model.proofs = self.proofs
-        model.retrospective = self.retrospective
-        model.progress = self.progress
-
+        model.introduction = self.introduction
+        model.history = self.history
         return model
     }
 }

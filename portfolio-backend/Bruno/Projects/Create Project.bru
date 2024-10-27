@@ -5,26 +5,32 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/projects/create
+  url: {{url}}/projects/create
   body: json
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJGOUUwNDFCNC02NjgxLTQ1NUYtODNCQS0xQTI5MTc0QjA3Q0UiLCJleHAiOjE3MjgxNTI0NzguMDM5ODk1LCJyb2xlIjoibWVtYmVyIn0._xseaIMDoyOpQP7Z4MZh5z6l7Pqbskq8cA5f8XtrYnY
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjk5Njc5MTQuOTg5MzQ5OCwicm9sZSI6ImFkbWluIiwic3ViIjoiNkRFQTU2QzktOEJGQi00ODdDLUI0MDMtQUFFM0JCNTVDOEMwIn0.wl7aX7xV8zAWveKm8XUvDm0kXCPXClO4Yr4eGEn39CU
 }
 
 body:json {
   {
-    "title": "Project One",
-    "presentation": "Project One Prensentation",
-    "purpose": "Project One Purpose",
-    "milestone": "Project One Milestone",
-    "actor": "Project One Actor(s)",
-    "progress": "Project One Progress",
-    "skills": [
-      "D634969F-61F6-42F4-981A-2B44BAA7145C"
-    ],
+    "name": "My Project",
+    "introduction": "An introduction to the project",
+    "presentation": "qqqqq",
+    "context": {
+      "situation": "professional",
+      "problemStatement": "qqqq",
+      "projectRole": "Lead Developer",
+      "achievedGoals": "qqqq"
+    },
+    "technicalDetails": {
+      "technicalChoices": "qqqq",
+      "challenges": "Challenges faced during the project",
+      "solutions": "Solutions implemented to overcome challenges"
+    },
+    "skills": [],
     "experiences": []
   }
 }

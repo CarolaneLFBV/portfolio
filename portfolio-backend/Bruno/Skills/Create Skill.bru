@@ -5,13 +5,13 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/skills/create
-  body: json
+  url: {{url}}/skills/create
+  body: multipartForm
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDQTUwRTAxQy01MDA0LTRBODYtQkZFQy03MjhEMjk5MUQ3NTAiLCJleHAiOjE3MjgxMzI5OTIuNDQzODgyLCJyb2xlIjoiYWRtaW4ifQ.jX5ldQhwi2EryMGiT13MErRSws-7HHik6cEPsPnGUhI
+  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3Mjk5NzU4NjkuNzYyNTIyLCJyb2xlIjoiYWRtaW4iLCJzdWIiOiI2REVBNTZDOS04QkZCLTQ4N0MtQjQwMy1BQUUzQkI1NUM4QzAifQ.1tFnoDR0phUZYExf4ZqP5KJmzs050scx0Hz7W8CkQQo
 }
 
 body:json {
@@ -27,4 +27,15 @@ body:json {
     "projects": [],
     "experiences": []
   }
+}
+
+body:multipart-form {
+  name: Swift Programming
+  tags[]: Swift, SwiftUI, Mobile Development
+  imageURL: @file(/Users/carolanelefebvre/Desktop/Image.jpg)
+  introduction[definition]: A programming language developed by Apple for iOS and macOS applications.
+  history: test
+  introduction[context]: Used for developing high-performance mobile applications.
+  projects[]: 123E4567-E89B-12D3-A456-426614174000
+  experiences[]: AA14E611-5373-4A35-A92E-4931D151D0C6
 }

@@ -18,11 +18,14 @@ struct JWTAuthAuthenticator: AsyncMiddleware {
 
         let user = User(
             id: userJWT.id,
-            firstName: userJWT.firstName ?? "",
-            lastName: userJWT.lastName ?? "",
+            imageURL: userJWT.imageURL ?? "",
+            fullName: userJWT.fullName,
+            bio: userJWT.bio,
+            role: userJWT.role,
             email: userJWT.email,
             password: userJWT.password,
-            role: userJWT.role
+            introduction: userJWT.introduction,
+            interests: userJWT.interests
         )
         request.auth.login(user)
 

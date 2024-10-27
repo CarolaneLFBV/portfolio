@@ -2,9 +2,14 @@ import Fluent
 import Vapor
 
 struct UserController: RouteCollection {
+    private let repository: UserRepository
+
+    init(repository: UserRepository) {
+        self.repository = repository
+    }
+
     func boot(routes: any RoutesBuilder) throws {
         let users = routes.grouped("users")
-        // let user = users.grouped(":userID")
         users.get(use: self.index)
         users.get("current", use: self.getAuthenticatedUser)
 
@@ -23,9 +28,7 @@ struct UserController: RouteCollection {
 extension UserController {
     @Sendable
     func index(req: Request) async throws -> UsersDTO {
-        try await User.query(on: req.db).all().map {
-            $0.toDTO()
-        }
+        try await repository.getAllUsers().map { $0.toDTO() }
     }
 
     @Sendable
@@ -47,28 +50,30 @@ extension UserController {
 
     @Sendable
     func update(req: Request) async throws -> UserDTO {
-        guard let user = try await User.find(req.parameters.get("userId"), on: req.db) else {
+        guard let userId = req.parameters.get("userId", as: UUID.self),
+              let user = try await repository.findById(userId) else {
             throw Failed.idNotFound
         }
 
         let updatedData = try req.content.decode(UserDTO.self)
-
-        user.firstName = updatedData.firstName
-        user.lastName = updatedData.lastName
-        user.email = updatedData.email
+        user.fullName = updatedData.fullName
+        user.bio = updatedData.bio
         user.role = updatedData.role
+        user.email = updatedData.email
+        user.introduction = updatedData.introduction
+        user.interests = updatedData.interests
 
-        try await user.save(on: req.db)
+        try await repository.saveUser(user)
         return user.toDTO()
     }
 
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let user = try await User.find(req.parameters.get("userId"), on: req.db) else {
+        guard let userId = req.parameters.get("userId", as: UUID.self),
+              let user = try await repository.findById(userId) else {
             throw Failed.idNotFound
         }
-
-        try await user.delete(on: req.db)
+        try await repository.deleteUser(user)
         return .noContent
     }
 }

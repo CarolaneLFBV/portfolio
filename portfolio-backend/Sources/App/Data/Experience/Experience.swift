@@ -1,48 +1,38 @@
 import Fluent
 import Vapor
 
-final class Experience: Model, @unchecked Sendable {
+typealias ExperienceType = Experience.ExperienceType
+
+final class Experience: Model, Content, @unchecked Sendable {
     static let schema = "experiences"
 
     enum ExperienceType: String, Codable {
-        case professionnal, education
+        case professional, education
     }
 
     @ID(key: .id)
     var id: UUID?
-    
+
+    @OptionalField(key: "imageURL")
+    var imageURL: String?
+
     @Field(key: "name")
     var name: String
 
     @Field(key: "type")
     var type: ExperienceType
 
-    @Field(key: "startDate")
-    var startDate: String
+    @OptionalField(key: "introduction")
+    var introduction: String?
 
-    @Field(key: "endDate")
-    var endDate: String
+    @Group(key: "period")
+    var period: Period
 
-    @Field(key: "position")
-    var position: String?
-
-    @Field(key: "companyName")
+    @OptionalField(key: "companyName")
     var companyName: String?
-
-    @Field(key: "companyLogo")
-    var companyLogo: String?
-
-    @Field(key: "status")
-    var status: String?
 
     @Field(key: "missionDetails")
     var missionDetails: String?
-
-    @Field(key: "degree")
-    var degree: String?
-
-    @Field(key: "misc")
-    var misc: String?
 
     @Siblings(through: SkillExperience.self, from: \.$experience, to: \.$skill)
     var skills: [Skill]
@@ -53,42 +43,34 @@ final class Experience: Model, @unchecked Sendable {
     init() {}
 
     init(id: UUID? = nil,
+         imageURL: String?,
+         name: String,
          type: ExperienceType,
-         startDate: String,
-         endDate: String,
-         position: String,
-         status: String,
-         missionDetails: String,
-         degree: String,
-         misc: String,
-         companyName: String,
-         companyLogo: String) {
+         introduction: String?,
+         period: Period,
+         companyName: String?,
+         missionDetails: String
+         ) {
             self.id = id
+            self.imageURL = imageURL
+            self.name = name
             self.type = type
-            self.startDate = startDate
-            self.endDate = endDate
-            self.position = position
-            self.status = status
-            self.missionDetails = missionDetails
-            self.degree = degree
-            self.misc = misc
+            self.introduction = introduction
+            self.period = period
             self.companyName = companyName
-            self.companyLogo = companyLogo
-       }
+            self.missionDetails = missionDetails
+    }
 
     func toDTO() -> ExperienceDTO {
         .init(
             id: self.id,
+            imageURL: self.imageURL,
+            name: self.name,
             type: self.type,
-            startDate: self.startDate,
-            endDate: self.endDate,
-            position: self.$position.value as? String,
-            companyName: self.$companyName.value as? String,
-            companyLogo: self.$companyLogo.value as? String,
-            status: self.$status.value as? String,
+            introduction: self.introduction,
+            period: self.period,
+            companyName: self.companyName,
             missionDetails: self.$missionDetails.value as? String,
-            degree: self.$degree.value as? String,
-            misc: self.$misc.value as? String,
             skills: self.skills.compactMap({$0.id}),
             projects: self.projects.compactMap({$0.id})
         )
