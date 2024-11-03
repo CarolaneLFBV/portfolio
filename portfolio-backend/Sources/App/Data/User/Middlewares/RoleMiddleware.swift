@@ -1,16 +1,21 @@
 import Vapor
 import JWT
 
-struct RoleMiddleware: AsyncMiddleware {
-    let requiredRole: User.Role
+extension User.Middlewares {
+    struct RoleMiddleware: AsyncMiddleware {
+        let requiredRole: UserRole
 
-    func respond(to request: Vapor.Request, chainingTo next: any Vapor.AsyncResponder) async throws -> Vapor.Response {
-        let user = try request.auth.require(User.self)
+        func respond(
+            to request: Vapor.Request,
+            chainingTo next: any Vapor.AsyncResponder
+        ) async throws -> Vapor.Response {
+            let user = try request.auth.require(User.Entity.self)
 
-        guard user.role == requiredRole else {
-            throw Failed.accessDenied
+            guard user.role == requiredRole else {
+                throw Failed.accessDenied
+            }
+
+            return try await next.respond(to: request)
         }
-
-        return try await next.respond(to: request)
     }
 }

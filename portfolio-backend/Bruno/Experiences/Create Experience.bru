@@ -6,12 +6,12 @@ meta {
 
 post {
   url: {{url}}/experiences/create
-  body: json
+  body: multipartForm
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjk5Njk2MTguOTg2NDAwMSwic3ViIjoiNkRFQTU2QzktOEJGQi00ODdDLUI0MDMtQUFFM0JCNTVDOEMwIiwicm9sZSI6ImFkbWluIn0.VRYtRpLmhbhhWLJ8dctmJImw79wPRoI37cATxvRGtXs
+  token: {{token}}
 }
 
 body:json {

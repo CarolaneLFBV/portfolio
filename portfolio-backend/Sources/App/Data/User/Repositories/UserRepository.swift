@@ -1,29 +1,44 @@
 import Fluent
 import Vapor
 
-protocol UserProtocol {
-    func getAllUsers() async throws -> [User]
-    func findById(_ id: UUID) async throws -> User?
-    func saveUser(_ user: User) async throws
-    func deleteUser(_ user: User) async throws
-}
+extension User.Repositories {
+    struct UserRepository: UserAuthenticable {
+        let db: Database
+        typealias UserEntity = User.Entity
+        // Fetch all users and return them as UserOutput
+        func findAll() async throws -> [UserEntity] {
+            try await User.Entity.query(on: db)
+                .all()
+        }
 
-struct UserRepository: UserProtocol {
-    let db: Database
+        // Find a user by ID and return it as UserOutput
+        func find(_ id: UUID) async throws -> UserEntity? {
+            guard let user = try await User.Entity.find(id, on: db) else {
+                return nil
+            }
+            return user
+        }
 
-    func getAllUsers() async throws -> [User] {
-        try await User.query(on: db).all()
+        // Save a new user with UserInput and return as UserOutput
+        func saveUser(_ input: User.Dto.Input, on req: Request) async throws {
+            let user = input.toModel()
+
+            if let imageFile = input.image {
+                let imageURL = try await ImageUseCase().upload(imageFile, on: req)
+                user.imageURL = imageURL
+            }
+
+            if let password = input.password {
+                user.password = try Bcrypt.hash(password)
+            }
+
+            try await user.save(on: db)
+        }
+
+        // Delete a user
+        func deleteUser(_ entity: User.Entity) async throws {
+            try await entity.delete(on: db)
+        }
     }
 
-    func findById(_ id: UUID) async throws -> User? {
-        try await User.find(id, on: db)
-    }
-
-    func saveUser(_ user: User) async throws {
-        try await user.save(on: db)
-    }
-
-    func deleteUser(_ user: User) async throws {
-        try await user.delete(on: db)
-    }
 }

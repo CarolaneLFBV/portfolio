@@ -6,12 +6,12 @@ meta {
 
 post {
   url: {{url}}/projects/create
-  body: json
+  body: multipartForm
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjk5Njc5MTQuOTg5MzQ5OCwicm9sZSI6ImFkbWluIiwic3ViIjoiNkRFQTU2QzktOEJGQi00ODdDLUI0MDMtQUFFM0JCNTVDOEMwIn0.wl7aX7xV8zAWveKm8XUvDm0kXCPXClO4Yr4eGEn39CU
+  token: {{token}}
 }
 
 body:json {
@@ -33,4 +33,21 @@ body:json {
     "skills": [],
     "experiences": []
   }
+}
+
+body:multipart-form {
+  name: asd
+  presentation: asd
+  introduction: asd
+  background[situation]: professional
+  background[problemStatement]: asd
+  background[projectRole]: qwasd
+  background[achievedGoals]: asd
+  technicalDetails[technicalChoices]: asd
+  technicalDetails[challenges]: asd
+  technicalDetails[solutions]: asd
+  skills[]: 7A552B92-AF5A-4962-8A1A-799D6BCCF7EC
+  experiences[]: AA14E611-5373-4A35-A92E-4931D151D0C6
+  images[]: @file(/Users/carolanelefebvre/Desktop/cat.jpeg)
+  images[]: @file(/Users/carolanelefebvre/Desktop/Image.jpg)
 }

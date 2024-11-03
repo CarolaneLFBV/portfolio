@@ -1,76 +1,88 @@
 import Fluent
 import Vapor
 
-struct UserController: RouteCollection {
-    private let repository: UserRepository
+extension User.Controllers {
+    struct Config: RouteCollection {
+        typealias UserOutput = User.Dto.Output
+        typealias UserInput = User.Dto.Input
+        typealias UserRepository = User.Repositories.UserRepository
 
-    init(repository: UserRepository) {
-        self.repository = repository
-    }
+        private let repository: UserRepository
 
-    func boot(routes: any RoutesBuilder) throws {
-        let users = routes.grouped("users")
-        users.get(use: self.index)
-        users.get("current", use: self.getAuthenticatedUser)
+        init(repository: UserRepository) {
+            self.repository = repository
+        }
 
-        let protected = users.grouped([
-            JWTAuthAuthenticator(),
-             RoleMiddleware(requiredRole: .admin),
-             User.guardMiddleware()
-        ])
-        let protectedElement = protected.grouped(":userId")
-        protectedElement.get(use: self.getUser)
-        protectedElement.patch(use: self.update)
-        protectedElement.delete(use: self.delete)
+        func boot(routes: any RoutesBuilder) throws {
+            let users = routes.grouped("users")
+            users.get(use: self.index)
+            users.get("current", use: self.getAuthenticatedUser)
+
+            let protected = users.grouped([
+                User.Middlewares.JWTAuthAuthenticator(),
+                User.Middlewares.RoleMiddleware(requiredRole: .admin),
+                User.Entity.guardMiddleware()
+            ])
+            let protectedElement = protected.grouped(":userId")
+            protectedElement.get(use: self.getUser)
+            protectedElement.patch(use: self.update)
+            protectedElement.delete(use: self.delete)
+        }
     }
 }
 
-extension UserController {
+extension User.Controllers.Config {
     @Sendable
-    func index(req: Request) async throws -> UsersDTO {
-        try await repository.getAllUsers().map { $0.toDTO() }
+    func index(req: Request) async throws -> [UserOutput] {
+        let users = try await repository.findAll()
+        return users.map { UserOutput(from: $0) }
     }
 
     @Sendable
-    func getAuthenticatedUser(req: Request) async throws -> UserDTO {
-        guard let user = req.auth.get(User.self) else {
+    func getAuthenticatedUser(req: Request) async throws -> UserOutput {
+        guard let user = req.auth.get(User.Entity.self) else {
             throw Failed.accessDenied
         }
-        return user.toDTO()
+        return UserOutput(from: user)
     }
 
     @Sendable
-    func getUser(req: Request) async throws -> UserDTO {
-        guard let user = try await User.find(req.parameters.get("userId"), on: req.db) else {
+    func getUser(req: Request) async throws -> UserOutput {
+        guard let user = try await User.Entity.find(req.parameters.get("userId"), on: req.db) else {
             throw Failed.idNotFound
         }
 
-        return user.toDTO()
+        return UserOutput(from: user)
     }
 
     @Sendable
-    func update(req: Request) async throws -> UserDTO {
+    func update(req: Request) async throws -> UserOutput {
         guard let userId = req.parameters.get("userId", as: UUID.self),
-              let user = try await repository.findById(userId) else {
+              let user = try await repository.find(userId) else {
             throw Failed.idNotFound
         }
 
-        let updatedData = try req.content.decode(UserDTO.self)
-        user.fullName = updatedData.fullName
-        user.bio = updatedData.bio
-        user.role = updatedData.role
-        user.email = updatedData.email
-        user.introduction = updatedData.introduction
-        user.interests = updatedData.interests
+        let updatedUser = try req.content.decode(UserInput.self)
+        user.fullName = updatedUser.fullName
+        user.bio = updatedUser.bio
+        user.role = updatedUser.role
+        user.email = updatedUser.email
+        user.introduction = updatedUser.introduction
+        user.interests = updatedUser.interests
 
-        try await repository.saveUser(user)
-        return user.toDTO()
+        if let image = updatedUser.image {
+            let imageData = try await ImageUseCase().upload(image, on: req)
+            user.imageURL = imageData
+        }
+
+        try await repository.saveUser(updatedUser, on: req)
+        return UserOutput(from: user)
     }
 
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
         guard let userId = req.parameters.get("userId", as: UUID.self),
-              let user = try await repository.findById(userId) else {
+              let user = try await repository.find(userId) else {
             throw Failed.idNotFound
         }
         try await repository.deleteUser(user)

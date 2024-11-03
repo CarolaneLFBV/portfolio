@@ -1,98 +1,108 @@
 import Fluent
 import Vapor
 
-struct SkillController: RouteCollection {
-    private let repository: SkillRepository
+extension Skill.Controllers {
+    struct Config: RouteCollection {
+        typealias SkillRepository = Skill.Repositories.SkillRepository
+        typealias SkillOutput = Skill.Dto.Output
+        typealias SkillInput = Skill.Dto.Input
+        private let repository: SkillRepository
 
-    init(repository: SkillRepository) {
-        self.repository = repository
+        init(repository: SkillRepository) {
+            self.repository = repository
+        }
+
+        func boot(routes: any RoutesBuilder) throws {
+            let skills = routes.grouped("skills")
+            let skill = skills.grouped(":skillId")
+            skills.get(use: self.index)
+            skill.get(use: self.getSkill)
+
+            let protected = skills.grouped([
+                User.Middlewares.JWTAuthAuthenticator(),
+                User.Middlewares.RoleMiddleware(requiredRole: .admin),
+                User.Entity.guardMiddleware()
+            ])
+            protected.post("create", use: self.create)
+            let protectedElement = protected.grouped(":skillId")
+            protectedElement.patch(use: self.update)
+            protectedElement.delete(use: self.delete)
+        }
     }
 
-    func boot(routes: any RoutesBuilder) throws {
-        let skills = routes.grouped("skills")
-        let skill = skills.grouped(":skillId")
-        skills.get(use: self.index)
-        skill.get(use: self.getSkill)
-
-        let protected = skills.grouped([
-            JWTAuthAuthenticator(),
-            RoleMiddleware(requiredRole: .admin),
-            User.guardMiddleware()
-        ])
-        protected.post("create", use: self.create)
-        let protectedElement = protected.grouped(":skillId")
-        protectedElement.patch(use: self.update)
-        protectedElement.delete(use: self.delete)
-
-    }
 }
 
-extension SkillController {
+extension Skill.Controllers.Config {
+    // Fetch all skills from repository call
     @Sendable
-    func index(req: Request) async throws -> SkillsDTO {
+    func index(req: Request) async throws -> [SkillOutput] {
         let skills = try await repository.findAll()
-        return skills.map { $0.toDTO() }
+        return skills.map { SkillOutput(from: $0) }
     }
 
+    // Find a specific skill from repository call
     @Sendable
-    func getSkill(req: Request) async throws -> SkillDTO {
+    func getSkill(req: Request) async throws -> SkillOutput {
         guard let skillId = req.parameters.get("skillId", as: UUID.self),
-              let skill = try await repository.findById(skillId) else {
+              let skill = try await repository.find(skillId) else {
             throw Failed.idNotFound
         }
-        return skill.toDTO()
+        return SkillOutput(from: skill)
     }
 
+    // Create a new skill from repository call
     @Sendable
-    func create(req: Request) async throws -> SkillDTO {
-        let skillDTO = try req.content.decode(SkillDTO.self)
-        let skill = skillDTO.toModel()
+    func create(req: Request) async throws -> SkillOutput {
+        var skillInput = try req.content.decode(SkillInput.self)
+        let skill = skillInput.toModel()
+        skillInput.imagePath = nil
 
-        guard let image = try? req.content.decode(File.self) else {
-            throw Failed.invalidData
+        if let image = skillInput.image {
+            let imageURL = try await ImageUseCase().upload(image, on: req)
+            skillInput.imagePath = imageURL
         }
-        
-        let imageURL = try await ImageUseCase().upload(image, on: req)
-        skill.imageURL = imageURL
 
-        try await repository.create(
-            skill,
-            projects: skillDTO.projects,
-            experiences: skillDTO.experiences
-        )
-        return skill.toDTO()
+        try await repository.create(skillInput)
+        return SkillOutput(from: skill)
     }
 
+    // Update an existing skill from repository call
+    @Sendable
+    func update(req: Request) async throws -> SkillOutput {
+        guard let skillId = req.parameters.get("skillId", as: UUID.self),
+              let skill = try await repository.find(skillId) else {
+            throw Failed.idNotFound
+        }
+
+        let updatedSkill = try req.content.decode(SkillInput.self)
+        skill.name = updatedSkill.name
+        skill.tags = updatedSkill.tags
+        skill.introduction = updatedSkill.introduction
+        skill.history = updatedSkill.history
+
+        if let image = updatedSkill.image {
+            let imageData = try await ImageUseCase().upload(image, on: req)
+            skill.imageURL = imageData
+        }
+
+        try await repository.update(updatedSkill)
+        return SkillOutput(from: skill)
+    }
+
+    // Delete existing skill from repository call
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
         guard let skillId = req.parameters.get("skillId", as: UUID.self),
-                let skill = try await repository.findById(skillId) else {
+              let skill = try await repository.find(skillId) else {
             throw Failed.idNotFound
         }
+
+//        if let imageURL = skill.imageURL, !imageURL.isEmpty {
+//            try await ImageUseCase().delete(at: imageURL, on: req)
+//        }
 
         try await repository.delete(skill)
         return .noContent
     }
 
-    @Sendable
-    func update(req: Request) async throws -> SkillDTO {
-        guard let skillId = req.parameters.get("skillId", as: UUID.self),
-              let skill = try await Skill.find(skillId, on: req.db) else {
-            throw Failed.idNotFound
-        }
-
-        let updatedData = try req.content.decode(SkillDTO.self)
-        skill.imageURL = updatedData.imageURL
-        skill.name = updatedData.name
-        skill.tags = updatedData.tags
-        skill.introduction = updatedData.introduction
-        skill.history = updatedData.history
-
-        try await repository.update(
-            skill,
-            projects: updatedData.projects,
-            experiences: updatedData.experiences
-        )
-        return skill.toDTO()
-    }
 }

@@ -3,9 +3,34 @@ import Vapor
 
 func routes(_ app: Application) throws {
     let database = app.db
-    try app.register(collection: UserController(repository: UserRepository(db: database)))
-    try app.register(collection: SkillController(repository: SkillRepository(db: database)))
-    try app.register(collection: ProjectController(repository: ProjectRepository(db: database)))
-    try app.register(collection: ExperienceController(repository: ExperienceRepository(db: database)))
-    try app.register(collection: AuthController(repository: AuthRepository(db: database)))
+    try app.register(
+        collection: User.Controllers.Config(
+            repository: User.Repositories.UserRepository(
+                db: database)
+        )
+    )
+    try app.register(
+        collection: Skill.Controllers.Config(
+            repository: Skill.Repositories.SkillRepository(
+                db: database)
+        )
+    )
+    try app.register(
+        collection: Project.Controllers.Config(
+            repository: Project.Repositories.ProjectRepository(
+                db: database)
+        )
+    )
+    try app.register(
+        collection: Experience.Controllers.Config(
+            repository: Experience.Repositories.ExperienceRepository(
+                db: database)
+        )
+    )
+    try app.register(
+        collection: User.Controllers.AuthConfig(
+            repository: User.Repositories.AuthRepository(
+                db: database)
+        )
+    )
 }

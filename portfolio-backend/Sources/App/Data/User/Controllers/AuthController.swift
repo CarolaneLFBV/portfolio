@@ -2,20 +2,24 @@ import Fluent
 import JWTKit
 import Vapor
 
-struct AuthController: RouteCollection {
-    let repository: AuthRepository
+extension User.Controllers {
+    struct AuthConfig: RouteCollection {
+        typealias UserOutput = User.Dto.Output
+        typealias UserInput = User.Dto.Input
+        let repository: User.Repositories.AuthRepository
 
-    func boot(routes: RoutesBuilder) throws {
-        let auth = routes.grouped("auth")
-        auth.post("login", use: self.login)
-        auth.post("register", use: self.register)
+        func boot(routes: RoutesBuilder) throws {
+            let auth = routes.grouped("auth")
+            auth.post("login", use: self.login)
+            auth.post("register", use: self.register)
+        }
     }
 }
 
-extension AuthController {
+extension User.Controllers.AuthConfig {
     @Sendable
     func login(req: Request) async throws -> TokenDTO {
-        let userRequest = try req.content.decode(User.LoginCredentials.self)
+        let userRequest = try req.content.decode(User.Entity.LoginCredentials.self)
 
         guard let user = try await repository.findUserByEmail(userRequest.email) else {
             throw Failed.idNotFound
@@ -31,30 +35,28 @@ extension AuthController {
     }
 
     @Sendable
-    func register(req: Request) async throws -> UserDTO {
-        let userRequest = try req.content.decode(UserDTO.self)
+    func register(req: Request) async throws -> UserOutput {
+        let userInput = try req.content.decode(UserInput.self)
 
-        guard let password = userRequest.password, !password.isEmpty else {
+        guard let password = userInput.password, !password.isEmpty else {
             throw Failed.invalidData
         }
         let passwordHash = try Bcrypt.hash(password)
 
-        guard try await repository.findUserByEmail(userRequest.email) == nil else {
-               throw Abort(.conflict, reason: "Email already exists")
+        guard try await repository.findUserByEmail(userInput.email) == nil else {
+            throw Abort(.conflict, reason: "Email already exists")
         }
 
-        let user = User(
-            imageURL: userRequest.imageURL ?? "",
-            fullName: userRequest.fullName,
-            bio: userRequest.bio ?? "",
-            role: userRequest.role,
-            email: userRequest.email,
-            password: passwordHash,
-            introduction: userRequest.introduction ?? "",
-            interests: userRequest.interests ?? []
-        )
+        let user = userInput.toModel()
+
+        if let imageFile = userInput.image {
+            let imageURL = try await ImageUseCase().upload(imageFile, on: req)
+            user.imageURL = imageURL
+        }
+
+        user.password = passwordHash
 
         try await repository.saveUser(user)
-        return user.toDTO()
+        return UserOutput(from: user)
     }
 }

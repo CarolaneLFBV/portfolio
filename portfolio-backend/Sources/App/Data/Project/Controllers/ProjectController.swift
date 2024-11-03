@@ -1,96 +1,116 @@
 import Fluent
 import Vapor
 
-struct ProjectController: RouteCollection {
-    private let repository: ProjectRepository
+extension Project.Controllers {
+    struct Config: RouteCollection {
+        typealias ProjectRepository = Project.Repositories.ProjectRepository
+        typealias ProjectInput = Project.Dto.Input
+        typealias ProjectOutput = Project.Dto.Output
+        private let repository: ProjectRepository
 
-    init(repository: ProjectRepository) {
-        self.repository = repository
-    }
+        init(repository: ProjectRepository) {
+            self.repository = repository
+        }
 
-    func boot(routes: any RoutesBuilder) throws {
-        let projects = routes.grouped("projects")
-        let project = projects.grouped(":projectId")
-        projects.get(use: self.index)
-        project.get(use: self.getProject)
+        func boot(routes: RoutesBuilder) throws {
+            let projects = routes.grouped("projects")
+            let project = projects.grouped(":projectId")
 
-        let protected = projects.grouped([
-            JWTAuthAuthenticator(),
-            RoleMiddleware(requiredRole: .admin),
-            User.guardMiddleware()
-        ])
-        protected.post("create", use: self.create)
-        let protectedElement = protected.grouped(":projectId")
-        protectedElement.patch(use: self.update)
-        protectedElement.delete(use: self.delete)
+            projects.get(use: index)
+            project.get(use: getProject)
+
+            let protected = projects.grouped([
+                User.Middlewares.JWTAuthAuthenticator(),
+                User.Middlewares.RoleMiddleware(requiredRole: .admin),
+                User.Entity.guardMiddleware()
+            ])
+            protected.post("create", use: create)
+            let protectedElement = protected.grouped(":projectId")
+            protectedElement.patch(use: update)
+            protectedElement.delete(use: delete)
+        }
     }
 }
 
-extension ProjectController {
+extension Project.Controllers.Config {
+    // Fetch all projects from repository call
     @Sendable
-    func index(req: Request) async throws -> ProjectsDTO {
+    func index(req: Request) async throws -> [ProjectOutput] {
         let projects = try await repository.findAll()
-        return projects.map { $0.toDTO() }
+        return projects.map { ProjectOutput(from: $0) }
     }
 
+    // Find a specific project from repository call
     @Sendable
-    func getProject(req: Request) async throws -> ProjectDTO {
+    func getProject(req: Request) async throws -> ProjectOutput {
         guard let projectId = req.parameters.get("projectId", as: UUID.self),
-              let project = try await repository.findById(projectId) else {
-            throw Failed.idNotFound
+              let project = try await repository.find(projectId) else {
+            throw Abort(.notFound)
         }
-        return project.toDTO()
+        return ProjectOutput(from: project)
     }
 
+    // Create a new project from repository call
     @Sendable
-    func create(req: Request) async throws -> ProjectDTO {
-        let projectDTO = try req.content.decode(ProjectDTO.self)
-        let project = projectDTO.toModel()
+    func create(req: Request) async throws -> ProjectOutput {
+        let projectInput = try req.content.decode(ProjectInput.self)
+        let project = projectInput.toModel()
+        project.imageURLs = []
 
-        if let image = try? req.content.decode(File.self) {
-            let imageURL = try await ImageUseCase().upload(image, on: req)
-            project.imageURL = imageURL
+        if let images = projectInput.images {
+            var imagePaths: [String] = []
+
+            for image in images {
+                let imagePath = try await ImageUseCase().upload(image, on: req)
+                imagePaths.append(imagePath)
+            }
+
+            project.imageURLs = imagePaths
         }
 
-        try await repository.create(
-            project,
-            skills: projectDTO.skills,
-            experiences: projectDTO.experiences
-        )
-        return project.toDTO()
+        try await repository.create(projectInput)
+        return ProjectOutput(from: project)
     }
 
+    // Update an existing project from repository call
+    @Sendable
+    func update(req: Request) async throws -> ProjectOutput {
+        guard let projectId = req.parameters.get("projectId", as: UUID.self),
+              let project = try await repository.find(projectId) else {
+            throw Abort(.notFound)
+        }
+
+        let updatedProject = try req.content.decode(ProjectInput.self)
+        project.name = updatedProject.name
+        project.introduction = updatedProject.introduction
+        project.presentation = updatedProject.presentation
+        project.background = updatedProject.background
+        project.technicalDetails = updatedProject.technicalDetails
+
+        if let images = updatedProject.images {
+            var imagePaths: [String] = []
+
+            for image in images {
+                let imagePath = try await ImageUseCase().upload(image, on: req)
+                imagePaths.append(imagePath)
+            }
+
+            project.imageURLs = imagePaths
+        }
+
+        try await repository.update(updatedProject)
+        return ProjectOutput(from: project)
+    }
+
+    // Delete existing project from repository call
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
         guard let projectId = req.parameters.get("projectId", as: UUID.self),
-                let project = try await repository.findById(projectId) else {
-            throw Failed.idNotFound
+              let project = try await repository.find(projectId) else {
+            throw Abort(.notFound)
         }
 
         try await repository.delete(project)
         return .noContent
-    }
-
-    @Sendable
-    func update(req: Request) async throws -> ProjectDTO {
-        guard let projectId = req.parameters.get("projectId", as: UUID.self),
-              let project = try await Project.find(projectId, on: req.db) else {
-            throw Failed.idNotFound
-        }
-
-        let updatedData = try req.content.decode(ProjectDTO.self)
-        // TODO: image handling
-        project.name = updatedData.name
-        project.introduction = updatedData.introduction
-        project.presentation = updatedData.presentation
-        project.context = updatedData.context
-        project.technicalDetails = updatedData.technicalDetails
-
-        try await repository.update(
-            project,
-            skills: updatedData.skills,
-            experiences: updatedData.experiences
-        )
-        return project.toDTO()
     }
 }

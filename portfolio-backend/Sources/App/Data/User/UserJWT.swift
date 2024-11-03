@@ -24,7 +24,7 @@ struct UserJWT: JWTPayload {
 }
 
 extension UserJWT {
-    static func generateToken(for user: User, req: Request) throws -> String {
+    static func generateToken(for user: User.Entity, req: Request) throws -> String {
 
         let userJWT = UserJWT(
             subject: .init(value: user.id!.uuidString),
