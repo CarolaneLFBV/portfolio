@@ -5,27 +5,23 @@ meta {
 }
 
 patch {
-  url: {{url}}/users/6DEA56C9-8BFB-487C-B403-AAE3BB55C8C0
-  body: json
+  url: {{url}}/users/testname
+  body: multipartForm
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjk5Njk2MTguOTg2NDAwMSwic3ViIjoiNkRFQTU2QzktOEJGQi00ODdDLUI0MDMtQUFFM0JCNTVDOEMwIiwicm9sZSI6ImFkbWluIn0.VRYtRpLmhbhhWLJ8dctmJImw79wPRoI37cATxvRGtXs
+  token: {{token}}
 }
 
-body:json {
-    {
-      "imageURL": "",
-      "bio": "",
-      "email": "carolane_lefebvre@icloud.com",
-      "id": "6DEA56C9-8BFB-487C-B403-AAE3BB55C8C0",
-      "role": "admin",
-      "introduction": "",
-      "fullName": {
-        "lastName": "Lefebvre",
-        "firstName": "Carolane"
-      },
-      "interests": ["Developemt", "Sport", "Lecture"]
-    }
+body:multipart-form {
+  firstName: TestName
+  lastName: TestName
+  nickName: TestName
+  bio: TestName
+  role: member
+  email: TestName
+  introduction: TestName
+  interests[]: TestName
+  image: @file(/Users/carolanelefebvre/Desktop/Image.jpg)
 }

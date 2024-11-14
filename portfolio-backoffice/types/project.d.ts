@@ -3,23 +3,42 @@ import type {Experience} from "~/types/experience";
 
 export interface Project {
     id: string;
+    imageURLs?: String[];
     name: string;
-    presentation: string;
-    purpose: string;
-    milestone: string;
-    actor: string;
-    progress: string;
+    slug: string
+    introduction?: string;
+    presentation?: string;
+    background: Background;
+    technicalDetails: TechnicalDetails;
     skills: Skill[];
     experiences: Experience[];
 }
 
 export interface ProjectCreation {
+    imageURLs?: String[];
     name: string;
-    presentation: string;
-    purpose: string;
-    milestone: string;
-    actor: string;
-    progress: string;
+    slug: string
+    introduction?: string;
+    presentation?: string;
+    background: Background;
+    technicalDetails: TechnicalDetails;
     skills: Skill[];
     experiences: Experience[];
+}       
+
+// Background 
+type Background = {
+    situationType?: SituationType;
+    problemStatement?: string;
+    projectRole?: string;
+    achievedGoals?: string;
+}
+
+type SituationType = 'professional' | 'training' | 'personal'
+
+// Technical Details
+type TechnicalDetails = {
+    technicalChoices?: string;
+    challenges?: string;
+    solutions?: string;
 }

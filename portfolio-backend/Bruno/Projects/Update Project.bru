@@ -5,33 +5,27 @@ meta {
 }
 
 patch {
-  url: {{url}}/projects/123e4567-e89b-12d3-a456-426614174000
-  body: json
+  url: {{url}}/projects/asd
+  body: multipartForm
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjk5Njk2MTguOTg2NDAwMSwic3ViIjoiNkRFQTU2QzktOEJGQi00ODdDLUI0MDMtQUFFM0JCNTVDOEMwIiwicm9sZSI6ImFkbWluIn0.VRYtRpLmhbhhWLJ8dctmJImw79wPRoI37cATxvRGtXs
+  token: {{token}}
 }
 
-body:json {
-  {
-    "id": "123e4567-e89b-12d3-a456-426614174000",
-    "name": "My Project Updated",
-    "introduction": "An introduction to the project",
-    "presentation": "Detailed presentation about the project",
-    "context": {
-      "situation": "professional",
-      "problemStatement": "Problem statement describing the issue",
-      "projectRole": "Lead Developer",
-      "achievedGoals": "Achieved goals in this project"
-    },
-    "technicalDetails": {
-      "technicalChoices": "Choices made regarding technology stack",
-      "challenges": "Challenges faced during the project",
-      "solutions": "Solutions implemented to overcome challenges"
-    },
-    "skills": [],
-    "experiences": []
-  }
+body:multipart-form {
+  name: testProject
+  presentation: testProject
+  introduction: testProject
+  skills[]: C0073E0A-4EDB-4F70-BA15-B41B0C37E5A8
+  background[situation]: professional
+  background[problemStatement]: testProject
+  background[projectRole]: testProject
+  background[achievedGoals]: testProject
+  technicalDetails[technicalChoices]: testProject
+  technicalDetails[challenges]: testProject
+  technicalDetails[solutions: testProject
+  ~images[]: @file(/Users/carolanelefebvre/Desktop/cat.jpeg)
+  ~experiences[]: 
 }

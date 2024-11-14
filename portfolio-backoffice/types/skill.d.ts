@@ -3,23 +3,27 @@ import type {Experience} from "~/types/experience";
 
 export interface Skill {
     id: string;
+    image?: File;
     name: string;
+    slug: string;
     tags: string[];
-    context: string;
-    proofs: string;
-    retrospective: string;
-    progress: string;
+    introduction: Introduction
+    history?: string;
     projects: Project[];
     experiences: Experience[];
 }
 
-export interface SkillCreation {
+export interface SkillInput {
+    image?: File;
     name: string;
     tags: string[];
-    context: string;
-    proofs: string;
-    retrospective: string;
-    progress: string;
+    introduction: Introduction
+    history?: string;
     projects: Project[];
     experiences: Experience[];
+}
+
+type Introduction = {
+    definition?: string;
+    context?: string;
 }

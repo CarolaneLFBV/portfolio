@@ -1,15 +1,18 @@
 import apiHelper from "~/utils/apiHelper";
-import type {Project, ProjectCreation} from "~/types/project";
+import type {Background, Project, ProjectCreation, TechnicalDetails} from "~/types/project";
 import {ref} from "vue";
+import type {Skill} from "~/types/skill";
+import type {Experience} from "~/types/experience";
 
 const newProject = ref<ProjectCreation>({
+    imageURLs: [],
     name: '',
+    slug: '',
+    introduction: '',
     presentation: '',
-    purpose: '',
-    milestone: '',
-    actor: '',
-    progress: '',
-    skills: [],
+    background: '',
+    technicalDetails: '',
+    skills:  [],
     experiences: []
 });
 
@@ -24,9 +27,9 @@ export default function () {
         }
     }
 
-    async function getProjectById(projectID: string) {
+    async function getProjectBySlug(slug: string) {
         try {
-            const response = await apiHelper.kyPrivateGet<Project>(`projects/${projectID}`);
+            const response = await apiHelper.kyPrivateGet<Project>(`projects/${slug}`);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la récupération du projet:', error);
@@ -45,7 +48,7 @@ export default function () {
 
     async function updateProject(project: Project) {
         try {
-            const response = await apiHelper.kyPrivatePatch<Project>(`projects/${project.id}`, project);
+            const response = await apiHelper.kyPrivatePatch<Project>(`projects/${project.slug}`, project);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la mise à jour du projet:', error);
@@ -54,9 +57,9 @@ export default function () {
     }
 
     // Response: HTTPCode
-    async function deleteProject(projectID: string) {
+    async function deleteProject(slug: string) {
         try {
-            const response = await apiHelper.kyPrivateDelete(`projects/${projectID}`)
+            const response = await apiHelper.kyPrivateDelete(`projects/${slug}`)
             return response;
         } catch (error) {
             console.error('Erreur lors de la suppression du projet:', error);
@@ -67,7 +70,7 @@ export default function () {
     return {
         newProject,
         createProject,
-        getProjectById,
+        getProjectBySlug,
         getProjects,
         updateProject,
         deleteProject

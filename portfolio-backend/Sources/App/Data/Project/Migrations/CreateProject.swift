@@ -6,6 +6,7 @@ struct CreateProject: AsyncMigration {
             .id()
             .field("imageURLs", .array(of: .string))
             .field("name", .string, .required)
+            .field("slug", .string, .required)
             .field("introduction", .string)
             .field("presentation", .string)
             .field("background_situation", .string)
@@ -15,6 +16,7 @@ struct CreateProject: AsyncMigration {
             .field("technicalDetails_choices", .string)
             .field("technicalDetails_challenges", .string)
             .field("technicalDetails_solutions", .string)
+            .unique(on: "slug")
             .create()
     }
 

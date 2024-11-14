@@ -2,42 +2,51 @@ import Fluent
 import Vapor
 
 extension User.Repositories {
-    struct UserRepository: UserAuthenticable {
+    struct UserRepository {
         let db: Database
         typealias UserEntity = User.Entity
         // Fetch all users and return them as UserOutput
         func findAll() async throws -> [UserEntity] {
-            try await User.Entity.query(on: db)
+            try await UserEntity.query(on: db)
                 .all()
         }
 
         // Find a user by ID and return it as UserOutput
-        func find(_ id: UUID) async throws -> UserEntity? {
-            guard let user = try await User.Entity.find(id, on: db) else {
-                return nil
-            }
-            return user
+        func find(_ slug: String) async throws -> UserEntity? {
+            try await UserEntity.query(on: db)
+                .filter(\.$slug == slug)
+                .first()
         }
 
-        // Save a new user with UserInput and return as UserOutput
-        func saveUser(_ input: User.Dto.Input, on req: Request) async throws {
-            let user = input.toModel()
-
-            if let imageFile = input.image {
-                let imageURL = try await ImageUseCase().upload(imageFile, on: req)
-                user.imageURL = imageURL
+        func update(_ input: User.Dto.Input, slug: String, on req: Request) async throws {
+            guard let user = try await find(slug) else {
+                throw Failed.idNotFound
             }
 
-            if let password = input.password {
-                user.password = try Bcrypt.hash(password)
+            user.firstName = input.firstName ?? ""
+            user.lastName = input.lastName ?? ""
+            user.nickName = input.nickName
+            user.slug = input.nickName.slug()
+            user.bio = input.bio
+            user.role = input.role
+            user.email = input.email
+            user.introduction = input.introduction
+            user.interests = input.interests
+
+            if let image = input.image {
+                let imageData = try await ImageUseCase().upload(image, on: req)
+                user.imageURL = imageData
             }
 
             try await user.save(on: db)
         }
 
         // Delete a user
-        func deleteUser(_ entity: User.Entity) async throws {
-            try await entity.delete(on: db)
+        func delete(_ slug: String) async throws {
+            guard let user = try await find(slug) else {
+                throw Failed.idNotFound
+            }
+            try await user.delete(on: db)
         }
     }
 

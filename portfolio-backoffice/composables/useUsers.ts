@@ -9,9 +9,9 @@ const user = ref<UserCredentials>({
 })
 
 export default function () {
-    async function getUserById(userId: string) {
+    async function getUserBySlug(slug: string) {
         try {
-            const response = await apiHelper.kyPrivateGet<User>(`users/${userId}`);
+            const response = await apiHelper.kyPrivateGet<User>(`users/${slug}`);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la récupération de l\'utilisateur:', error);
@@ -30,16 +30,16 @@ export default function () {
 
     async function updateUser(user: User) {
         try {
-            const response = await apiHelper.kyPrivatePatch<User>(`users/${user.id}`, user);
+            const response = await apiHelper.kyPrivatePatch<User>(`users/${user.slug}`, user);
             return response.data;
         } catch (error) {
             console.error(error);
         }
     }
 
-    async function deleteUser(userId: string) {
+    async function deleteUser(slug: string) {
         try {
-            const response = await apiHelper.kyPrivateDelete(`users/${userId}`);
+            const response = await apiHelper.kyPrivateDelete(`users/${slug}`);
             return response;
         } catch (error) {
             console.error(error);
@@ -49,7 +49,7 @@ export default function () {
 
     return {
         user,
-        getUserById,
+        getUserBySlug,
         getUsers,
         updateUser,
         deleteUser

@@ -3,37 +3,32 @@ import type {Skill} from "~/types/skill";
 
 export interface Experience {
     id: string;
+    imageURLs?: string[];
     name: string;
+    slug: string;
     type: Type;
-    startDate: string;
-    endDate: string;
-    position?: string;
+    period: Period
     companyName?: string;
-    companyLogo?: string;
-    degree?: string;
-    misc?: string;
-    status?: string;
     missionDetails?: string;
     projects: Project[];
     skills: Skill[];
 }
 
 export interface ExperienceCreation {
+    imageURLs?: string[];
     name: string;
+    slug: string;
     type: Type;
-    startDate: string;
-    endDate: string;
-    position?: string;
+    period: Period
     companyName?: string;
-    companyLogo?: string;
-    degree?: string;
-    misc?: string;
-    status?: string;
     missionDetails?: string;
     projects: Project[];
     skills: Skill[];
 }
 
-interface Type {
-    type: 'professional' | 'education';
+type Type = 'professional' | 'education';
+
+type Period = {
+    startDate: String;
+    endDate: String;
 }

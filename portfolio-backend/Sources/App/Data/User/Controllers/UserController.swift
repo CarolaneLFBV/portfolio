@@ -6,7 +6,6 @@ extension User.Controllers {
         typealias UserOutput = User.Dto.Output
         typealias UserInput = User.Dto.Input
         typealias UserRepository = User.Repositories.UserRepository
-
         private let repository: UserRepository
 
         init(repository: UserRepository) {
@@ -16,15 +15,20 @@ extension User.Controllers {
         func boot(routes: any RoutesBuilder) throws {
             let users = routes.grouped("users")
             users.get(use: self.index)
-            users.get("current", use: self.getAuthenticatedUser)
+
+            let currentProtectedRoute = users.grouped([
+                User.Middlewares.JWTAuthAuthenticator(),
+                User.Entity.guardMiddleware()
+            ])
+            currentProtectedRoute.get("current", use: self.getCurrent)
 
             let protected = users.grouped([
                 User.Middlewares.JWTAuthAuthenticator(),
                 User.Middlewares.RoleMiddleware(requiredRole: .admin),
                 User.Entity.guardMiddleware()
             ])
-            let protectedElement = protected.grouped(":userId")
-            protectedElement.get(use: self.getUser)
+            let protectedElement = protected.grouped(":slug")
+            protectedElement.get(use: self.getUserBySlug)
             protectedElement.patch(use: self.update)
             protectedElement.delete(use: self.delete)
         }
@@ -35,57 +39,42 @@ extension User.Controllers.Config {
     @Sendable
     func index(req: Request) async throws -> [UserOutput] {
         let users = try await repository.findAll()
-        return users.map { UserOutput(from: $0) }
+        return try await users.toDto(from: req.db)
     }
 
     @Sendable
-    func getAuthenticatedUser(req: Request) async throws -> UserOutput {
+    func getCurrent(req: Request) async throws -> UserOutput {
         guard let user = req.auth.get(User.Entity.self) else {
             throw Failed.accessDenied
         }
-        return UserOutput(from: user)
+        return try user.toDto(from: req.db)
     }
 
     @Sendable
-    func getUser(req: Request) async throws -> UserOutput {
-        guard let user = try await User.Entity.find(req.parameters.get("userId"), on: req.db) else {
+    func getUserBySlug(req: Request) async throws -> UserOutput {
+        guard let slug = req.parameters.get("slug"),
+              let user = try await repository.find(slug) else {
             throw Failed.idNotFound
         }
-
-        return UserOutput(from: user)
+        return try user.toDto(from: req.db)
     }
 
     @Sendable
-    func update(req: Request) async throws -> UserOutput {
-        guard let userId = req.parameters.get("userId", as: UUID.self),
-              let user = try await repository.find(userId) else {
+    func update(req: Request) async throws -> HTTPStatus {
+        guard let slug = req.parameters.get("slug") else {
             throw Failed.idNotFound
         }
-
-        let updatedUser = try req.content.decode(UserInput.self)
-        user.fullName = updatedUser.fullName
-        user.bio = updatedUser.bio
-        user.role = updatedUser.role
-        user.email = updatedUser.email
-        user.introduction = updatedUser.introduction
-        user.interests = updatedUser.interests
-
-        if let image = updatedUser.image {
-            let imageData = try await ImageUseCase().upload(image, on: req)
-            user.imageURL = imageData
-        }
-
-        try await repository.saveUser(updatedUser, on: req)
-        return UserOutput(from: user)
+        let input = try req.content.decode(UserInput.self)
+        try await repository.update(input, slug: slug, on: req)
+        return .accepted
     }
 
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let userId = req.parameters.get("userId", as: UUID.self),
-              let user = try await repository.find(userId) else {
+        guard let slug = req.parameters.get("slug") else {
             throw Failed.idNotFound
         }
-        try await repository.deleteUser(user)
+        try await repository.delete(slug)
         return .noContent
     }
 }

@@ -5,29 +5,24 @@ meta {
 }
 
 patch {
-  url: {{url}}/experiences/1B9F672D-4460-4AED-9B9A-0D43BEF2C2FD
-  body: json
+  url: {{url}}/experiences/experiencetest
+  body: multipartForm
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjk5Njc5MTQuOTg5MzQ5OCwicm9sZSI6ImFkbWluIiwic3ViIjoiNkRFQTU2QzktOEJGQi00ODdDLUI0MDMtQUFFM0JCNTVDOEMwIn0.wl7aX7xV8zAWveKm8XUvDm0kXCPXClO4Yr4eGEn39CU
+  token: {{token}}
 }
 
-body:json {
-  {
-    "companyName": "Test",
-    "name": "Soqeqweqwer",
-    "missionDetails": "Soqeqweqwer",
-    "skills": [],
-    "period": {
-      "startDate": "2021-06-01",
-      "endDate": "2023-03-31"
-    },
-    "imageURL": "",
-    "id": "1B9F672D-4460-4AED-9B9A-0D43BEF2C2FD",
-    "projects": [],
-    "introduction": "Soqeqweqwer",
-    "type": "professional"
-  }
+body:multipart-form {
+  name: experienceUpdated
+  type: education
+  introduction: experienceUpdated
+  period[startDate]: experienceUpdated
+  period[endDate]: experienceUpdated
+  companyName: experienceUpdated
+  missionDetails: experienceUpdated
+  skills[]: C0073E0A-4EDB-4F70-BA15-B41B0C37E5A8
+  projects[]: DD37D519-8E05-4B53-A9C2-585B1D5922C3
+  images[]: @file(/Users/carolanelefebvre/Desktop/Image.jpg)
 }

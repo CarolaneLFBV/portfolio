@@ -14,9 +14,9 @@ extension Skill.Controllers {
 
         func boot(routes: any RoutesBuilder) throws {
             let skills = routes.grouped("skills")
-            let skill = skills.grouped(":skillId")
+            let skill = skills.grouped(":slug")
             skills.get(use: self.index)
-            skill.get(use: self.getSkill)
+            skill.get(use: self.getSkillbySlug)
 
             let protected = skills.grouped([
                 User.Middlewares.JWTAuthAuthenticator(),
@@ -24,7 +24,7 @@ extension Skill.Controllers {
                 User.Entity.guardMiddleware()
             ])
             protected.post("create", use: self.create)
-            let protectedElement = protected.grouped(":skillId")
+            let protectedElement = protected.grouped(":slug")
             protectedElement.patch(use: self.update)
             protectedElement.delete(use: self.delete)
         }
@@ -37,72 +37,46 @@ extension Skill.Controllers.Config {
     @Sendable
     func index(req: Request) async throws -> [SkillOutput] {
         let skills = try await repository.findAll()
-        return skills.map { SkillOutput(from: $0) }
+        return try await skills.toDto(from: req.db)
     }
 
     // Find a specific skill from repository call
     @Sendable
-    func getSkill(req: Request) async throws -> SkillOutput {
-        guard let skillId = req.parameters.get("skillId", as: UUID.self),
-              let skill = try await repository.find(skillId) else {
+    func getSkillbySlug(req: Request) async throws -> SkillOutput {
+        guard let slug = req.parameters.get("slug"),
+              let skill = try await repository.find(slug) else {
             throw Failed.idNotFound
         }
-        return SkillOutput(from: skill)
+        return try await skill.toDTO(from: req.db)
     }
 
     // Create a new skill from repository call
     @Sendable
-    func create(req: Request) async throws -> SkillOutput {
+    func create(req: Request) async throws -> HTTPStatus {
         var skillInput = try req.content.decode(SkillInput.self)
-        let skill = skillInput.toModel()
         skillInput.imagePath = nil
-
-        if let image = skillInput.image {
-            let imageURL = try await ImageUseCase().upload(image, on: req)
-            skillInput.imagePath = imageURL
-        }
-
-        try await repository.create(skillInput)
-        return SkillOutput(from: skill)
+        try await repository.create(skillInput, on: req)
+        return .created
     }
 
     // Update an existing skill from repository call
     @Sendable
-    func update(req: Request) async throws -> SkillOutput {
-        guard let skillId = req.parameters.get("skillId", as: UUID.self),
-              let skill = try await repository.find(skillId) else {
+    func update(req: Request) async throws -> HTTPStatus {
+        guard let slug = req.parameters.get("slug") else {
             throw Failed.idNotFound
         }
-
         let updatedSkill = try req.content.decode(SkillInput.self)
-        skill.name = updatedSkill.name
-        skill.tags = updatedSkill.tags
-        skill.introduction = updatedSkill.introduction
-        skill.history = updatedSkill.history
-
-        if let image = updatedSkill.image {
-            let imageData = try await ImageUseCase().upload(image, on: req)
-            skill.imageURL = imageData
-        }
-
-        try await repository.update(updatedSkill)
-        return SkillOutput(from: skill)
+        try await repository.update(updatedSkill, slug, on: req)
+        return .ok
     }
 
     // Delete existing skill from repository call
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let skillId = req.parameters.get("skillId", as: UUID.self),
-              let skill = try await repository.find(skillId) else {
+        guard let slug = req.parameters.get("slug") else {
             throw Failed.idNotFound
         }
-
-//        if let imageURL = skill.imageURL, !imageURL.isEmpty {
-//            try await ImageUseCase().delete(at: imageURL, on: req)
-//        }
-
-        try await repository.delete(skill)
+        try await repository.delete(slug, req: req)
         return .noContent
     }
-
 }

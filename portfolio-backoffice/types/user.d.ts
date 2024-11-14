@@ -1,22 +1,25 @@
 export interface User {
     id: string;
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
+    nickName: string;
+    slug: string; 
+    role: Role;
     email: string;
     password: string;
-    role: Role;
+    bio?: string; 
+    introduction?: string;
+    interests?: string[];
 }
 
-export interface UserStore {
+export type UserStore = {
     user: User | undefined;
 }
 
-export interface UserCredentials {
+export type UserCredentials = {
     email: string;
     password: string;
     role: Role;
 }
 
-interface Role {
-    role: 'admin' | 'member';
-}
+type Role = 'admin' | 'member';

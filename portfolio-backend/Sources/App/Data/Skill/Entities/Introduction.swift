@@ -2,7 +2,7 @@ import Vapor
 import Fluent
 
 extension Skill.Entity {
-    final class IntroductionEntity: Fields, @unchecked Sendable {
+    final class Introduction: Fields, @unchecked Sendable {
         @OptionalField(key: "definition")
         var definition: String?
 

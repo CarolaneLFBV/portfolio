@@ -22,7 +22,10 @@ extension User.Middlewares {
             let user = User.Entity(
                 id: userJWT.id,
                 imageURL: userJWT.imageURL ?? "",
-                fullName: userJWT.fullName,
+                firstName: userJWT.firstName,
+                lastName: userJWT.lastName,
+                nickName: userJWT.nickName,
+                slug: userJWT.slug,
                 bio: userJWT.bio,
                 role: userJWT.role,
                 email: userJWT.email,

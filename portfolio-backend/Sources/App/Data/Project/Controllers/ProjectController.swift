@@ -14,10 +14,10 @@ extension Project.Controllers {
 
         func boot(routes: RoutesBuilder) throws {
             let projects = routes.grouped("projects")
-            let project = projects.grouped(":projectId")
+            let project = projects.grouped(":slug")
 
             projects.get(use: index)
-            project.get(use: getProject)
+            project.get(use: getProjectBySlug)
 
             let protected = projects.grouped([
                 User.Middlewares.JWTAuthAuthenticator(),
@@ -25,7 +25,7 @@ extension Project.Controllers {
                 User.Entity.guardMiddleware()
             ])
             protected.post("create", use: create)
-            let protectedElement = protected.grouped(":projectId")
+            let protectedElement = protected.grouped(":slug")
             protectedElement.patch(use: update)
             protectedElement.delete(use: delete)
         }
@@ -37,80 +37,45 @@ extension Project.Controllers.Config {
     @Sendable
     func index(req: Request) async throws -> [ProjectOutput] {
         let projects = try await repository.findAll()
-        return projects.map { ProjectOutput(from: $0) }
+        return try await projects.toDto(from: req.db)
     }
 
     // Find a specific project from repository call
     @Sendable
-    func getProject(req: Request) async throws -> ProjectOutput {
-        guard let projectId = req.parameters.get("projectId", as: UUID.self),
-              let project = try await repository.find(projectId) else {
-            throw Abort(.notFound)
+    func getProjectBySlug(req: Request) async throws -> ProjectOutput {
+        guard let slug = req.parameters.get("slug"),
+              let project = try await repository.find(slug) else {
+            throw Failed.idNotFound
         }
-        return ProjectOutput(from: project)
+        return try await project.toDTO(from: req.db)
     }
 
     // Create a new project from repository call
     @Sendable
-    func create(req: Request) async throws -> ProjectOutput {
-        let projectInput = try req.content.decode(ProjectInput.self)
-        let project = projectInput.toModel()
-        project.imageURLs = []
-
-        if let images = projectInput.images {
-            var imagePaths: [String] = []
-
-            for image in images {
-                let imagePath = try await ImageUseCase().upload(image, on: req)
-                imagePaths.append(imagePath)
-            }
-
-            project.imageURLs = imagePaths
-        }
-
-        try await repository.create(projectInput)
-        return ProjectOutput(from: project)
+    func create(req: Request) async throws -> HTTPStatus {
+        let input = try req.content.decode(ProjectInput.self)
+        try await repository.create(input, on: req)
+        return .created
     }
 
     // Update an existing project from repository call
     @Sendable
-    func update(req: Request) async throws -> ProjectOutput {
-        guard let projectId = req.parameters.get("projectId", as: UUID.self),
-              let project = try await repository.find(projectId) else {
+    func update(req: Request) async throws -> HTTPStatus {
+        guard let slug = req.parameters.get("slug") else {
             throw Abort(.notFound)
         }
-
         let updatedProject = try req.content.decode(ProjectInput.self)
-        project.name = updatedProject.name
-        project.introduction = updatedProject.introduction
-        project.presentation = updatedProject.presentation
-        project.background = updatedProject.background
-        project.technicalDetails = updatedProject.technicalDetails
-
-        if let images = updatedProject.images {
-            var imagePaths: [String] = []
-
-            for image in images {
-                let imagePath = try await ImageUseCase().upload(image, on: req)
-                imagePaths.append(imagePath)
-            }
-
-            project.imageURLs = imagePaths
-        }
-
-        try await repository.update(updatedProject)
-        return ProjectOutput(from: project)
+        try await repository.update(updatedProject, slug, on: req)
+        return .ok
     }
 
     // Delete existing project from repository call
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let projectId = req.parameters.get("projectId", as: UUID.self),
-              let project = try await repository.find(projectId) else {
+        guard let slug = req.parameters.get("slug") else {
             throw Abort(.notFound)
         }
-
-        try await repository.delete(project)
+        try await repository.delete(slug, on: req)
         return .noContent
     }
 }

@@ -6,7 +6,7 @@ meta {
 
 post {
   url: {{url}}/auth/register
-  body: json
+  body: multipartForm
   auth: none
 }
 
@@ -16,8 +16,16 @@ body:json {
       "firstName":"",
       "lastName":""
     },
-    "email": "test@mail.tld",
+    "email": "admin@mail.tld",
     "password": "password",
-    "role": "member"
+    "role": "admin"
   }
+}
+
+body:multipart-form {
+  nickName: testtesttest
+  email: test@mail.tld
+  password: test
+  role: member
+  lastName: testtest
 }

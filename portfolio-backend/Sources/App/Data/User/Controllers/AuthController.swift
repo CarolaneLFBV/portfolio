@@ -20,43 +20,19 @@ extension User.Controllers.AuthConfig {
     @Sendable
     func login(req: Request) async throws -> TokenDTO {
         let userRequest = try req.content.decode(User.Entity.LoginCredentials.self)
-
-        guard let user = try await repository.findUserByEmail(userRequest.email) else {
-            throw Failed.idNotFound
-        }
-
-        let isValidPassword = try Bcrypt.verify(userRequest.password, created: user.password)
-        guard isValidPassword else {
-            throw Failed.invalidData
-        }
-
+        let user = try await repository.verify(userRequest)
         let token = try UserJWT.generateToken(for: user, req: req)
         return .init(jwt: token)
     }
 
     @Sendable
-    func register(req: Request) async throws -> UserOutput {
-        let userInput = try req.content.decode(UserInput.self)
-
-        guard let password = userInput.password, !password.isEmpty else {
-            throw Failed.invalidData
-        }
-        let passwordHash = try Bcrypt.hash(password)
-
-        guard try await repository.findUserByEmail(userInput.email) == nil else {
-            throw Abort(.conflict, reason: "Email already exists")
-        }
-
-        let user = userInput.toModel()
-
+    func register(req: Request) async throws -> HTTPStatus {
+        var userInput = try req.content.decode(UserInput.self)
         if let imageFile = userInput.image {
             let imageURL = try await ImageUseCase().upload(imageFile, on: req)
-            user.imageURL = imageURL
+            userInput.imagePath = imageURL
         }
-
-        user.password = passwordHash
-
-        try await repository.saveUser(user)
-        return UserOutput(from: user)
+        try await repository.create(userInput)
+        return .created
     }
 }

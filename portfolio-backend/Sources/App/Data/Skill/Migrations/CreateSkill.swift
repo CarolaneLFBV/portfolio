@@ -6,10 +6,12 @@ struct CreateSkill: AsyncMigration {
             .id()
             .field("imageURL", .string)
             .field("name", .string, .required)
+            .field("slug", .string, .required)
             .field("tags", .array(of: .string), .required)
             .field("introduction_definition", .string)
             .field("introduction_context", .string)
             .field("history", .string)
+            .unique(on: "slug")
             .create()
     }
 

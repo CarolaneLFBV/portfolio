@@ -1,32 +1,54 @@
 import apiHelper from "~/utils/apiHelper";
 import {ref} from "vue";
-import type {Skill, SkillCreation} from "~/types/skill";
+import type {Skill, SkillInput} from "~/types/skill";
 
-const newSkill = ref<SkillCreation>({
+const newSkill = ref<SkillInput>({
+    image: undefined,
     name: '',
     tags: [],
-    context: '',
-    proofs: '',
-    retrospective: '',
-    progress: '',
+    introduction: { definition: '', context: '' },
+    history: '',
     projects: [],
-    experiences: []
+    experiences: [],
 });
 
 export default function () {
-    async function createSkill(skill: Skill) {
+    async function createSkill(skill: SkillInput) {
+        // Convert SkillInput to FormData for file upload
+        const formData = new FormData();
+        formData.append('name', skill.name);
+        formData.append('tags', skill.tags.join(',')); // Convert array to comma-separated string
+        formData.append('introduction[definition]', skill.introduction.definition || '');
+        formData.append('introduction[context]', skill.introduction.context || '');
+        if (skill.history) formData.append('history', skill.history);
+
+        // Append projects and experiences as IDs
+        skill.projects.forEach(project => formData.append('projects[]', project.id.toString()));
+        skill.experiences.forEach(experience => formData.append('experiences[]', experience.id.toString()));
+
+        // Append the image file if it exists
+        if (skill.image) {
+            formData.append('image', skill.image);
+        }
+
+        // Send FormData using apiHelper
         try {
-            const response = await apiHelper.kyPrivatePost<Skill>(`skills/create`, skill);
+            const response = await apiHelper.kyPrivatePost<Skill>(`skills/create`, {
+                body: formData,
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
             return response.data;
         } catch (error) {
-            console.error('Erreur lors de la création du skill:', error);
+            console.error('Error creating skill:', error);
             throw error;
         }
     }
 
-    async function getSkillById(skillID: string) {
+    async function getSkillBySlug(slug: string) {
         try {
-            const response = await apiHelper.kyPrivateGet<Skill>(`skills/${skillID}`);
+            const response = await apiHelper.kyPrivateGet<Skill>(`skills/${slug}`);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la récupération du skill:', error);
@@ -45,7 +67,7 @@ export default function () {
 
     async function updateSkill(skill: Skill) {
         try {
-            const response = await apiHelper.kyPrivatePatch<Skill>(`skills/${skill.id}`, skill);
+            const response = await apiHelper.kyPrivatePatch<Skill>(`skills/${skill.slug}`, skill);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la mise à jour du skill:', error);
@@ -53,10 +75,9 @@ export default function () {
         }
     }
 
-    // Response: HTTPCode
-    async function deleteSkill(skillID: string) {
+    async function deleteSkill(slug: string) {
         try {
-            const response = await apiHelper.kyPrivateDelete(`skills/${skillID}`)
+            const response = await apiHelper.kyPrivateDelete(`skills/${slug}`)
             return response;
         } catch (error) {
             console.error('Erreur lors de la suppression du projet:', error);
@@ -67,7 +88,7 @@ export default function () {
     return {
         newSkill,
         createSkill,
-        getSkillById,
+        getSkillBySlug,
         getSkills,
         updateSkill,
         deleteSkill,

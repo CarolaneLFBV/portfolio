@@ -2,11 +2,8 @@ import Fluent
 import Vapor
 
 extension Skill.Repositories {
-    struct SkillRepository: Crudable {
+    struct SkillRepository {
         let db: Database
-        typealias SkillEntity = Skill.Entity
-        typealias ProjectEntity = Project.Entity
-        typealias ExperienceEntity = Experience.Entity
 
         // Fetch all skills with associated projects and experiences
         func findAll() async throws -> [SkillEntity] {
@@ -17,17 +14,23 @@ extension Skill.Repositories {
         }
 
         // Find a specific skill by ID, including its related projects and experiences
-        func find(_ id: UUID) async throws -> SkillEntity? {
+        func find(_ slug: String) async throws -> SkillEntity? {
             try await SkillEntity.query(on: db)
-                .filter(\.$id == id)
+                .filter(\.$slug == slug)
                 .with(\.$projects)
                 .with(\.$experiences)
                 .first()
         }
 
         // Create a new skill and attach related projects and experiences
-        func create(_ input: Skill.Dto.Input) async throws {
+        func create(_ input: Skill.Dto.Input, on req: Request) async throws {
             let skill = input.toModel()
+
+            if let image = input.image {
+                let imageURL = try await ImageUseCase().upload(image, on: req)
+                skill.imageURL = imageURL
+            }
+
             try await skill.save(on: db)
 
             if !input.projects.isEmpty {
@@ -43,15 +46,25 @@ extension Skill.Repositories {
                     .all()
                 try await skill.$experiences.attach(experienceModels, on: db)
             }
-            try await skill.$projects.load(on: db)
-            try await skill.$experiences.load(on: db)
+
+            try await skill.save(on: db)
         }
 
         // Update an existing skill, managing its project and experience relationships
-        func update(_ input: Skill.Dto.Input) async throws {
-            let skill = input.toModel()
-            try await skill.$projects.load(on: db)
-            try await skill.$experiences.load(on: db)
+        func update(_ input: Skill.Dto.Input, _ slug: String, on req: Request) async throws {
+            guard let skill = try await find(slug) else {
+                throw Failed.idNotFound
+            }
+            skill.name = input.name
+            skill.slug = input.name.slug()
+            skill.tags = input.tags
+            skill.introduction = input.introduction
+            skill.history = input.history
+
+            if let image = input.image {
+                let imageData = try await ImageUseCase().upload(image, on: req)
+                skill.imageURL = imageData
+            }
 
             if input.projects.isEmpty {
                 try await skill.$projects.detachAll(on: db)
@@ -76,10 +89,19 @@ extension Skill.Repositories {
             try await skill.update(on: db)
         }
 
-        // Delete an existing skill
-        func delete(_ skill: SkillEntity) async throws {
-            try await skill.delete(on: db)
-        }
-    }
+        // Delete an existing skill, including its associated image
+         func delete(_ slug: String, req: Request) async throws {
+             guard let skill = try await find(slug) else {
+                 throw Failed.idNotFound
+             }
 
+             // Delete the associated image if it exists
+             if let imageURL = skill.imageURL {
+                 try await ImageUseCase().delete(at: imageURL, on: req)
+             }
+
+             // Delete the skill from the database
+             try await skill.delete(on: db)
+         }
+    }
 }

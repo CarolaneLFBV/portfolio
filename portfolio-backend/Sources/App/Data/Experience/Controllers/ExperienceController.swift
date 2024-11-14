@@ -14,9 +14,9 @@ extension Experience.Controllers {
 
         func boot(routes: any RoutesBuilder) throws {
             let experiences = routes.grouped("experiences")
-            let experience = experiences.grouped(":experienceId")
+            let experience = experiences.grouped(":slug")
             experiences.get(use: self.index)
-            experience.get(use: self.getExperience)
+            experience.get(use: self.getExperienceBySlug)
 
             let protected = experiences.grouped([
                 User.Middlewares.JWTAuthAuthenticator(),
@@ -24,7 +24,7 @@ extension Experience.Controllers {
                 User.Entity.guardMiddleware()])
             protected.post("create", use: self.create)
 
-            let protectedElement = protected.grouped(":experienceId")
+            let protectedElement = protected.grouped(":slug")
             protectedElement.patch(use: self.update)
             protectedElement.delete(use: self.delete)
         }
@@ -36,80 +36,45 @@ extension Experience.Controllers.Config {
     @Sendable
     func index(req: Request) async throws -> [ExperienceOutput] {
         let experiences = try await repository.findAll()
-        return experiences.map { ExperienceOutput(from: $0) }
+        return try await experiences.toDto(from: req.db)
     }
 
     // Find a specific experience from repository call
     @Sendable
-    func getExperience(req: Request) async throws -> ExperienceOutput {
-        guard let experienceId = req.parameters.get("experienceId", as: UUID.self),
-              let experience = try await repository.find(experienceId) else {
+    func getExperienceBySlug(req: Request) async throws -> ExperienceOutput {
+        guard let slug = req.parameters.get("slug"),
+              let experience = try await repository.find(slug) else {
             throw Failed.idNotFound
         }
-        return ExperienceOutput(from: experience)
+        return try await experience.toDTO(from: req.db)
     }
 
     // Create a new experience from repository call
     @Sendable
-    func create(req: Request) async throws -> ExperienceOutput {
-        let experienceInput = try req.content.decode(ExperienceInput.self)
-        let experience = experienceInput.toModel()
-
-        if let images = experienceInput.images {
-            var imagePaths: [String] = []
-
-            for image in images {
-                let imagePath = try await ImageUseCase().upload(image, on: req)
-                imagePaths.append(imagePath)
-            }
-
-            experience.imageURLs = imagePaths
-        }
-
-        try await repository.create(experienceInput)
-        return ExperienceOutput(from: experience)
+    func create(req: Request) async throws -> HTTPStatus {
+        let input = try req.content.decode(ExperienceInput.self)
+        try await repository.create(input, on: req)
+        return .created
     }
 
     // Update an existing project from repository call
     @Sendable
-    func update(req: Request) async throws -> ExperienceOutput {
-        guard let experienceId = req.parameters.get("experienceId", as: UUID.self),
-              let experience = try await repository.find(experienceId) else {
-            throw Abort(.notFound)
+    func update(req: Request) async throws -> HTTPStatus {
+        guard let slug = req.parameters.get("slug") else {
+            throw Failed.idNotFound
         }
-
-        let updatedExperience = try req.content.decode(ExperienceInput.self)
-        experience.name = updatedExperience.name
-        experience.type = updatedExperience.type
-        experience.introduction = updatedExperience.introduction
-        experience.period = updatedExperience.period
-        experience.companyName = updatedExperience.companyName
-        experience.missionDetails = updatedExperience.missionDetails
-
-        if let images = updatedExperience.images {
-            var imagePaths: [String] = []
-
-            for image in images {
-                let imagePath = try await ImageUseCase().upload(image, on: req)
-                imagePaths.append(imagePath)
-            }
-
-            experience.imageURLs = imagePaths
-        }
-
-        try await repository.update(updatedExperience)
-        return ExperienceOutput(from: experience)
+        let input = try req.content.decode(ExperienceInput.self)
+        try await repository.update(input, slug, on: req)
+        return .ok
     }
 
     // Delete existing experience from repository call
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let experienceId = req.parameters.get("experienceId", as: UUID.self),
-                let experience = try await repository.find(experienceId) else {
+        guard let slug = req.parameters.get("slug") else {
             throw Failed.idNotFound
         }
-
-        try await repository.delete(experience)
+        try await repository.delete(slug, on: req)
         return .noContent
     }
 

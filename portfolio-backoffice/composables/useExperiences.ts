@@ -3,22 +3,22 @@ import {ref} from "vue";
 import type {Experience, ExperienceCreation} from "~/types/experience";
 
 const newExperience = ref<ExperienceCreation>({
+    imageURLs: [],
+    name: '',
+    slug: '',
     type: '',
-    startDate: '',
-    endDate: '',
-    position: '',
+    period: {
+        startDate: '',
+        endDate: ''
+    },
     companyName: '',
-    companyLogo: '',
-    degree: '',
-    misc: '',
-    status: '',
     missionDetails: '',
     projects: [],
     skills: []
 });
 
 export default function () {
-    async function createExperience(experience: Experience) {
+    async function create(experience: Experience) {
         try {
             const response = await apiHelper.kyPrivatePost<Experience>(`experiences/create`, experience);
             return response.data;
@@ -28,9 +28,9 @@ export default function () {
         }
     }
 
-    async function getExperienceById(experienceId: string) {
+    async function getExperienceBySlug(slug: string) {
         try {
-            const response = await apiHelper.kyPrivateGet<Experience>(`experiences/${experienceId}`);
+            const response = await apiHelper.kyPrivateGet<Experience>(`experiences/${slug}`);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la récupération du skill:', error);
@@ -48,9 +48,9 @@ export default function () {
         }
     }
 
-    async function updateExperience(experience: Experience) {
+    async function update(experience: Experience) {
         try {
-            const response = await apiHelper.kyPrivatePatch<Experience>(`experiences/${experience.id}`, experience);
+            const response = await apiHelper.kyPrivatePatch<Experience>(`experiences/${experience.slug}`, experience);
             return response.data;
         } catch (error) {
             console.error('Erreur lors de la mise à jour du skill:', error);
@@ -58,10 +58,9 @@ export default function () {
         }
     }
 
-    // Response: HTTPCode
-    async function deleteExperience(experienceId: string) {
+    async function deleteExperience(slug: string) {
         try {
-            const response = await apiHelper.kyPrivateDelete(`experiences/${experienceId}`)
+            const response = await apiHelper.kyPrivateDelete(`experiences/${slug}`)
             return response;
         } catch (error) {
             console.error('Erreur lors de la suppression du projet:', error);
@@ -71,10 +70,10 @@ export default function () {
 
     return {
         newExperience,
-        createExperience,
-        getExperienceById,
+        create,
+        getExperienceBySlug,
         getExperiences,
-        updateExperience,
+        update,
         deleteExperience,
     }
 }
