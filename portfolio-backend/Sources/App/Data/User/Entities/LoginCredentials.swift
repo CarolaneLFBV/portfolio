@@ -3,7 +3,7 @@ import Vapor
 
 extension User.Entity {
     struct LoginCredentials: Content {
-        var email: String
-        var password: String
+        let email: String
+        let password: String
     }
 }

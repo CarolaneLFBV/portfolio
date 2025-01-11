@@ -1,45 +1,86 @@
-<script setup lang="ts">
-import {useAuthStore} from "~/stores/useAuthStore";
-import useUsers from "~/composables/useUsers";
-import BaseButton from "~/components/buttons/BaseButton.vue";
+<script lang="ts" setup>
+import {useUserStore} from '~/stores/useUserStore';
+import useUser from '~/composables/useUser'
+import {cn} from '~/lib/utils'
+import {Label} from '~/components/ui/label'
+import {Input} from '~/components/ui/input'
 
-const {register} = useAuthStore();
-const {user} = useUsers();
+const {userCred} = useUser();
+const userStore = useUserStore();
 
-async function onRegister() {
+const register = async () => {
   try {
-    await register({
-      email: user.value.email,
-      password: user.value.password,
-      role: 'member',
-    })
-  } catch (error) {
+    await userStore.register({
+      nickName: userCred.value.nickName,
+      email: userCred.value.email,
+      password: userCred.value.password,
+      role: 'member'
+    });
+  } catch (error: any) {
     console.log(error);
   }
-}
+};
 </script>
 
 <template>
-  <div class="flex items-center justify-center">
-    <div class="card-container">
-      <div class="text-align-center">
-        <h1 class="flex justify-center text-2xl mb-4 text-white"> {{ $t("auth.signup-title") }}</h1>
+  <div :class="cn('grid gap-6', $attrs.class ?? '')">
+    <form @submit.prevent="register">
+      <div class="grid gap-2">
+        <div class="grid gap-1">
+          <p> {{ $t('user.nickname') }} </p>
+          <Label class="sr-only">
+            {{ $t('user.nickname') }}
+          </Label>
+          <Input
+              id="nickname"
+              v-model="userCred.nickName"
+              auto-capitalize="none"
+              auto-correct="off"
+              placeholder="johndoe"
+          />
+        </div>
+        <div class="grid gap-1">
+          <p> {{ $t('user.email') }} </p>
+          <Label class="sr-only" for="email">
+            {{ $t('user.email') }}
+          </Label>
+          <Input
+              id="email"
+              v-model="userCred.email"
+              auto-capitalize="none"
+              auto-complete="email"
+              auto-correct="off"
+              placeholder="name@example.com"
+              type="email"
+          />
+        </div>
+        <div class="grid gap-1">
+          <p> {{ $t('user.password') }} </p>
+          <Label class="sr-only" for="email">
+            {{ $t('user.password') }}
+          </Label>
+          <Input
+              id="password"
+              v-model="userCred.password"
+              auto-capitalize="none"
+              auto-complete="email"
+              auto-correct="off"
+              placeholder="*********"
+              type="password"
+          />
+        </div>
+        <div class="flex flex-col items-center space-y-4">
+          <Button class="w-full" type="submit">
+            {{ $t('auth.create-acc') }}
+          </Button>
+          <div class="text-sm text-muted-foreground">
+            <span>{{ $t('auth.already-acc') }}</span>
+            <a class="ml-1 text-primary hover:underline" href="/">
+              {{ $t('auth.log-in') }}
+            </a>
+          </div>
+        </div>
       </div>
-      <form @submit.prevent="onRegister">
-        <div class="flex flex-col mb-2">
-          <label class="text-white text-opacity-50 text-sm mb-1" for="email">{{ $t("auth.email") }}</label>
-          <input class="form-input rounded-lg" id="email" type="email" v-model="user.email" required :placeholder="$t('auth.email-placeholder')"/>
-        </div>
-
-        <div class="flex flex-col mb-4">
-          <label class="text-white text-opacity-50 text-sm mb-1" for="password">{{ $t("auth.password") }}</label>
-          <input class="form-input rounded-lg" id="password" type="password" v-model="user.password" required :placeholder="$t('auth.password-placeholder')"/>
-        </div>
-
-        <div class="text-center">
-          <BaseButton class="bg-violet hover:bg-violet-dark" type="submit"> {{ $t("auth.signup") }} </BaseButton>
-        </div>
-      </form>
-    </div>
+    </form>
   </div>
 </template>

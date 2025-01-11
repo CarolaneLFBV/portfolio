@@ -12,20 +12,16 @@ post {
 
 body:json {
   {
-    "fullName": {
-      "firstName":"",
-      "lastName":""
-    },
-    "email": "admin@mail.tld",
+    "nickname": "member",
+    "email": "member@mail.tld",
     "password": "password",
-    "role": "admin"
+    "role": "member"
   }
 }
 
 body:multipart-form {
-  nickName: testtesttest
-  email: test@mail.tld
-  password: test
-  role: member
-  lastName: testtest
+  nickName: member
+  email: member@mail.tld
+  password: password
+  ~role: member
 }

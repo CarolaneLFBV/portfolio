@@ -1,41 +1,30 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-04-03',
+  compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  css: ['~/assets/css/main.css'],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {}
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: process.env.VITE_API_URL || 'http://localhost:8080'
     }
   },
-  typescript: {
-    strict: true
-  },
-  router: {
-    middleware: ['auth']
-  },
-  app: {
-    head: {
-      link: [
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap'
-        },
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/icon?family=Material+Icons'
-        }
-      ]
-    }
-  },
-
+  ssr: false,
   modules: [
-      '@nuxtjs/i18n',
-      '@nuxt/icon',
-      'pinia-plugin-persistedstate/nuxt',
+    '@nuxtjs/tailwindcss',
+    'shadcn-nuxt',
+    '@pinia/nuxt',
+    '@nuxtjs/i18n'
   ],
-
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: './components/ui'
+  },
   i18n: {
     locales: [
       { code: 'en', name: 'English', iso: 'en-US', file: 'en.json' },
@@ -44,6 +33,6 @@ export default defineNuxtConfig({
     defaultLocale: 'fr',
     lazy: true,
     langDir: 'locales/',
-    strategy: 'no_prefix',
-  },
+    strategy: 'no_prefix'
+  }
 })

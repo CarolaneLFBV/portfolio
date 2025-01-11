@@ -6,6 +6,7 @@ extension Skill.Dto {
         let id: UUID?
         let name: String
         let slug: String
+        let type: SkillType
         let tags: [String]
         let introduction: Introduction
         let history: String?

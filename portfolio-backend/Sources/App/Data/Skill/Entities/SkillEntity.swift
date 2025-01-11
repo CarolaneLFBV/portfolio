@@ -2,10 +2,15 @@ import Fluent
 import Vapor
 
 typealias SkillEntity = Skill.Entity
+typealias SkillType = Skill.Entity.SkillType
 
 extension Skill {
     final class Entity: Model, @unchecked Sendable {
         static let schema = "skills"
+
+        enum SkillType: String, Codable {
+            case technical, soft
+        }
 
         @ID(key: .id)
         var id: UUID?
@@ -18,6 +23,9 @@ extension Skill {
 
         @Field(key: "slug")
         var slug: String
+
+        @Field(key: "type")
+        var type: SkillType
 
         @Field(key: "tags")
         var tags: [String]
@@ -40,6 +48,7 @@ extension Skill {
              imageURL: String? = nil,
              name: String,
              slug: String,
+             type: SkillType,
              tags: [String],
              introduction: Introduction,
              history: String?) {
@@ -47,6 +56,7 @@ extension Skill {
             self.imageURL = imageURL
             self.name = name
             self.slug = slug
+            self.type = type
             self.tags = tags
             self.introduction = introduction
             self.history = history
@@ -60,6 +70,7 @@ extension Skill.Entity {
             id: id,
             name: name,
             slug: slug,
+            type: type,
             tags: tags,
             introduction: introduction,
             history: history,

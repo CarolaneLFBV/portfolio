@@ -4,6 +4,7 @@ extension Skill.Dto {
     // Defines data that the API accepts.
     struct Input: Content {
         let name: String
+        let type: SkillType
         let tags: [String]
         let introduction: Introduction
         let history: String?
@@ -14,7 +15,10 @@ extension Skill.Dto {
 
         init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: Skill.Dto.Input.CodingKeys.self)
-            self.name = try container.decode(String.self, forKey: Skill.Dto.Input.CodingKeys.name)
+            self.name = try container.decode(String.self,
+                                             forKey: Skill.Dto.Input.CodingKeys.name)
+            self.type = try container.decode(Skill.Dto.SkillType.self,
+                                             forKey: Skill.Dto.Input.CodingKeys.type)
             self.tags = try container.decode([String].self, forKey: Skill.Dto.Input.CodingKeys.tags)
             self.introduction = try container.decode(Skill.Dto.Introduction.self,
                                                      forKey: Skill.Dto.Input.CodingKeys.introduction)
@@ -31,6 +35,7 @@ extension Skill.Dto {
             let skill = Skill.Entity()
             skill.name = self.name
             skill.slug = self.name.slug()
+            skill.type = self.type
             skill.tags = self.tags
             skill.introduction = self.introduction
             skill.history = self.history

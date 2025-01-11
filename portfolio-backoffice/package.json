@@ -10,24 +10,27 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxt/icon": "^1.5.1",
-    "@nuxtjs/i18n": "^8.5.5",
-    "jwt-decode": "^4.0.0",
-    "ky": "^1.7.2",
-    "nuxt": "^3.13.0",
-    "pinia": "^2.2.2",
-    "pinia-plugin-persistedstate": "^4.0.2",
+    "@nuxtjs/color-mode": "^3.5.2",
+    "@nuxtjs/i18n": "^9.1.1",
+    "@nuxtjs/tailwindcss": "^6.12.2",
+    "@pinia/nuxt": "^0.9.0",
+    "@radix-icons/vue": "^1.0.0",
+    "@unovis/ts": "^1.5.0",
+    "@unovis/vue": "^1.5.0",
+    "@vueuse/core": "^12.4.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "nuxt": "^3.15.1",
+    "pinia": "^2.3.0",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "radix-vue": "^1.9.12",
+    "shadcn-nuxt": "^0.11.3",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss-animate": "^1.0.7",
     "vue": "latest",
     "vue-router": "latest"
   },
-  "packageManager": "pnpm@9.9.0+sha512.60c18acd138bff695d339be6ad13f7e936eea6745660d4cc4a776d5247c540d0edee1a563695c183a66eb917ef88f2b4feb1fc25f32a7adcadc7aaf3438e99c1",
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.9",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
-    "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.8",
-    "tailwindcss": "^3.4.13",
-    "typescript": "^5.6.2"
+    "typescript": "^5.7.3"
   }
 }

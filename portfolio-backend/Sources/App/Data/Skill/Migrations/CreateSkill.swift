@@ -7,6 +7,7 @@ struct CreateSkill: AsyncMigration {
             .field("imageURL", .string)
             .field("name", .string, .required)
             .field("slug", .string, .required)
+            .field("type", .string, .required)
             .field("tags", .array(of: .string), .required)
             .field("introduction_definition", .string)
             .field("introduction_context", .string)

@@ -1,0 +1,39 @@
+{
+  "app": {
+    "name": "Carolane Lefebvre - Back office"
+  },
+  "auth": {
+    "already-acc": "You already have an account?",
+    "log-in": "Log in",
+    "log-in-desc": "Enter your email below to log into your account",
+    "log-out": "Log Out",
+    "logged-out": "Logged Out",
+    "logged-out-desc": "You have been logged out, please",
+    "no-account": "Don't have an account?",
+    "create-acc": "Create an account",
+    "create-acc-desc": "Enter your information to create an account"
+  },
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "experience": {
+    "title": "Experiences"
+  },
+  "footer": {
+    "copyright": "© 2024 Carolane Lefebvre. All rights reserved."
+  },
+  "project": {
+    "title": "Projects"
+  },
+  "skill": {
+    "title": "Skills"
+  },
+  "user": {
+    "email": "Email",
+    "nickname": "Nickname",
+    "password": "Password"
+  },
+  "utils": {
+    "create": "Create"
+  }
+}

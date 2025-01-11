@@ -1,0 +1,23 @@
+{
+  "app": {
+    "name": "Carolane Lefebvre - Back office"
+  },
+  "auth": {
+    "log-in": "Log in",
+    "log-in-desc": "Enter your email below to log into your account",
+    "log-out": "Log Out",
+    "logged-out": "Logged Out",
+    "logged-out-desc": "You have been logged out, please",
+    "no-account": "Don't have an account?",
+    "create-acc": "Create an account",
+    "create-acc-desc": "Enter your information to create an account"
+  },
+  "user": {
+    "email": "Email",
+    "nickname": "Nickname",
+    "password": "Password"
+  },
+  "utils": {
+    "create": "Create"
+  }
+}

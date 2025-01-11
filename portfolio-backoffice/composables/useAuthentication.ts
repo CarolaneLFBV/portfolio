@@ -4,7 +4,7 @@ export default function useAuthentication() {
         return JSON.parse(window.atob(jwt.split('.')[1])).exp < Math.trunc(Date.now() / 1000);
     }
 
-    const isAdmin = (jwt: string): boolean => {
+    const isAdmin = (jwt: string | null): boolean => {
         if (!jwt) return false;
         try {
             const base64Url = jwt.split('.')[1];
