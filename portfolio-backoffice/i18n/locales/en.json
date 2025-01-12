@@ -16,16 +16,17 @@
   "dashboard": {
     "title": "Dashboard"
   },
-  "experience": {
+  "experiences": {
     "title": "Experiences"
   },
   "footer": {
     "copyright": "© 2024 Carolane Lefebvre. All rights reserved."
   },
-  "project": {
+  "projects": {
     "title": "Projects"
   },
-  "skill": {
+  "skills": {
+    "new": "New Skill",
     "title": "Skills"
   },
   "user": {
@@ -34,6 +35,9 @@
     "password": "Password"
   },
   "utils": {
-    "create": "Create"
+    "create": "Create",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit"
   }
 }

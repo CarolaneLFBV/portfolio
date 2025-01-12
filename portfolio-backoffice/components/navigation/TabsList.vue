@@ -1,12 +1,6 @@
 <script lang="ts" setup>
 import {TabsList as BaseTabsList, TabsTrigger as BaseTabsTrigger} from "~/components/ui/tabs";
 
-// Déclare les props
-interface TabItem {
-  value: string;
-  label: string;
-}
-
 const props = defineProps<{
   tabs: TabItem[];
 }>();

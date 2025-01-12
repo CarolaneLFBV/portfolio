@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {Tabs,} from '~/components/ui/tabs'
-import TabsList from '~/components/dashboard/TabsList.vue'
+import TabsList from '~/components/navigation/TabsList.vue'
 
 definePageMeta({
   layout: 'dashboard-layout',

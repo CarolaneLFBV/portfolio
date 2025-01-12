@@ -16,7 +16,7 @@ export default function useAuthentication() {
             return false;
         }
     };
-
+    
     const setToken = (jwt: string) => {
         sessionStorage.setItem('jwt', jwt);
     };
@@ -25,5 +25,5 @@ export default function useAuthentication() {
         sessionStorage.removeItem('jwt');
     };
 
-    return { tokenExpired, isAdmin, setToken, removeToken };
+    return {tokenExpired, isAdmin, setToken, removeToken};
 }
