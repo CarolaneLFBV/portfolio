@@ -1,13 +1,6 @@
-<script lang="ts" setup>
-
-</script>
-
 <template>
-  <footer class=" p-0 text-center">
+  <footer class="p-4 text-center">
     <p>{{ $t("footer.copyright") }}</p>
+    <p>{{ $t("footer.techs") }}</p>
   </footer>
 </template>
-
-<style scoped>
-
-</style>

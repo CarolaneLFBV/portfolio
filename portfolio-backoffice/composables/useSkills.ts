@@ -3,8 +3,9 @@ import {$fetch} from "ofetch";
 
 const newSkill = ref<SkillInput>({
     image: undefined,
+    slug: '',
     name: '',
-    type: '',
+    type: 'technical',
     tags: [],
     introduction: {definition: '', context: ''},
     history: '',
@@ -17,18 +18,24 @@ export default function () {
     const apiBaseUrl = config.public.apiBaseUrl;
     const tokenStorage = sessionStorage.getItem("jwt");
 
-    async function createSkill(skill: SkillInput) {
+    async function getSkillImage(image?: File | string) {
+        if (image instanceof File) {
+            return URL.createObjectURL(image);
+        }
+        return image || '/public/okeep.png';
+    }
+
+    async function createSkill(formData: FormData) {
         try {
             return await $fetch(`${apiBaseUrl}/skills/create`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${tokenStorage}`
                 },
-                body: JSON.stringify(skill),
+                body: formData,
             });
         } catch (error) {
-            console.log('Skill creation error:', error);
+            console.error("Error creating skill:", error);
             throw error;
         }
     }
@@ -44,9 +51,51 @@ export default function () {
         }
     }
 
+    async function getSkillBySlug(slug: string) {
+        try {
+            return await $fetch(`${apiBaseUrl}/skills/${slug}`, {
+                method: 'GET',
+            });
+        } catch (error) {
+            console.error('error get by slug', error);
+            throw error;
+        }
+    }
+
+    async function updateSkill(slug: string, formData: FormData) {
+        try {
+            return await $fetch(`${apiBaseUrl}/skills/${slug}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${tokenStorage}`
+                },
+                body: formData,
+            })
+        } catch (error) {
+            console.error('Error updating skill', error);
+        }
+    }
+
+    async function deleteSkill(slug: string) {
+        try {
+            return await $fetch(`${apiBaseUrl}/skills/${slug}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${tokenStorage}`
+                },
+            });
+        } catch (error) {
+            console.error('error delete: ', error);
+        }
+    }
+
     return {
         newSkill,
         createSkill,
-        getSkills
+        getSkills,
+        deleteSkill,
+        getSkillBySlug,
+        updateSkill,
+        getSkillImage
     }
 }

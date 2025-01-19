@@ -1,57 +1,67 @@
 <script lang="ts" setup>
-import {Tabs, TabsContent} from '~/components/ui/tabs';
-import TabsList from '~/components/navigation/TabsList.vue';
-import {PlusIcon} from '@radix-icons/vue';
-import SkillCreateForm from '~/components/forms/create/SkillCreateForm.vue';
-import TechnicalSkillCard from "~/components/card/TechnicalSkillCard.vue";
-import SoftSkillCard from "~/components/card/SoftSkillCard.vue";
+import {ref} from "vue";
+import {Tabs, TabsContent} from "~/components/ui/tabs";
+import TabsList from "~/components/navigation/TabsList.vue";
+import SkillCardList from "~/components/card/SkillCardList.vue";
+import SkillCreateForm from "~/components/forms/create/SkillCreateForm.vue";
+import SkillUpdateForm from "~/components/forms/update/SkillUpdateForm.vue";
 
 definePageMeta({
   layout: 'dashboard-layout',
-  middleware: ['auth'],
+  middleware: ['auth', 'role'],
 });
 
-const isCreate = ref<boolean>(false);
+const isCreate = ref(false);
+const isUpdate = ref(false);
+const selectedSkillSlug = ref<string | null>(null); // Slug du skill à éditer
 
 const tabs = [
-  {value: 'technical-skills', label: 'Technical Skills'},
-  {value: 'soft-skills', label: 'Soft Skills'},
+  {value: "technical-skills", label: "Technical Skills"},
+  {value: "soft-skills", label: "Soft Skills"},
 ];
 
-async function onOpenCreate() {
-  try {
-    isCreate.value = true;
-  } catch (e) {
-    console.error(e);
-  }
+function onOpenCreate() {
+  isCreate.value = true;
+}
+
+function onEdit(slug: string) {
+  isUpdate.value = true;
+  selectedSkillSlug.value = slug;
+}
+
+function onCancel() {
+  isCreate.value = false;
+  isUpdate.value = false;
+  selectedSkillSlug.value = null;
 }
 </script>
 
 <template>
   <div class="flex-1 space-y-4 p-8 pt-6">
     <div class="flex items-center justify-between">
-      <h2 class="text-3xl font-bold tracking-tight">
-        {{ $t('skills.title') }}
-      </h2>
-      <Button @click="onOpenCreate">
-        <PlusIcon/>
-        {{ $t('skills.new') }}
+      <h2 class="text-3xl font-bold tracking-tight">{{ $t("skills.title") }}</h2>
+      <Button v-if="!isCreate && !isUpdate" @click="onOpenCreate">
+        {{ $t("skills.new") }}
       </Button>
     </div>
+
     <Tabs class="space-y-4" default-value="technical-skills">
-      <div v-if="!isCreate">
+      <div v-if="!isCreate && !isUpdate">
         <TabsList :tabs="tabs"/>
         <TabsContent class="space-y-4" value="technical-skills">
-          <TechnicalSkillCard/>
+          <SkillCardList type="technical" @edit="onEdit"/>
         </TabsContent>
-
         <TabsContent class="space-y-4" value="soft-skills">
-          <SoftSkillCard/>
+          <SkillCardList type="soft" @edit="onEdit"/>
         </TabsContent>
       </div>
 
-      <div v-else>
-        <SkillCreateForm v-model:create-skill="isCreate"/>
+      <div v-else-if="isCreate">
+        <SkillCreateForm @update:create-skill="onCancel"/>
+      </div>
+
+      <div v-else-if="isUpdate">
+        <SkillUpdateForm :slug="selectedSkillSlug" @update:update-skill="onCancel"/>
       </div>
     </Tabs>
   </div>

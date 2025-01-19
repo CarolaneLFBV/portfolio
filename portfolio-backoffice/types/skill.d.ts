@@ -14,16 +14,7 @@ export interface Skill {
     experiences: Experience[];
 }
 
-export interface SkillInput {
-    image?: null;
-    name: string;
-    type: string;
-    tags: string[];
-    introduction: Introduction
-    history?: string;
-    projects: Project[];
-    experiences: Experience[];
-}
+export type SkillInput = Pick<Skill, "slug", "image", "name", "type", "tags", "introduction", "history", "projects", "experiences">
 
 type Introduction = {
     definition?: string;

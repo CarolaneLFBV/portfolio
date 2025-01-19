@@ -20,13 +20,15 @@
     "title": "Experiences"
   },
   "footer": {
-    "copyright": "© 2024 Carolane Lefebvre. All rights reserved."
+    "copyright": "© 2022-2024 Carolane Lefebvre. All rights reserved.",
+    "techs": "💻 NuxtJS - Vapor"
   },
   "projects": {
     "title": "Projects"
   },
   "skills": {
     "new": "New Skill",
+    "none": "No Skills available, please create one",
     "title": "Skills"
   },
   "user": {
@@ -38,6 +40,7 @@
     "create": "Create",
     "cancel": "Cancel",
     "delete": "Delete",
-    "edit": "Edit"
+    "edit": "Edit",
+    "update": "Update"
   }
 }
