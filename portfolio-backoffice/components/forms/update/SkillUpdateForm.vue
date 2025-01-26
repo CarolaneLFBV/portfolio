@@ -30,7 +30,6 @@ async function onInit() {
   if (props.slug) {
     try {
       skill.value = await getSkillBySlug(props.slug);
-
       if (Array.isArray(skill.value.tags)) {
         skill.value.tags = skill.value.tags.join(", ");
       }
@@ -62,9 +61,9 @@ async function onSubmit() {
     formData.append("projects", JSON.stringify(selectedProjectIDs.value));
     formData.append("experiences", JSON.stringify(selectedExperienceIDs.value));
 
-    // if (selectedImage.value) {
-    //   formData.append("image", selectedImage.value);
-    // }
+    if (selectedImage.value) {
+      formData.append("image", selectedImage.value);
+    }
 
     await updateSkill(props.slug!, formData);
     emit('update:update-skill', false);
@@ -114,7 +113,16 @@ async function onSubmit() {
 
       <div class="mb-2">
         <Label class="text-opacity-50 text-sm mb-1" for="history">Image</Label>
-        <Textarea id="image" v-model="skill.image" required/>
+        <Input
+            id="image"
+            accept="image/*"
+            type="file"
+            @change="e => selectedImage.value = e.target.files[0]"
+        />
+        <div v-if="skill.image && !selectedImage.value" class="mt-2">
+          <p class="text-sm text-gray-500">Image actuelle :</p>
+          <img :src="skill.image" alt="Current Skill Image" class="w-32 h-32 rounded-md object-cover"/>
+        </div>
       </div>
 
     </form>

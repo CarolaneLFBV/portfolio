@@ -18,7 +18,6 @@ let package = Package(
         // JWT Authentication
         .package(url: "https://github.com/vapor/jwt.git", from: "4.0.0"),
         // Linter
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.55.1"),
     ],
     targets: [
         .executableTarget(
@@ -33,7 +32,7 @@ let package = Package(
             ],
             swiftSettings: swiftSettings,
             plugins: [
-                .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+                //.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
             ]
         ),
         .testTarget(

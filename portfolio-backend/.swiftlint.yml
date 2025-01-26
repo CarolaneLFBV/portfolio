@@ -1,3 +1,4 @@
+swiftlint_version: 0.58.2
 mode: autocorrect
 identifier_name:
   excluded:

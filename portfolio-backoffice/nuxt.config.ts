@@ -13,7 +13,7 @@ export default defineNuxtConfig({
         'shadcn-nuxt',
         '@pinia/nuxt',
         '@nuxtjs/i18n',
-        '@nuxtjs/color-mode'
+        '@nuxtjs/color-mode',
     ],
     shadcn: {
         /**
