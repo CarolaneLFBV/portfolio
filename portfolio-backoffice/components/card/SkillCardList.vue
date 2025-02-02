@@ -9,7 +9,7 @@ const props = defineProps<{
 }>();
 
 const skills = ref<Skill[]>([]);
-const {getSkills, deleteSkill} = useSkills();
+const {getSkills, deleteSkill, getSkillImage} = useSkills();
 
 const filteredSkills = computed(() => {
   return skills.value.filter(skill => skill.type === props.type);
@@ -43,7 +43,11 @@ async function onDelete(slug: string) {
       <Card class="flex flex-col items-start space-y-4 p-4">
         <div class="flex items-center space-x-4">
           <CardHeader>
-            <img class="w-32 h-32 rounded-md object-cover" src="/public/okeep.png"/>
+            <img
+                :src="`${getSkillImage(skill.imageURL)}`"
+                alt="Skill Logo"
+                class="w-32 h-32 rounded-md object-cover"
+            />
           </CardHeader>
           <div class="flex flex-col">
             <CardTitle class="text-lg font-bold">{{ skill.name }}</CardTitle>

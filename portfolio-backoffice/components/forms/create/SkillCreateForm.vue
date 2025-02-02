@@ -3,43 +3,42 @@ import useSkills from "~/composables/useSkills";
 import type {Project} from "~/types/project";
 import type {Experience} from "~/types/experience";
 import {Textarea} from "~/components/ui/textarea";
+import type {SkillInput} from "~/types/skill";
 
 const emit = defineEmits<{
   (_e: 'update:create-skill', _value: boolean): void,
 }>();
 
-function cancel() {
-  emit('update:create-skill', false);
-}
-
-const {createSkill, newSkill} = useSkills();
+// Skill
+const newSkill = ref<SkillInput>({
+  image: undefined,
+  name: '',
+  type: 'technical',
+  tags: [],
+  introduction: {definition: '', context: ''},
+  history: '',
+  projects: [],
+  experiences: [],
+});
+const {createSkill} = useSkills();
+// Projects and Experiences
 const projects = ref<Project[]>([]);
 const experiences = ref<Experience[]>([]);
 const selectedProjectIDs = ref([]);
 const selectedExperienceIDs = ref([]);
+// Image
 const selectedImage = ref<File | null>(null);
 
-async function onSubmit() {
-  try {
-    const formData = new FormData();
-    formData.append("name", newSkill.value.name);
-    formData.append("type", newSkill.value.type);
-
-    const tagsArray = newSkill.value.tags.split(',').map(tag => tag.trim());
-    tagsArray.forEach(tag => formData.append("tags[]", tag));
-
-    formData.append("introduction[definition]", newSkill.value.introduction.definition || "");
-    formData.append("introduction[context]", newSkill.value.introduction.context || "");
-    formData.append("history", newSkill.value.history || "");
-    formData.append("projects", JSON.stringify(selectedProjectIDs.value));
-    formData.append("experiences", JSON.stringify(selectedExperienceIDs.value));
-
-    await createSkill(formData);
-    emit('update:create-skill', false);
-  } catch (error) {
-    console.error("Error creating skill:", error);
-  }
+const onSubmit = async () => {
+  newSkill.value.tags = newSkill.value.tags.split(',');
+  await createSkill(newSkill.value);
+  emit('update:create-skill', false);
 }
+
+const cancel = () => {
+  emit('update:create-skill', false);
+}
+
 </script>
 
 <template>
@@ -57,7 +56,7 @@ async function onSubmit() {
 
       <div class="mb-2">
         <Label for="tags">Tags</Label>
-        <Input id="tags" v-model="newSkill.tags" required/>
+        <Input id="tags" v-model="newSkill.tags"/>
       </div>
 
       <div class="mb-2">
@@ -75,15 +74,16 @@ async function onSubmit() {
         <Textarea id="context" v-model="newSkill.introduction.context" required/>
       </div>
 
-      <div class="mb-2">
+      <div class="mb-4">
         <Label class="text-opacity-50 text-sm mb-1" for="history">History</Label>
         <Textarea id="history" v-model="newSkill.history" required/>
       </div>
+
+      <div class="flex flex-row gap-2">
+        <Button variant="secondary" @click="cancel">{{ $t("utils.cancel") }}</Button>
+        <Button type="submit">{{ $t("utils.create") }}</Button>
+      </div>
     </form>
-    <div class="flex flex-row gap-2">
-      <Button variant="secondary" @click="cancel()">{{ $t("utils.cancel") }}</Button>
-      <Button @click="onSubmit()">{{ $t("utils.create") }}</Button>
-    </div>
   </div>
 </template>
 

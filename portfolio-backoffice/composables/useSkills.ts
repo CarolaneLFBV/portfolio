@@ -1,38 +1,27 @@
-import type {SkillInput} from "~/types/skill";
+import type {Skill} from "~/types/skill";
 import {$fetch} from "ofetch";
-
-const newSkill = ref<SkillInput>({
-    image: undefined,
-    slug: '',
-    name: '',
-    type: 'technical',
-    tags: [],
-    introduction: {definition: '', context: ''},
-    history: '',
-    projects: [],
-    experiences: [],
-});
 
 export default function () {
     const config = useRuntimeConfig();
     const apiBaseUrl = config.public.apiBaseUrl;
     const tokenStorage = sessionStorage.getItem("jwt");
 
-    async function getSkillImage(image?: File | string) {
-        if (image instanceof File) {
-            return URL.createObjectURL(image);
+    async function getSkillImage(image: string | undefined) {
+        try {
+            return await $fetch(`${apiBaseUrl}/images/${image}`)
+        } catch (error) {
+            return error;
         }
-        return image || '/public/okeep.png';
     }
 
-    async function createSkill(formData: FormData) {
+    async function createSkill(skill: Skill) {
         try {
             return await $fetch(`${apiBaseUrl}/skills/create`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${tokenStorage}`
+                    'Authorization': `Bearer ${tokenStorage}`,
                 },
-                body: formData,
+                body: skill,
             });
         } catch (error) {
             console.error("Error creating skill:", error);
@@ -62,14 +51,14 @@ export default function () {
         }
     }
 
-    async function updateSkill(slug: string, formData: FormData) {
+    async function updateSkill(slug: string, skill: FormData) {
         try {
             return await $fetch(`${apiBaseUrl}/skills/${slug}`, {
-                method: 'PATCH',
+                method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${tokenStorage}`
                 },
-                body: formData,
+                body: skill,
             })
         } catch (error) {
             console.error('Error updating skill', error);
@@ -90,7 +79,6 @@ export default function () {
     }
 
     return {
-        newSkill,
         createSkill,
         getSkills,
         deleteSkill,

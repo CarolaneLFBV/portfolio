@@ -1,18 +1,13 @@
 <script lang="ts" setup>
 import {ref} from "vue";
 import useSkills from "~/composables/useSkills";
+import useProjects from "~/composables/useProjects";
 import type {SkillInput} from "~/types/skill";
 import {Textarea} from "~/components/ui/textarea";
 import type {Project} from "~/types/project";
 import type {Experience} from "~/types/experience";
-
-const {getSkillBySlug, updateSkill} = useSkills();
-const skill = ref<SkillInput>();
-const projects = ref<Project[]>([]);
-const experiences = ref<Experience[]>([]);
-const selectedProjectIDs = ref([]);
-const selectedExperienceIDs = ref([]);
-const selectedImage = ref<File | null>(null);
+import useExperiences from "~/composables/useExperiences";
+import {Checkbox} from "~/components/ui/checkbox";
 
 const emit = defineEmits<{
   (_e: 'update:update-skill', _value: boolean): void,
@@ -21,18 +16,25 @@ const emit = defineEmits<{
 const props = defineProps<{
   slug: string | null;
 }>()
+const {getSkillBySlug, updateSkill} = useSkills();
+const {getProjects} = useProjects();
+const {getExperiences} = useExperiences();
+// Skill
+const skill = ref<SkillInput>();
+// Projects and Experiences
+const projects = ref<Project[]>([]);
+const experiences = ref<Experience[]>([]);
+const selectedProjectIDs = ref([]);
+const selectedExperienceIDs = ref([]);
+// Image
+let selectedImage: File | null;
 
-function cancel() {
-  emit('update:update-skill', false);
-}
-
-async function onInit() {
+const onInit = async () => {
   if (props.slug) {
     try {
       skill.value = await getSkillBySlug(props.slug);
-      if (Array.isArray(skill.value.tags)) {
-        skill.value.tags = skill.value.tags.join(", ");
-      }
+      projects.value = await getProjects();
+      experiences.value = await getExperiences();
     } catch (error) {
       console.error("Erreur lors de la récupération du skill :", error);
     }
@@ -43,34 +45,29 @@ onMounted(async () => {
   await onInit();
 });
 
-async function onSubmit() {
-  try {
-    const formData = new FormData();
-    formData.append("name", skill.value.name);
-    formData.append("type", skill.value.type);
-
-    const tagsArray = Array.isArray(skill.value.tags)
-        ? skill.value.tags
-        : skill.value.tags.split(',').map(tag => tag.trim());
-
-    tagsArray.forEach(tag => formData.append("tags[]", tag));
-
-    formData.append("introduction[definition]", skill.value.introduction.definition || "");
-    formData.append("introduction[context]", skill.value.introduction.context || "");
-    formData.append("history", skill.value.history || "");
-    formData.append("projects", JSON.stringify(selectedProjectIDs.value));
-    formData.append("experiences", JSON.stringify(selectedExperienceIDs.value));
-
-    if (selectedImage.value) {
-      formData.append("image", selectedImage.value);
-    }
-
-    await updateSkill(props.slug!, formData);
-    emit('update:update-skill', false);
-  } catch (error) {
-    console.error("Error creating skill:", error);
+const onSubmit = async () => {
+  const formData = new FormData();
+  const skillJson = JSON.stringify(skill.value);
+  formData.append('skill', skillJson);
+  if (selectedImage != null) {
+    formData.append('file', selectedImage);
   }
+  await updateSkill(props.slug!, formData);
+  emit('update:update-skill', false);
+};
+
+const cancel = () => {
+  emit('update:update-skill', false);
 }
+
+const uploadImage = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const files = target.files;
+  if (!files || !files[0])
+    return;
+  selectedImage = files[0];
+};
+
 </script>
 
 <template>
@@ -80,7 +77,7 @@ async function onSubmit() {
         {{ skill.name }}
       </h2>
     </div>
-    <form @submit.prevent="onSubmit">
+    <form id="skillForm" @submit.prevent="onSubmit">
       <div class="mb-2">
         <Label for="name">Name</Label>
         <Input id="name" v-model="skill.name" required/>
@@ -111,26 +108,37 @@ async function onSubmit() {
         <Textarea id="history" v-model="skill.history" required/>
       </div>
 
-      <div class="mb-2">
-        <Label class="text-opacity-50 text-sm mb-1" for="history">Image</Label>
-        <Input
-            id="image"
-            accept="image/*"
-            type="file"
-            @change="e => selectedImage.value = e.target.files[0]"
-        />
-        <div v-if="skill.image && !selectedImage.value" class="mt-2">
-          <p class="text-sm text-gray-500">Image actuelle :</p>
-          <img :src="skill.image" alt="Current Skill Image" class="w-32 h-32 rounded-md object-cover"/>
+      <fieldset class="flex flex-row justify-around">
+        <legend class="p-0.5 ml-2">{{ $t("projects.title") }}</legend>
+        <div class="grid grid-cols-2 gap-4 mb-2 ">
+          <div v-for="project in projects" :key="project.id" class="flex flex-row items-center">
+            <Checkbox v-model="selectedProjectIDs" :value="project.id" class="rounded text-pink" type="checkbox"/>
+            <Label class="ml-1">{{ project.name }}</Label>
+          </div>
         </div>
-      </div>
+      </fieldset>
 
+      <fieldset class="flex flex-row justify-around">
+        <legend class="p-0.5 ml-2">{{ $t("experiences.title") }}</legend>
+        <div class="grid grid-cols-2 gap-4 mb-2 ">
+          <div v-for="exp in experiences" :key="exp.id" class="flex flex-row items-center">
+            <Card>
+
+            </Card>
+            <Checkbox v-model="selectedExperienceIDs" :value="exp.id" class="rounded text-pink" type="checkbox"/>
+            <Label class="ml-1">{{ exp.name }}</Label>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="mb-4">
+        <Label class="text-opacity-50 text-sm mb-1" for="image">Image</Label>
+        <Input id="file-input" accept="image/*" type="file" @change="uploadImage"/>
+      </div>
+      <div class="flex flex-row gap-2">
+        <Button variant="secondary" @click="cancel">{{ $t("utils.cancel") }}</Button>
+        <Button type="submit">{{ $t("utils.update") }}</Button>
+      </div>
     </form>
-    <div class="flex flex-row gap-2">
-      <Button variant="secondary" @click="cancel()">{{ $t("utils.cancel") }}</Button>
-      <Button @click="onSubmit()">{{ $t("utils.update") }}</Button>
-    </div>
   </div>
 </template>
-
-

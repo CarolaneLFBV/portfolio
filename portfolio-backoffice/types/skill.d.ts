@@ -3,7 +3,8 @@ import type {Experience} from "~/types/experience";
 
 export interface Skill {
     id: string;
-    image?: File | string;
+    image?: File;
+    imageURL?: string;
     name: string;
     slug: string;
     type: Type;
@@ -14,7 +15,7 @@ export interface Skill {
     experiences: Experience[];
 }
 
-export type SkillInput = Pick<Skill, "slug", "image", "name", "type", "tags", "introduction", "history", "projects", "experiences">
+export type SkillInput = Pick<Skill, "image", "name", "type", "tags", "introduction", "history", "projects", "experiences">
 
 type Introduction = {
     definition?: string;

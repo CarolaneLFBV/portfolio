@@ -33,7 +33,6 @@ export default defineNuxtConfig({
         ],
         defaultLocale: 'fr',
         lazy: true,
-        langDir: 'locales/',
         strategy: 'no_prefix'
     }
 })
