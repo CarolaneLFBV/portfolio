@@ -25,7 +25,7 @@ extension Skill.Controllers {
             ])
             protected.post("create", use: self.create)
             let protectedElement = protected.grouped(":slug")
-            protectedElement.patch(use: self.update)
+            protectedElement.on(.PATCH, body: .collect(maxSize: "10mb"), use: self.update)
             protectedElement.delete(use: self.delete)
         }
     }

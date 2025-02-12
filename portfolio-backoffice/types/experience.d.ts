@@ -14,18 +14,6 @@ export interface Experience {
     skills: Skill[];
 }
 
-export interface ExperienceCreation {
-    imageURLs?: string[];
-    name: string;
-    slug: string;
-    type: Type;
-    period: Period
-    companyName?: string;
-    missionDetails?: string;
-    projects: Project[];
-    skills: Skill[];
-}
-
 type Type = 'professional' | 'education';
 
 type Period = {

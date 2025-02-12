@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 import type {UserCredentials, UserStore} from '~/types/user'
-import { $fetch } from 'ofetch'
+import {$fetch} from 'ofetch'
 import useAuthentication from "~/composables/useAuthentication";
 
 export const useUserStore = defineStore('user', {
@@ -32,14 +32,11 @@ export const useUserStore = defineStore('user', {
                 throw error
             }
         },
-        logout() {
-            const {tokenExpired, removeToken} = useAuthentication();
-            const tokenStorage = sessionStorage.getItem("jwt") ?? "";
-
-            if (tokenExpired(tokenStorage)) {
-                removeToken();
-            }
+        async logout() {
+            const {removeToken} = useAuthentication();
+            removeToken();
             this.user = undefined;
+            await navigateTo("/auth/logout");
         },
         async register(credentials: UserCredentials) {
             const config = useRuntimeConfig()

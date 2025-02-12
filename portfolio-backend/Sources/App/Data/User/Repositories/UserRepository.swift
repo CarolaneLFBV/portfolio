@@ -23,8 +23,6 @@ extension User.Repositories {
                 throw Failed.idNotFound
             }
 
-            user.firstName = input.firstName ?? ""
-            user.lastName = input.lastName ?? ""
             user.nickName = input.nickName
             user.slug = input.nickName.slug()
             user.bio = input.bio

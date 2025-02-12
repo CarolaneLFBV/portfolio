@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import {cn} from '@/lib/utils';
+import {useI18n} from "#imports";
+
+const {t} = useI18n();
 </script>
 
 <template>
@@ -10,28 +13,28 @@ import {cn} from '@/lib/utils';
         exact
         to="/dashboard"
     >
-      {{ $t('dashboard.title') }}
+      {{ t('dashboard.title') }}
     </NuxtLink>
 
     <NuxtLink
         class="text-sm transition-colors hover:text-primary text-gray-400"
         to="/dashboard/skills"
     >
-      {{ $t('skills.title') }}
+      {{ t('skills.title') }}
     </NuxtLink>
 
     <NuxtLink
         class="text-sm transition-colors hover:text-primary text-gray-400"
         to="/dashboard/projects"
     >
-      {{ $t('projects.title') }}
+      {{ t('projects.title') }}
     </NuxtLink>
 
     <NuxtLink
         class="text-sm transition-colors hover:text-primary text-gray-400"
         to="/dashboard/experiences"
     >
-      {{ $t('experiences.title') }}
+      {{ t('experiences.title') }}
     </NuxtLink>
   </nav>
 </template>

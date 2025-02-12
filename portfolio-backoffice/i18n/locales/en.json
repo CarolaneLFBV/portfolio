@@ -8,13 +8,14 @@
     "log-in-desc": "Enter your email below to log into your account",
     "log-out": "Log Out",
     "logged-out": "Logged Out",
-    "logged-out-desc": "You have been logged out, please",
+    "logged-out-desc": "You have been logged out",
     "no-account": "Don't have an account?",
     "create-acc": "Create an account",
     "create-acc-desc": "Enter your information to create an account"
   },
   "dashboard": {
-    "title": "Dashboard"
+    "title": "Dashboard",
+    "no-data": "No Data available 😱"
   },
   "experiences": {
     "title": "Experiences"
@@ -27,19 +28,34 @@
     "title": "Projects"
   },
   "skills": {
+    "context": "Context",
+    "definition": "Definition",
+    "history": "History",
+    "image": "Image",
+    "name": "Name",
     "new": "New Skill",
-    "none": "No Skills available, please create one",
-    "title": "Skills"
+    "tags": "Tags",
+    "tags-comma-separation": "Separate tags with commas.",
+    "title": "Skills",
+    "type": "Type"
   },
   "user": {
     "email": "Email",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "logo": "Logo",
+    "new": "New User",
     "nickname": "Nickname",
-    "password": "Password"
+    "password": "Password",
+    "role": "Role",
+    "title": "Users"
   },
   "utils": {
+    "actions": "Actions",
     "create": "Create",
     "cancel": "Cancel",
     "delete": "Delete",
+    "delete-confirmation": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
     "edit": "Edit",
     "update": "Update"
   }

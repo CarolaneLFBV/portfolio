@@ -14,18 +14,6 @@ export interface Project {
     experiences: Experience[];
 }
 
-export interface ProjectCreation {
-    imageURLs?: String[];
-    name: string;
-    slug: string
-    introduction?: string;
-    presentation?: string;
-    background: Background;
-    technicalDetails: TechnicalDetails;
-    skills: Skill[];
-    experiences: Experience[];
-}
-
 type Background = {
     situationType?: SituationType;
     problemStatement?: string;

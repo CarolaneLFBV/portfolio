@@ -27,24 +27,8 @@ extension Skill.Repositories {
             let skill = input.toModel()
 
             if let image = input.image {
-                let imageURL = try await ImageUseCase().upload(image, on: req)
-                skill.imageURL = imageURL
-            }
-
-            try await skill.save(on: db)
-
-            if !input.projects.isEmpty {
-                let projectModels = try await ProjectEntity.query(on: db)
-                    .filter(\.$id ~~ input.projects)
-                    .all()
-                try await skill.$projects.attach(projectModels, on: db)
-            }
-
-            if !input.experiences.isEmpty {
-                let experienceModels = try await ExperienceEntity.query(on: db)
-                    .filter(\.$id ~~ input.experiences)
-                    .all()
-                try await skill.$experiences.attach(experienceModels, on: db)
+                let imageData = try await ImageUseCase().upload(image, on: req)
+                skill.imageURL = imageData
             }
 
             try await skill.save(on: db)

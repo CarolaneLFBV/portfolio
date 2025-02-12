@@ -29,7 +29,7 @@ extension User.Controllers {
             ])
             let protectedElement = protected.grouped(":slug")
             protectedElement.get(use: self.getUserBySlug)
-            protectedElement.patch(use: self.update)
+            protectedElement.on(.PATCH, body: .collect(maxSize: "10mb"), use: self.update)
             protectedElement.delete(use: self.delete)
         }
     }

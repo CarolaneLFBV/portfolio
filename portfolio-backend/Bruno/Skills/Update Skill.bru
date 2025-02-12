@@ -5,7 +5,7 @@ meta {
 }
 
 patch {
-  url: {{url}}/skills/testtoupdate
+  url: {{url}}/skills/swift
   body: multipartForm
   auth: bearer
 }
@@ -31,12 +31,13 @@ body:json {
 }
 
 body:multipart-form {
-  name: testtest
-  image: @file(/Users/carolanelefebvre/Desktop/cat.jpeg)
-  introduction[definition]: testToUpdate
-  introduction[context]: testToUpdate
-  history: testToUpdate
-  tags[]: testToUpdate
-  ~projects[]: DD37D519-8E05-4B53-A9C2-585B1D5922C3
+  name: Swift
+  introduction[definition]: Swift
+  introduction[context]: Swift
+  history: Swift
+  tags[]: iOS, macOS, watchOS
+  projects[]: 3716A9C3-B761-43A0-9703-251DEB74A073
+  type: technical
+  ~image: @file()
   ~experiences[]: 
 }
