@@ -5,18 +5,19 @@ import {Label} from '~/components/ui/label'
 import {Input} from '~/components/ui/input'
 import {useI18n} from "#imports";
 import {navigateTo} from "#app";
+import TypeSelector from "~/components/inputs/TypeSelector.vue";
 
-const {userCred} = useUser();
+const {newUser} = useUser();
 const userStore = useUserStore();
 const {t} = useI18n();
 
 const register = async () => {
   try {
     await userStore.register({
-      nickName: userCred.value.nickName,
-      email: userCred.value.email,
-      password: userCred.value.password,
-      role: userCred.value.role,
+      nickName: newUser.value.nickName,
+      email: newUser.value.email,
+      password: newUser.value.password,
+      role: newUser.value.role,
     });
     await navigateTo({path: `/dashboard`});
   } catch (error: any) {
@@ -27,77 +28,50 @@ const register = async () => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center h-screen">
-    <form class="max-w-xl w-3/4 md:w-1/2 mx-auto p-6" @submit.prevent="register">
-      <div class="grid gap-2">
-        <div class="grid gap-1">
-          <p> {{ t('user.nickname') }} </p>
-          <Label class="sr-only">
-            {{ t('user.nickname') }}
-          </Label>
+  <div class="flex items-center justify-center min-h-screen overflow-auto py-10">
+    <div class="max-w-4xl w-full mx-auto p-6">
+      <h2 class="text-3xl font-bold tracking-tight my-4 text-center">{{ t('user.new') }}</h2>
+      <form class="max-w-xl w-3/4 md:w-1/2 mx-auto p-6" @submit.prevent="register">
+        <div class="mb-2">
+          <Label for="nickname">{{ t('user.nickname') }}</Label>
           <Input
               id="nickname"
-              v-model="userCred.nickName"
-              auto-capitalize="none"
-              auto-correct="off"
+              v-model="newUser.nickName"
               placeholder="johndoe"
           />
         </div>
-        <div class="grid gap-1">
-          <p> {{ t('user.email') }} </p>
-          <Label class="sr-only" for="email">
-            {{ t('user.email') }}
-          </Label>
+
+        <div class="mb-2">
+          <Label for="email">{{ t('user.email') }}</Label>
           <Input
               id="email"
-              v-model="userCred.email"
-              auto-capitalize="none"
+              v-model="newUser.email"
               auto-complete="email"
-              auto-correct="off"
-              placeholder="name@example.com"
+              placeholder="johndoe@example.com"
               type="email"
           />
         </div>
-        <div class="grid gap-1">
-          <p> {{ t('user.password') }} </p>
-          <Label class="sr-only" for="email">
-            {{ t('user.password') }}
-          </Label>
+
+        <div class="mb-2">
+          <Label for="email">{{ t('user.password') }}</Label>
           <Input
               id="password"
-              v-model="userCred.password"
-              auto-capitalize="none"
-              auto-correct="off"
+              v-model="newUser.password"
               placeholder="*********"
               type="password"
           />
         </div>
-        <div class="grid gap-1">
-          <p> {{ t('user.role') }} </p>
-          <Label class="sr-only" for="email">
-            {{ t('user.role') }}
-          </Label>
-          <Select v-model="userCred.role">
-            <SelectTrigger>
-              <SelectValue placeholder="Select a role"/>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="admin">
-                  Admin
-                </SelectItem>
-                <SelectItem value="member">
-                  Member
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+
+        <div class="mb-2">
+          <Label for="role">{{ t('user.role') }}</Label>
+          <TypeSelector v-model:type="newUser.role" optionOne="admin" optionTwo="member"/>
         </div>
+
         <div class="flex flex-row gap-2">
           <Button variant="secondary" @click="$router.back()">{{ t("utils.cancel") }}</Button>
           <Button type="submit">{{ t('auth.create-acc') }}</Button>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </template>

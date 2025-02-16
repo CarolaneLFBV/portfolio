@@ -6,7 +6,7 @@ import NoDataView from "~/components/dashboard/NoDataView.vue";
 import type {Experience} from "~/types/experience";
 
 const props = defineProps<{
-  type: "professional" | "education";
+  type: "professional" | "personal";
 }>();
 
 const experiences = ref<Experience[]>([]);
@@ -39,7 +39,7 @@ const removeExperience = (slug: string) => {
       :experience="experience"
       @experienceDeleted="removeExperience"
   />
-  <div v-if="!filteredExperiences.length">
+  <div v-else>
     <NoDataView/>
   </div>
 </template>

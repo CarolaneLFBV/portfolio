@@ -9,14 +9,17 @@ extension Experience {
         static let schema = "experiences"
 
         enum ExperienceType: String, Codable {
-            case professional, education
+            case professional, personal
         }
 
         @ID(key: .id)
         var id: UUID?
 
-        @OptionalField(key: "imageURLs")
-        var imageURLs: [String]?
+        @OptionalField(key: "imageUrls")
+        var imageUrls: [String]?
+
+        @OptionalField(key: "logoUrl")
+        var logoUrl: String?
 
         @Field(key: "name")
         var name: String
@@ -48,7 +51,8 @@ extension Experience {
         init() {}
 
         init(id: UUID? = nil,
-             imageURLs: [String]?,
+             imageUrls: [String]?,
+             logoUrl: String? = nil,
              name: String,
              slug: String,
              type: ExperienceType,
@@ -58,7 +62,8 @@ extension Experience {
              missionDetails: String
              ) {
                 self.id = id
-                self.imageURLs = imageURLs
+                self.imageUrls = imageUrls
+                self.logoUrl = logoUrl
                 self.name = name
                 self.slug = slug
                 self.type = type
@@ -74,7 +79,8 @@ extension Experience.Entity {
     func toDTO(from db: Database) async throws -> Experience.Dto.Output {
         .init(
             id: id,
-            imageURLs: imageURLs,
+            imageUrls: imageUrls,
+            logoUrl: logoUrl,
             name: name,
             slug: slug,
             type: type,

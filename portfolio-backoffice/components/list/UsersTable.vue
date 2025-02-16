@@ -5,21 +5,14 @@ import {ref} from "vue";
 import type {User} from "~/types/user";
 import {useI18n} from "#imports";
 import {Pencil2Icon, TrashIcon} from "@radix-icons/vue";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
 import {navigateTo} from "#app";
+import ConfirmDeleteUserDialog from "~/components/dialog/ConfirmDeleteUserDialog.vue";
+import useImage from "~/composables/useImage";
+import NoDataView from "~/components/dashboard/NoDataView.vue";
 
 const {t} = useI18n();
-const {getAllUsers, deleteUser, getUserImage} = useUser()
+const {getAllUsers, deleteUser} = useUser()
+const {getLogo} = useImage();
 const users = ref<User[]>([]);
 
 // Deleting User
@@ -53,7 +46,7 @@ const onDelete = async () => {
 </script>
 
 <template>
-  <Table>
+  <Table v-if="users.length">
     <TableHeader>
       <TableRow>
         <TableHead>{{ t("user.nickname") }}</TableHead>
@@ -67,8 +60,8 @@ const onDelete = async () => {
         <TableCell>
           <div class="flex items-center gap-2">
             <img
-                :src="`${getUserImage(user.imageURL)}`"
-                alt="Skill Logo"
+                :src="`${getLogo(user.imageURL)}`"
+                alt="User Logo"
                 class="w-10 h-10 rounded-md object-cover"
             />
             {{ user.nickName }}
@@ -82,29 +75,26 @@ const onDelete = async () => {
               <Pencil2Icon/>
             </Button>
 
-            <AlertDialog>
-              <AlertDialogTrigger as-child>
+            <ConfirmDeleteUserDialog
+                :cancelText="t('utils.cancel')"
+                :confirmText="t('utils.delete')"
+                :message="t('utils.delete-confirmation')"
+                :title="t('utils.delete')"
+                @cancel="userToDelete = null"
+                @confirm="onDelete"
+            >
+              <template #trigger>
                 <Button variant="destructive" @click="confirmDelete(user)">
                   <TrashIcon/>
                 </Button>
-              </AlertDialogTrigger>
-
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{{ t("utils.delete") }}</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    {{ t("utils.delete-confirmation") }}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel @click="userToDelete = null">{{ t("utils.cancel") }}</AlertDialogCancel>
-                  <AlertDialogAction @click="onDelete">{{ t("utils.delete") }}</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+              </template>
+            </ConfirmDeleteUserDialog>
           </div>
         </TableCell>
       </TableRow>
     </TableBody>
   </Table>
+  <div v-else>
+    <NoDataView/>
+  </div>
 </template>

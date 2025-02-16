@@ -3,9 +3,13 @@ import type {Experience} from "~/types/experience";
 
 export interface Project {
     id: string;
-    imageURLs?: String[];
+    images?: File[];
+    imageURLs?: string[];
+    logo?: File;
+    logoUrl?: string;
     name: string;
     slug: string
+    type: Type,
     introduction?: string;
     presentation?: string;
     background: Background;
@@ -15,16 +19,17 @@ export interface Project {
 }
 
 type Background = {
-    situationType?: SituationType;
     problemStatement?: string;
     projectRole?: string;
     achievedGoals?: string;
 }
 
-type SituationType = 'professional' | 'training' | 'personal'
+type Type = 'professional' | 'personal';
 
 type TechnicalDetails = {
     technicalChoices?: string;
     challenges?: string;
     solutions?: string;
 }
+
+export type ProjectInput = Pick<Project, 'name', 'type', 'introduction', 'presentation', 'background', 'technicalDetails', 'skills', 'experiences'>

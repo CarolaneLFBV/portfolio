@@ -6,15 +6,15 @@ import {cn} from '~/lib/utils'
 import {Label} from '~/components/ui/label'
 import {Input} from '~/components/ui/input'
 
-const {userCred} = useUser();
+const {newUser} = useUser();
 const userStore = useUserStore();
 const {t} = useI18n();
 
 const login = async () => {
   try {
     await userStore.login({
-      email: userCred.value.email,
-      password: userCred.value.password
+      email: newUser.value.email,
+      password: newUser.value.password
     });
     navigateTo('/dashboard');
   } catch (error: any) {
@@ -34,10 +34,8 @@ const login = async () => {
           </Label>
           <Input
               id="email"
-              v-model="userCred.email"
-              auto-capitalize="none"
+              v-model="newUser.email"
               auto-complete="email"
-              auto-correct="off"
               placeholder="name@example.com"
               type="email"
           />
@@ -49,10 +47,7 @@ const login = async () => {
           </Label>
           <Input
               id="password"
-              v-model="userCred.password"
-              auto-capitalize="none"
-              auto-complete="email"
-              auto-correct="off"
+              v-model="newUser.password"
               placeholder="*********"
               type="password"
           />

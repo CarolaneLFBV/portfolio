@@ -1,6 +1,8 @@
 {
   "app": {
-    "name": "Carolane Lefebvre - Back office"
+    "name": "Carolane Lefebvre - Back office",
+    "logo": "Logo",
+    "images": "Images"
   },
   "auth": {
     "already-acc": "You already have an account?",
@@ -17,21 +19,52 @@
     "title": "Dashboard",
     "no-data": "No Data available 😱"
   },
+  "errors": {
+    "go-back": "Go Back",
+    "not-found": {
+      "code": "404",
+      "message": "Page Not Found"
+    }
+  },
   "experiences": {
-    "title": "Experiences"
+    "company-name": "Company Name",
+    "mission-details": "Mission Details",
+    "name": "Name",
+    "new": "New Experience",
+    "period": {
+      "start-date": "Start Date",
+      "end-date": "End Date"
+    },
+    "title": "Experiences",
+    "type": "Type"
   },
   "footer": {
-    "copyright": "© 2022-2024 Carolane Lefebvre. All rights reserved.",
-    "techs": "💻 NuxtJS - Vapor"
+    "copyright": "© 2022-2024 Carolane Lefebvre. All rights reserved."
   },
   "projects": {
-    "title": "Projects"
+    "background": {
+      "title": "Background",
+      "problem-statement": "Problem Statement",
+      "project-role": "Project Role",
+      "achieved-goals": "Achieved Goals"
+    },
+    "introduction": "Introduction",
+    "name": "Name",
+    "new": "New Project",
+    "presentation": "Presentation",
+    "technical-details": {
+      "title": "Technical Details",
+      "technical-choices": "Technical Choices",
+      "challenges": "Challenges",
+      "solutions": "Solutions"
+    },
+    "title": "Projects",
+    "type": "Type"
   },
   "skills": {
     "context": "Context",
     "definition": "Definition",
     "history": "History",
-    "image": "Image",
     "name": "Name",
     "new": "New Skill",
     "tags": "Tags",
@@ -40,10 +73,12 @@
     "type": "Type"
   },
   "user": {
+    "bio": "Biography",
     "email": "Email",
     "firstname": "First Name",
+    "interests": "Interests",
+    "introduction": "Introduction",
     "lastname": "Last Name",
-    "logo": "Logo",
     "new": "New User",
     "nickname": "Nickname",
     "password": "Password",

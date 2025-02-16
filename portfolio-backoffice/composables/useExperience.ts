@@ -1,16 +1,20 @@
 import {$fetch} from "ofetch";
+import type {ExperienceInput} from "~/types/experience";
 
 export default function () {
+    const newExperience = ref<ExperienceInput>({
+        name: '',
+        type: 'professional',
+        period: {startDate: '', endDate: ''},
+        companyName: '',
+        missionDetails: '',
+        projects: [],
+        skills: [],
+    });
+
     const config = useRuntimeConfig();
     const apiBaseUrl = config.public.apiBaseUrl;
     const tokenStorage = sessionStorage.getItem("jwt");
-
-    async function getExperienceImages(image?: File | string) {
-        if (image instanceof File) {
-            return URL.createObjectURL(image);
-        }
-        return image || '/public/okeep.png';
-    }
 
     async function createExperience(experience: FormData) {
         try {
@@ -52,7 +56,7 @@ export default function () {
     async function updateExperience(slug: string, experience: FormData) {
         try {
             return await $fetch(`${apiBaseUrl}/experiences/${slug}`, {
-                method: 'POST',
+                method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${tokenStorage}`
                 },
@@ -77,11 +81,11 @@ export default function () {
     }
 
     return {
+        newExperience,
         createExperience,
         getExperiences,
         deleteExperience,
         getExperienceBySlug,
         updateExperience,
-        getExperienceImages
     }
 }

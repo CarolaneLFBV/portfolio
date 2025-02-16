@@ -41,6 +41,6 @@ const {t} = useI18n();
 
 <style lang="scss" scoped>
 .router-link-active {
-  color: black
+  @apply text-black dark:text-white;
 }
 </style>

@@ -6,7 +6,3 @@ import CreateUserForm from "~/components/forms/CreateUserForm.vue";
 <template>
   <CreateUserForm/>
 </template>
-
-<style scoped>
-
-</style>

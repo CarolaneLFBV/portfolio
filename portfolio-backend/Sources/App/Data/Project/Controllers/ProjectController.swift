@@ -16,7 +16,7 @@ extension Project.Controllers {
             let projects = routes.grouped("projects")
             let project = projects.grouped(":slug")
 
-            projects.get(use: index)
+            projects.get(use: self.index)
             project.get(use: getProjectBySlug)
 
             let protected = projects.grouped([
@@ -24,10 +24,10 @@ extension Project.Controllers {
                 User.Middlewares.RoleMiddleware(requiredRole: .admin),
                 User.Entity.guardMiddleware()
             ])
-            protected.post("create", use: create)
+            protected.post("create", use: self.create)
             let protectedElement = protected.grouped(":slug")
-            protectedElement.patch(use: update)
-            protectedElement.delete(use: delete)
+            protectedElement.on(.PATCH, body: .collect(maxSize: "10mb"), use: self.update)
+            protectedElement.delete(use: self.delete)
         }
     }
 }

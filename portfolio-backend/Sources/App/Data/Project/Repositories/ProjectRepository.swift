@@ -25,35 +25,7 @@ extension Project.Repositories {
         // Create a new project and attach related skills and experiences
         func create(_ input: Project.Dto.Input, on req: Request) async throws {
             let project = input.toModel()
-            project.imageURLs = []
-
-            if let images = input.images {
-                var imagePaths: [String] = []
-
-                for image in images {
-                    let imagePath = try await ImageUseCase().upload(image, on: req)
-                    imagePaths.append(imagePath)
-                }
-
-                project.imageURLs = imagePaths
-            }
-
-            try await project.save(on: db)
-
-            if !input.skills.isEmpty {
-                let skillModels = try await SkillEntity.query(on: db)
-                    .filter(\.$id ~~ input.skills)
-                    .all()
-                try await project.$skills.attach(skillModels, on: db)
-            }
-
-            if !input.experiences.isEmpty {
-                let experienceModels = try await ExperienceEntity.query(on: db)
-                    .filter(\.$id ~~ input.experiences)
-                    .all()
-                try await project.$experiences.attach(experienceModels, on: db)
-            }
-
+            project.imageUrls = []
             try await project.save(on: db)
         }
 
@@ -65,24 +37,32 @@ extension Project.Repositories {
 
             project.name = input.name
             project.slug = input.name.slug()
+            project.type = input.type
             project.introduction = input.introduction
             project.presentation = input.presentation
             project.background = input.background
             project.technicalDetails = input.technicalDetails
 
-            if let images = input.images {
-                var imagePaths: [String] = []
-
-                for imageURL in project.imageURLs ?? [] {
-                    try await ImageUseCase().delete(at: imageURL, on: req)
+            if let images = input.images, !images.isEmpty {
+                let oldImages = project.imageUrls ?? []
+                for image in oldImages {
+                    try await ImageUseCase().delete(at: image, on: req)
                 }
 
+                var imagePaths: [String] = []
                 for image in images {
                     let imagePath = try await ImageUseCase().upload(image, on: req)
                     imagePaths.append(imagePath)
                 }
+                project.imageUrls = imagePaths
+            }
 
-                project.imageURLs = imagePaths
+            if let newLogo = input.logo {
+                if let oldLogo = project.logoUrl {
+                    try await ImageUseCase().delete(at: oldLogo, on: req)
+                }
+                let logoPath = try await ImageUseCase().upload(newLogo, on: req)
+                project.logoUrl = logoPath
             }
 
             if input.skills.isEmpty {
@@ -114,7 +94,11 @@ extension Project.Repositories {
                 throw Failed.idNotFound
             }
 
-            for image in project.imageURLs ?? [] {
+            if let logo = project.logoUrl {
+                try await ImageUseCase().delete(at: logo, on: req)
+            }
+
+            for image in project.imageUrls ?? [] {
                 try await ImageUseCase().delete(at: image, on: req)
             }
 

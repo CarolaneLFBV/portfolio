@@ -11,7 +11,8 @@ extension Experience.Dto {
         let missionDetails: String?
         let skills: [SkillIds]
         let projects: [ProjectIds]
-        let images: [File]?
+        var images: [File]?
+        var logo: File?
 
         init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: Experience.Dto.Input.CodingKeys.self)
@@ -35,6 +36,7 @@ extension Experience.Dto {
                                                    forKey: codingKeys.projects)) ?? []
             self.images = try container.decodeIfPresent([File].self,
                                                         forKey: codingKeys.images)
+            self.logo = try container.decodeIfPresent(File.self, forKey: codingKeys.logo)
         }
 
         func toModel() -> ExperienceEntity {

@@ -39,7 +39,7 @@ const removeSkill = (slug: string) => {
       :skill="skill"
       @skillDeleted="removeSkill"
   />
-  <div v-if="!filteredSkills.length">
+  <div v-else>
     <NoDataView/>
   </div>
 </template>

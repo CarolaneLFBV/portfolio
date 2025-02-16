@@ -2,22 +2,33 @@ import Fluent
 import Vapor
 
 typealias ProjectEntity = Project.Entity
+typealias ProjectType = Project.Entity.ProjectType
 
 extension Project {
     final class Entity: Model, @unchecked Sendable {
         static let schema = "projects"
 
+        enum ProjectType: String, Codable {
+            case professional, personal
+        }
+
         @ID(key: .id)
         var id: UUID?
 
-        @OptionalField(key: "imageURLs")
-        var imageURLs: [String]?
+        @OptionalField(key: "imageUrls")
+        var imageUrls: [String]?
+
+        @OptionalField(key: "logoUrl")
+        var logoUrl: String?
 
         @Field(key: "name")
         var name: String
 
         @Field(key: "slug")
         var slug: String
+
+        @Field(key: "type")
+        var type: ProjectType
 
         @OptionalField(key: "introduction")
         var introduction: String?
@@ -40,18 +51,22 @@ extension Project {
         init() {}
 
         init(id: UUID? = nil,
-             imageURLs: [String]?,
+             imageUrls: [String]?,
+             logoUrl: String?,
              name: String,
              slug: String,
+             type: ProjectType,
              introduction: String?,
              presentation: String?,
              background: Background,
              technicalDetails: TechnicalDetails
         ) {
             self.id = id
-            self.imageURLs = imageURLs
+            self.imageUrls = imageUrls
+            self.logoUrl = logoUrl
             self.name = name
             self.slug = slug
+            self.type = type
             self.introduction = introduction
             self.presentation = presentation
             self.background = background
@@ -64,9 +79,11 @@ extension Project.Entity {
     func toDTO(from db: Database) async throws -> Project.Dto.Output {
         .init(
             id: id,
-            imageURLs: imageURLs,
+            imageUrls: imageUrls,
+            logoUrl: logoUrl,
             name: name,
             slug: slug,
+            type: type,
             introduction: introduction,
             presentation: presentation,
             background: background,

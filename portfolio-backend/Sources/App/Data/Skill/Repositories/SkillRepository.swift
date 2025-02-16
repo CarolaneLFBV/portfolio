@@ -45,9 +45,12 @@ extension Skill.Repositories {
             skill.introduction = input.introduction
             skill.history = input.history
 
-            if let image = input.image {
-                let imageData = try await ImageUseCase().upload(image, on: req)
-                skill.imageURL = imageData
+            if let newLogo = input.image {
+                if let oldLogo = skill.imageURL {
+                    try await ImageUseCase().delete(at: oldLogo, on: req)
+                }
+                let logoPath = try await ImageUseCase().upload(newLogo, on: req)
+                skill.imageURL = logoPath
             }
 
             if input.projects.isEmpty {

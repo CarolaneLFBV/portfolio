@@ -21,3 +21,5 @@ export type UserStore = {
 export type UserCredentials = Pick<User, 'email', 'password', 'role'>
 
 type Role = 'admin' | 'member';
+
+export type UserInput = Pick<User, "firstName", "lastName", "nickName", "role", "email", "password", "bio", "introduction", "interests">

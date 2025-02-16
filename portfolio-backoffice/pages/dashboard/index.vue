@@ -43,7 +43,7 @@ const createNewUser = async () => {
         {{ t("dashboard.title") }}
       </h2>
     </div>
-    <Tabs class="space-y-4" default-value="overview">
+    <Tabs class="space-y-4" default-value="analytics">
       <TabsList :tabs="tabs"/>
       <TabsContent class="space-y-4" value="analytics">
       </TabsContent>
@@ -60,6 +60,7 @@ const createNewUser = async () => {
           </Button>
         </div>
       </TabsContent>
+      
     </Tabs>
   </div>
 </template>

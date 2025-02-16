@@ -3,6 +3,8 @@ import type {Skill} from "~/types/skill";
 import {Pencil2Icon, TrashIcon} from "@radix-icons/vue";
 import useSkills from "~/composables/useSkill";
 import {useI18n} from "#imports";
+import useImage from "~/composables/useImage";
+import ConfirmDeleteDialog from "~/components/dialog/ConfirmDeleteDialog.vue";
 
 const {t} = useI18n();
 
@@ -13,14 +15,20 @@ const props = defineProps<{
   skill: Skill;
 }>();
 
-const {deleteSkill, getSkillImage} = useSkills();
+const {deleteSkill} = useSkills();
+const {getLogo} = useImage()
+const skillToDelete = ref<string | null>(null);
 
-const onDelete = async (slug: string) => {
-  try {
-    await deleteSkill(slug);
-    emit('skillDeleted', slug);
-  } catch (error) {
-    console.error(error);
+const onDelete = async () => {
+  if (skillToDelete.value) {
+    try {
+      await deleteSkill(skillToDelete.value);
+      emit('skillDeleted', skillToDelete.value);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      skillToDelete.value = null;
+    }
   }
 }
 
@@ -34,7 +42,7 @@ const editSkill = async () => {
     <div class="flex items-center space-x-4">
       <CardHeader>
         <img
-            :src="`${getSkillImage(skill.imageURL)}`"
+            :src="`${getLogo(skill.imageURL)}`"
             alt="Skill Logo"
             class="w-32 h-32 rounded-md object-cover"
         />
@@ -55,10 +63,18 @@ const editSkill = async () => {
             <Pencil2Icon/>
             {{ t("utils.update") }}
           </Button>
-          <Button variant="destructive" @click="onDelete(skill.slug)">
-            <TrashIcon/>
-            {{ t("utils.delete") }}
-          </Button>
+          <ConfirmDeleteDialog
+              :slug="skill.name"
+              @cancel="skillToDelete = null"
+              @confirm="onDelete"
+          >
+            <template #trigger>
+              <Button variant="destructive" @click="skillToDelete = skill.slug">
+                <TrashIcon/>
+                {{ t("utils.delete") }}
+              </Button>
+            </template>
+          </ConfirmDeleteDialog>
         </div>
       </div>
     </div>

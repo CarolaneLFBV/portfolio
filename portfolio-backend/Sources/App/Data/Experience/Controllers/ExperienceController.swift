@@ -21,11 +21,12 @@ extension Experience.Controllers {
             let protected = experiences.grouped([
                 User.Middlewares.JWTAuthAuthenticator(),
                 User.Middlewares.RoleMiddleware(requiredRole: .admin),
-                User.Entity.guardMiddleware()])
+                User.Entity.guardMiddleware()
+            ])
             protected.post("create", use: self.create)
 
             let protectedElement = protected.grouped(":slug")
-            protectedElement.patch(use: self.update)
+            protectedElement.on(.PATCH, body: .collect(maxSize: "10mb"), use: self.update)
             protectedElement.delete(use: self.delete)
         }
     }
@@ -52,8 +53,8 @@ extension Experience.Controllers.Config {
     // Create a new experience from repository call
     @Sendable
     func create(req: Request) async throws -> HTTPStatus {
-        let input = try req.content.decode(ExperienceInput.self)
-        try await repository.create(input, on: req)
+        let experienceInput = try req.content.decode(ExperienceInput.self)
+        try await repository.create(experienceInput, on: req)
         return .created
     }
 

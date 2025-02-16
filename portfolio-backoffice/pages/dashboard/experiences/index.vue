@@ -12,11 +12,11 @@ definePageMeta({
 const {t} = useI18n();
 const tabs = [
   {value: "professional-experiences", label: "Professional"},
-  {value: "education-experiences", label: "Training"},
+  {value: "personal-experiences", label: "Personal"},
 ];
 
 const createNewExperience = async () => {
-
+  await navigateTo(`/dashboard/experiences/create`)
 }
 </script>
 
@@ -29,13 +29,13 @@ const createNewExperience = async () => {
       </Button>
     </div>
 
-    <Tabs class="space-y-4" default-value="overview">
+    <Tabs class="space-y-4" default-value="professional-experiences">
       <TabsList :tabs="tabs"/>
       <TabsContent class="space-y-4" value="professional-experiences">
         <ExperienceCards type="professional"/>
       </TabsContent>
-      <TabsContent class="space-y-4" value="education-experiences">
-        <ExperienceCards type="education"/>
+      <TabsContent class="space-y-4" value="personal-experiences">
+        <ExperienceCards type="personal"/>
       </TabsContent>
     </Tabs>
   </div>

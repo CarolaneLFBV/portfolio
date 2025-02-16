@@ -5,6 +5,8 @@ extension Project.Dto {
     struct Input: Content {
         let name: String
         let images: [File]?
+        let logo: File?
+        let type: ProjectType
         let introduction: String?
         let presentation: String?
         let background: Background
@@ -15,8 +17,10 @@ extension Project.Dto {
         init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: Project.Dto.Input.CodingKeys.self)
             let codingKeys = Project.Dto.Input.CodingKeys.self
-            self.name = try container.decode(String.self, forKey: Project.Dto.Input.CodingKeys.name)
+            self.name = try container.decode(String.self, forKey: codingKeys.name)
+            self.type = try container.decode(ProjectType.self, forKey: codingKeys.type)
             self.images = try container.decodeIfPresent([File].self, forKey: codingKeys.images)
+            self.logo = try container.decodeIfPresent(File.self, forKey: codingKeys.logo)
             self.introduction = try container.decodeIfPresent(String.self,
                                           forKey: codingKeys.introduction)
             self.presentation = try container.decodeIfPresent(String.self,
@@ -35,6 +39,7 @@ extension Project.Dto {
             let project = ProjectEntity()
             project.name = self.name
             project.slug = self.name.slug()
+            project.type = self.type
             project.introduction = self.introduction
             project.presentation = self.presentation
             project.background = self.background

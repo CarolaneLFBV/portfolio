@@ -1,16 +1,21 @@
 import {$fetch} from "ofetch";
+import type {ProjectInput} from "~/types/project";
 
 export default function () {
     const config = useRuntimeConfig();
     const apiBaseUrl = config.public.apiBaseUrl;
     const tokenStorage = sessionStorage.getItem("jwt");
 
-    async function getProjectImages(image?: File | string) {
-        if (image instanceof File) {
-            return URL.createObjectURL(image);
-        }
-        return image || '/public/okeep.png';
-    }
+    const newProject = ref<ProjectInput>({
+        name: '',
+        introduction: '',
+        presentation: '',
+        type: 'professional',
+        background: {problemStatement: '', projectRole: '', achievedGoals: ''},
+        technicalDetails: {technicalChoices: '', challenges: '', solutions: ''},
+        skills: [],
+        experiences: [],
+    });
 
     async function createProject(project: FormData) {
         try {
@@ -52,7 +57,7 @@ export default function () {
     async function updateProject(slug: string, project: FormData) {
         try {
             return await $fetch(`${apiBaseUrl}/projects/${slug}`, {
-                method: 'POST',
+                method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${tokenStorage}`
                 },
@@ -77,11 +82,11 @@ export default function () {
     }
 
     return {
+        newProject,
         createProject,
         getProjects,
         deleteProject,
         getProjectBySlug,
         updateProject,
-        getProjectImages
     }
 }

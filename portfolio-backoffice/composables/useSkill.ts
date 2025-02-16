@@ -16,14 +16,6 @@ export default function () {
     const apiBaseUrl = config.public.apiBaseUrl;
     const tokenStorage = sessionStorage.getItem("jwt");
 
-    function getSkillImage(image: string | undefined) {
-        try {
-            return `${apiBaseUrl}/images/${image}`
-        } catch (error) {
-            return error;
-        }
-    }
-
     async function createSkill(skill: FormData) {
         try {
             return await $fetch(`${apiBaseUrl}/skills/create`, {
@@ -95,6 +87,5 @@ export default function () {
         deleteSkill,
         getSkillBySlug,
         updateSkill,
-        getSkillImage
     }
 }

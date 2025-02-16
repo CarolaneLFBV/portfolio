@@ -4,6 +4,7 @@ import FooterLayout from "~/layouts/FooterLayout.vue";
 import {Button} from "~/components/ui/button";
 import {useUserStore} from "~/stores/useUserStore";
 import {useI18n} from "#imports";
+import DarkModeSwitch from "~/components/inputs/DarkModeSwitch.vue";
 
 const {t} = useI18n();
 const {logout} = useUserStore()
@@ -19,6 +20,7 @@ const logoutUser = async () => {
       <div class="flex h-16 items-center px-4">
         <NavigationLayout class="mx-6"/>
         <div class="ml-auto flex items-center space-x-4">
+          <DarkModeSwitch/>
           <Button variant="secondary" @click="logoutUser()">{{ t('auth.log-out') }}</Button>
         </div>
       </div>
@@ -31,7 +33,3 @@ const logoutUser = async () => {
     <FooterLayout/>
   </div>
 </template>
-
-<style scoped>
-
-</style>

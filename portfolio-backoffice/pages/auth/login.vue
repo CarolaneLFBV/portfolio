@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import LoginForm from '~/components/forms/LoginForm.vue'
+import DarkModeSwitch from "~/components/inputs/DarkModeSwitch.vue";
 
 const {t} = useI18n();
 </script>
@@ -20,6 +21,7 @@ const {t} = useI18n();
     </div>
 
     <div class="flex flex-col items-center justify-center p-8">
+      <DarkModeSwitch/>
       <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div class="flex flex-col space-y-2 text-center">
           <h1 class="text-2xl font-semibold tracking-tight">

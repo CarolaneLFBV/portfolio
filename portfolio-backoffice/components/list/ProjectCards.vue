@@ -6,7 +6,7 @@ import type {Project} from "~/types/project";
 import ProjectCard from "~/components/card/ProjectCard.vue";
 
 const props = defineProps<{
-  type: "technical" | "soft";
+  type: "professional" | "personal";
 }>();
 
 const projects = ref<Project[]>([]);
@@ -27,7 +27,7 @@ onMounted(async () => {
   await loadData();
 });
 
-const removeSkill = (slug: string) => {
+const removeProject = (slug: string) => {
   projects.value = projects.value.filter(project => project.slug !== slug);
 };
 </script>
@@ -36,10 +36,10 @@ const removeSkill = (slug: string) => {
   <ProjectCard
       v-for="project in filteredProjects"
       v-if="filteredProjects.length"
-      :skill="project"
-      @skillDeleted="removeSkill"
+      :project="project"
+      @skillDeleted="removeProject"
   />
-  <div v-if="!filteredProjects.length">
+  <div v-else>
     <NoDataView/>
   </div>
 </template>

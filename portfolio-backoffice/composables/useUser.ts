@@ -2,7 +2,7 @@ import type {UserCredentials} from '~/types/user'
 import {$fetch} from "ofetch";
 
 export default function () {
-    const userCred = ref<UserCredentials>({
+    const newUser = ref<UserCredentials>({
         nickName: '',
         email: '',
         password: '',
@@ -12,14 +12,6 @@ export default function () {
     const config = useRuntimeConfig();
     const apiBaseUrl = config.public.apiBaseUrl;
     const tokenStorage = sessionStorage.getItem("jwt");
-
-    function getUserImage(image: string | undefined) {
-        try {
-            return `${apiBaseUrl}/images/${image}`
-        } catch (error) {
-            return error;
-        }
-    }
 
     async function getAllUsers() {
         try {
@@ -89,8 +81,7 @@ export default function () {
     }
 
     return {
-        userCred,
-        getUserImage,
+        newUser,
         getAllUsers,
         getCurrentUser,
         deleteUser,
