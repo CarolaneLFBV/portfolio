@@ -12,8 +12,6 @@ extension User.Dto {
         let email: String
         let password: String?
         let bio: String?
-        let introduction: String?
-        let interests: [String]?
 
         init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: User.Dto.Input.CodingKeys.self)
@@ -36,10 +34,6 @@ extension User.Dto {
                                                           forKey: codingKeys.password)
             self.bio = try container.decodeIfPresent(String.self,
                                                      forKey: codingKeys.bio)
-            self.introduction = try container.decodeIfPresent(String.self,
-                                                              forKey: codingKeys.introduction)
-            self.interests = try container.decodeIfPresent([String].self,
-                                                           forKey: codingKeys.interests)
         }
 
         func toModel() -> User.Entity {
@@ -52,8 +46,6 @@ extension User.Dto {
             user.email = self.email
             user.password = self.password ?? ""
             user.bio = self.bio
-            user.introduction = self.introduction
-            user.interests = self.interests
             return user
         }
     }

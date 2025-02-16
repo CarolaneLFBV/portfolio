@@ -38,10 +38,7 @@ extension Project.Repositories {
             project.name = input.name
             project.slug = input.name.slug()
             project.type = input.type
-            project.introduction = input.introduction
             project.presentation = input.presentation
-            project.background = input.background
-            project.technicalDetails = input.technicalDetails
 
             if let images = input.images, !images.isEmpty {
                 let oldImages = project.imageUrls ?? []

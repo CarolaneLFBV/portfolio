@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
+import {useRoute} from "#vue-router";
+import {useI18n} from "#imports";
 import useSkills from "~/composables/useSkill";
 import useProjects from "~/composables/useProject";
 import useExperiences from "~/composables/useExperience";
@@ -7,7 +9,7 @@ import type {SkillInput} from "~/types/skill";
 import type {Project} from "~/types/project";
 import type {Experience} from "~/types/experience";
 import SelectableList from "~/components/list/SelectableList.vue";
-import TagsInput from "~/components/inputs/TagsInput.vue";
+import ArrayInput from "~/components/inputs/ArrayInput.vue";
 import LogoInput from "~/components/inputs/LogoInput.vue";
 import TypeSelector from "~/components/inputs/TypeSelector.vue";
 
@@ -53,9 +55,6 @@ const onSubmit = async () => {
   formData.append('name', skill.value.name);
   formData.append('type', skill.value.type);
   skill.value.tags.forEach(tag => formData.append('tags[]', tag));
-  formData.append('introduction[definition]', skill.value.introduction.definition);
-  formData.append('introduction[context]', skill.value.introduction.context);
-  formData.append('history', skill.value.history);
 
   skill.value.projects.forEach(projectId => {
     formData.append('projects[]', projectId);
@@ -86,7 +85,7 @@ const onSubmit = async () => {
 
         <div class="mb-2">
           <Label for="tags">{{ t("skills.tags") }}</Label>
-          <TagsInput v-model:tags="skill.tags"/>
+          <ArrayInput v-model:tags="skill.tags"/>
         </div>
 
         <div class="mb-2">
@@ -94,24 +93,9 @@ const onSubmit = async () => {
           <TypeSelector
               v-model:type="skill.type"
               :placeholder="skill.type"
-              optionOne="technical"
-              optionTwo="soft"
+              option-one="technical"
+              option-two="soft"
           />
-        </div>
-
-        <div class="mb-2">
-          <Label for="definition">{{ t("skills.definition") }}</Label>
-          <Input id="definition" v-model="skill.introduction.definition"/>
-        </div>
-
-        <div class="mb-2">
-          <Label for="context">{{ t("skills.context") }}</Label>
-          <Textarea id="context" v-model="skill.introduction.context"/>
-        </div>
-
-        <div class="mb-2">
-          <Label for="history">{{ t("skills.history") }}</Label>
-          <Textarea id="history" v-model="skill.history"/>
         </div>
 
         <SelectableList

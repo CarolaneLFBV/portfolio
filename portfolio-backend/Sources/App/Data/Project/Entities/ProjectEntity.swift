@@ -30,17 +30,8 @@ extension Project {
         @Field(key: "type")
         var type: ProjectType
 
-        @OptionalField(key: "introduction")
-        var introduction: String?
-
         @OptionalField(key: "presentation")
         var presentation: String?
-
-        @Group(key: "background")
-        var background: Background
-
-        @Group(key: "technicalDetails")
-        var technicalDetails: TechnicalDetails
 
         @Siblings(through: ProjectSkill.self, from: \.$project, to: \.$skill)
         var skills: [Skill.Entity]
@@ -56,10 +47,7 @@ extension Project {
              name: String,
              slug: String,
              type: ProjectType,
-             introduction: String?,
-             presentation: String?,
-             background: Background,
-             technicalDetails: TechnicalDetails
+             presentation: String?
         ) {
             self.id = id
             self.imageUrls = imageUrls
@@ -67,10 +55,7 @@ extension Project {
             self.name = name
             self.slug = slug
             self.type = type
-            self.introduction = introduction
             self.presentation = presentation
-            self.background = background
-            self.technicalDetails = technicalDetails
         }
     }
 }
@@ -84,10 +69,7 @@ extension Project.Entity {
             name: name,
             slug: slug,
             type: type,
-            introduction: introduction,
             presentation: presentation,
-            background: background,
-            technicalDetails: technicalDetails,
             skills: try await $skills.get(on: db).compactMap { $0.id },
             experiences: try await $experiences.get(on: db).compactMap { $0.id }
         )

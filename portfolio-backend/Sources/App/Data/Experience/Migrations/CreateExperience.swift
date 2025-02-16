@@ -11,9 +11,8 @@ struct CreateExperience: AsyncMigration {
                .field("type", .string, .required)
                .field("period_startDate", .string, .required)
                .field("period_endDate", .string, .required)
-               .field("introduction", .string)
                .field("companyName", .string)
-               .field("missionDetails", .string)
+               .field("missionDetails", .array(of: .string))
                .unique(on: "slug")
                .create()
     }

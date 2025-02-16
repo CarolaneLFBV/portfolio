@@ -29,9 +29,7 @@ extension User.Middlewares {
                 bio: userJWT.bio,
                 role: userJWT.role,
                 email: userJWT.email,
-                password: userJWT.password,
-                introduction: userJWT.introduction,
-                interests: userJWT.interests
+                password: userJWT.password
             )
             request.auth.login(user)
 

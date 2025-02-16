@@ -13,8 +13,6 @@ struct CreateUser: AsyncMigration {
             .field("password", .string, .required)
             .field("role", .string, .required)
             .field("bio", .string)
-            .field("introduction", .string)
-            .field("interests", .array(of: .string))
             .create()
     }
 

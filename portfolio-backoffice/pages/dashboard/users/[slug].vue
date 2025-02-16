@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import useUser from "~/composables/useUser";
+import {useRoute} from "#vue-router";
+import {useI18n} from "#imports";
 import type {UserInput} from "~/types/user";
 import {navigateTo} from "#app";
 import {ref} from "vue";
 import LogoInput from "~/components/inputs/LogoInput.vue";
-import TagsInput from "~/components/inputs/TagsInput.vue";
 import TypeSelector from "~/components/inputs/TypeSelector.vue";
 
 const route = useRoute()
@@ -32,18 +33,19 @@ onMounted(async () => {
 
 const onSubmit = async () => {
   const formData = new FormData();
-  formData.append("firstName", user.value.firstName);
-  formData.append("lastName", user.value.lastName);
+  formData.append("firstName", user.value?.firstName ?? "");
+  formData.append("lastName", user.value?.lastName ?? "");
   formData.append("nickName", user.value.nickName);
   formData.append("email", user.value.email);
   formData.append("role", user.value.role);
-  formData.append("introduction", user.value.introduction);
   formData.append("bio", user.value.bio);
-  user.value.interests.forEach(interest => formData.append('interests[]', interest));
 
   if (selectedLogo != null) {
     formData.append('image', selectedLogo);
   }
+
+  console.log("USER DATA:", user.value);
+
   await updateUser(slug, formData)
   await navigateTo({path: `/dashboard`});
 }
@@ -89,18 +91,8 @@ const onSubmit = async () => {
         </div>
 
         <div class="mb-2">
-          <Label for="introduction">{{ t("user.introduction") }}</Label>
-          <Textarea id="introduction" v-model="user.introduction"/>
-        </div>
-
-        <div class="mb-2">
           <Label for="bio">{{ t("user.bio") }}</Label>
           <Textarea id="bio" v-model="user.bio"/>
-        </div>
-
-        <div class="mb-2">
-          <Label for="tags">{{ t("user.interests") }}</Label>
-          <TagsInput v-model:tags="user.interests"/>
         </div>
 
         <div class="flex flex-row gap-2">

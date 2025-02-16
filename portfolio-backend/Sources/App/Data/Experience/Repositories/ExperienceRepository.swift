@@ -37,11 +37,10 @@ extension Experience.Repositories {
             experience.name = input.name
             experience.slug = input.name.slug()
             experience.type = input.type
-            experience.introduction = input.introduction
             experience.period = input.period
             experience.companyName = input.companyName
             experience.missionDetails = input.missionDetails
-            
+
             if let images = input.images, !images.isEmpty {
                 let oldImages = experience.imageUrls ?? []
                 for image in oldImages {
@@ -55,7 +54,7 @@ extension Experience.Repositories {
                 }
                 experience.imageUrls = imagePaths
             }
-            
+
             if let newLogo = input.logo {
                 if let oldLogo = experience.logoUrl {
                     try await ImageUseCase().delete(at: oldLogo, on: req)

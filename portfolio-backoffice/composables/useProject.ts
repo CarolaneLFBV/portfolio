@@ -11,8 +11,6 @@ export default function () {
         introduction: '',
         presentation: '',
         type: 'professional',
-        background: {problemStatement: '', projectRole: '', achievedGoals: ''},
-        technicalDetails: {technicalChoices: '', challenges: '', solutions: ''},
         skills: [],
         experiences: [],
     });

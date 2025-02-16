@@ -42,8 +42,6 @@ extension Skill.Repositories {
             skill.name = input.name
             skill.slug = input.name.slug()
             skill.tags = input.tags
-            skill.introduction = input.introduction
-            skill.history = input.history
 
             if let newLogo = input.image {
                 if let oldLogo = skill.imageURL {

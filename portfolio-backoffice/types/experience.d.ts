@@ -12,12 +12,12 @@ export interface Experience {
     type: Type;
     period: Period
     companyName?: string;
-    missionDetails?: string;
+    missionDetails?: string[];
     projects: Project[];
     skills: Skill[];
 }
 
-type Type = 'professional' | 'personal';
+type Type = 'professional' | 'educational';
 
 type Period = {
     startDate: String;

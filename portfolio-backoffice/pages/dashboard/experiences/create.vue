@@ -1,12 +1,17 @@
 <script lang="ts" setup>
-import {Textarea} from "~/components/ui/textarea";
 import {navigateTo} from "#app";
 import {useI18n} from "#imports";
 import useExperience from "~/composables/useExperience";
 import TypeSelector from "~/components/inputs/TypeSelector.vue";
+import ImagesInput from "~/components/inputs/ImagesInput.vue";
+import LogoInput from "~/components/inputs/LogoInput.vue";
+import ArrayInput from "~/components/inputs/ArrayInput.vue";
 
 const {t} = useI18n();
 const {createExperience, newExperience} = useExperience();
+
+let selectedLogo: File | null;
+const selectedImages = ref<File[]>([]);
 
 const onSubmit = async () => {
   const formData = new FormData();
@@ -15,7 +20,16 @@ const onSubmit = async () => {
   formData.append('period[startDate]', newExperience.value.period.startDate);
   formData.append('period[endDate]', newExperience.value.period.endDate);
   formData.append('companyName', newExperience.value.companyName);
-  formData.append('missionDetails', newExperience.value.missionDetails);
+  newExperience.value.missionDetails.forEach(md => formData.append('missionDetails[]', md));
+
+  if (selectedLogo != null) {
+    formData.append('logo', selectedLogo);
+  }
+
+  selectedImages.value.forEach(image => {
+    formData.append("images[]", image);
+  });
+
   await createExperience(formData);
   await navigateTo({path: `/dashboard/experiences`});
 };
@@ -35,7 +49,11 @@ const onSubmit = async () => {
 
         <div class="mb-2">
           <Label for="type">{{ t("experiences.type") }}</Label>
-          <TypeSelector v-model:type="newExperience.type"/>
+          <TypeSelector
+              v-model:type="newExperience.type"
+              option-one="professional"
+              option-two="educational"
+          />
         </div>
 
         <div class="mb-2">
@@ -55,8 +73,11 @@ const onSubmit = async () => {
 
         <div class="mb-4">
           <Label for="missionDetails">{{ t("experiences.mission-details") }}</Label>
-          <Textarea id="missionDetails" v-model="newExperience.missionDetails" required/>
+          <ArrayInput v-model:tags="newExperience.missionDetails"/>
         </div>
+
+        <LogoInput v-model:logo="selectedLogo"/>
+        <ImagesInput v-model:images="selectedImages"/>
 
         <div class="flex flex-row gap-2">
           <Button variant="secondary" @click="$router.back()">{{ t("utils.cancel") }}</Button>

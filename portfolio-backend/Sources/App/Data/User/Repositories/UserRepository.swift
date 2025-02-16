@@ -22,14 +22,13 @@ extension User.Repositories {
             guard let user = try await find(slug) else {
                 throw Failed.idNotFound
             }
-
+            user.firstName = input.firstName ?? ""
+            user.lastName = input.lastName ?? ""
             user.nickName = input.nickName
             user.slug = input.nickName.slug()
             user.bio = input.bio
             user.role = input.role
             user.email = input.email
-            user.introduction = input.introduction
-            user.interests = input.interests
 
             if let image = input.image {
                 let imageData = try await ImageUseCase().upload(image, on: req)

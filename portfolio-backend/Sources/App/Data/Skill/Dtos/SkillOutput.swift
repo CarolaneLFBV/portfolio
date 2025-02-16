@@ -8,8 +8,6 @@ extension Skill.Dto {
         let slug: String
         let type: SkillType
         let tags: [String]
-        let introduction: Introduction
-        let history: String?
         let imageURL: String?
         let projects: [ProjectIds]
         let experiences: [ExperienceIds]

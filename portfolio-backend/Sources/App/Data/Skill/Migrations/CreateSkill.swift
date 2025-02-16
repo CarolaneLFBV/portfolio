@@ -9,9 +9,6 @@ struct CreateSkill: AsyncMigration {
             .field("slug", .string, .required)
             .field("type", .string, .required)
             .field("tags", .array(of: .string), .required)
-            .field("introduction_definition", .string)
-            .field("introduction_context", .string)
-            .field("history", .string)
             .unique(on: "slug")
             .create()
     }

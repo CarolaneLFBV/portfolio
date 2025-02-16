@@ -41,12 +41,6 @@ extension User {
         @OptionalField(key: "bio")
         var bio: String?
 
-        @OptionalField(key: "introduction")
-        var introduction: String?
-
-        @OptionalField(key: "interests")
-        var interests: [String]?
-
         init() {}
 
         init(
@@ -59,10 +53,7 @@ extension User {
             bio: String?,
             role: Role,
             email: String,
-            password: String,
-            introduction: String?,
-            interests: [String]?
-        ) {
+            password: String) {
                 self.id = id
                 self.imageURL = imageURL
                 self.firstName = firstName
@@ -73,8 +64,6 @@ extension User {
                 self.email = email
                 self.password = password
                 self.role = role
-                self.introduction = introduction
-                self.interests = interests
         }
     }
 }
@@ -90,9 +79,7 @@ extension User.Entity {
             slug: slug,
             role: role,
             email: email,
-            bio: bio,
-            introduction: introduction,
-            interests: interests
+            bio: bio
         )
     }
 }

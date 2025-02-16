@@ -7,7 +7,7 @@ export default function () {
         type: 'professional',
         period: {startDate: '', endDate: ''},
         companyName: '',
-        missionDetails: '',
+        missionDetails: [],
         projects: [],
         skills: [],
     });

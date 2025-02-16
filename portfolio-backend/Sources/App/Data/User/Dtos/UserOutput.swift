@@ -12,7 +12,5 @@ extension User.Dto {
         let role: UserRole
         let email: String
         let bio: String?
-        let introduction: String?
-        let interests: [String]?
     }
 }

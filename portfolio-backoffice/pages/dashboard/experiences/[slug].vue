@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import {ref} from "vue";
+import {useI18n} from "#imports";
+import {useRoute} from "#vue-router";
 import useExperience from "~/composables/useExperience";
 import useSkill from "~/composables/useSkill";
 import useProjects from "~/composables/useProject";
 import type {Skill} from "~/types/skill";
-import {Textarea} from "~/components/ui/textarea";
 import type {Project} from "~/types/project";
 import type {ExperienceInput} from "~/types/experience";
 import {navigateTo} from "#app";
@@ -12,6 +12,7 @@ import LogoInput from "~/components/inputs/LogoInput.vue";
 import SelectableList from "~/components/list/SelectableList.vue";
 import TypeSelector from "~/components/inputs/TypeSelector.vue";
 import ImagesInput from "~/components/inputs/ImagesInput.vue";
+import ArrayInput from "~/components/inputs/ArrayInput.vue";
 
 const route = useRoute();
 const slug = route.params.slug as string;
@@ -58,7 +59,7 @@ const onSubmit = async () => {
   formData.append('period[startDate]', experience.value.period.startDate);
   formData.append('period[endDate]', experience.value.period.endDate);
   formData.append('companyName', experience.value.companyName);
-  formData.append('missionDetails', experience.value.missionDetails);
+  experience.value.missionDetails.forEach(md => formData.append('missionDetails[]', md));
 
   experience.value.projects.forEach(projectId => {
     formData.append('projects[]', projectId);
@@ -97,6 +98,8 @@ const onSubmit = async () => {
           <TypeSelector
               v-model:type="experience.type"
               :placeholder="experience.type"
+              option-one="professional"
+              option-two="educational"
           />
         </div>
 
@@ -117,9 +120,12 @@ const onSubmit = async () => {
 
         <div class="mb-2">
           <Label for="missionDetails">{{ t("experiences.mission-details") }}</Label>
-          <Textarea id="missionDetails" v-model="experience.missionDetails" required/>
+          <ArrayInput v-model:tags="experience.missionDetails"/>
         </div>
 
+        <div class="mb-2">
+          <Label for="tags">{{ t("skills.tags") }}</Label>
+        </div>
         <SelectableList
             v-model:selectedItems="selectedProjectIDs"
             :items="projects"

@@ -10,16 +10,13 @@ export interface User {
     email: string;
     password: string;
     bio?: string;
-    introduction?: string;
-    interests?: string[];
 }
+
+type Role = 'admin' | 'member';
 
 export type UserStore = {
     user: User | undefined;
 }
 
 export type UserCredentials = Pick<User, 'email', 'password', 'role'>
-
-type Role = 'admin' | 'member';
-
-export type UserInput = Pick<User, "firstName", "lastName", "nickName", "role", "email", "password", "bio", "introduction", "interests">
+export type UserInput = Pick<User, "firstName", "lastName", "nickName", "role", "email", "password", "bio">

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
+import {useRoute} from "#vue-router";
+import {useI18n} from "#imports";
 import useProject from "~/composables/useProject";
 import useSkill from "~/composables/useSkill";
 import useExperience from "~/composables/useExperience";
@@ -55,16 +57,7 @@ const onSubmit = async () => {
 
   formData.append('name', project.value.name);
   formData.append('type', project.value.type);
-  formData.append('introduction', project.value.introduction);
   formData.append('presentation', project.value.presentation);
-
-  formData.append('background[problemStatement]', project.value.background.problemStatement);
-  formData.append('background[projectRole]', project.value.background.projectRole);
-  formData.append('background[achievedGoals]', project.value.background.achievedGoals);
-
-  formData.append('technicalDetails[technicalChoices]', project.value.technicalDetails.technicalChoices);
-  formData.append('technicalDetails[challenges]', project.value.technicalDetails.challenges);
-  formData.append('technicalDetails[solutions]', project.value.technicalDetails.solutions);
 
   project.value.experiences.forEach(experienceId => {
     formData.append('experiences[]', experienceId);
@@ -76,7 +69,7 @@ const onSubmit = async () => {
   if (selectedLogo != null) {
     formData.append('logo', selectedLogo);
   }
-  
+
   selectedImages.value.forEach(image => {
     formData.append("images[]", image);
   });
@@ -104,43 +97,8 @@ const onSubmit = async () => {
         </div>
 
         <div class="mb-2">
-          <Label for="introduction">{{ t("projects.introduction") }}</Label>
-          <Textarea id="introduction" v-model="project.introduction" required/>
-        </div>
-
-        <div class="mb-2">
           <Label for="presentation">{{ t("projects.presentation") }}</Label>
           <Textarea id="presentation" v-model="project.presentation" required/>
-        </div>
-
-        <div>
-          <Label for="problemStatement">{{ t("projects.background.problem-statement") }}</Label>
-          <Textarea id="problemStatement" v-model="project.background.problemStatement" required/>
-        </div>
-
-        <div class="mb-2">
-          <Label for="projectRole">{{ t("projects.background.project-role") }}</Label>
-          <Textarea id="projectRole" v-model="project.background.projectRole" required/>
-        </div>
-
-        <div class="mb-2">
-          <Label for="achievedGoals">{{ t("projects.background.achieved-goals") }}</Label>
-          <Textarea id="achievedGoals" v-model="project.background.achievedGoals" required/>
-        </div>
-
-        <div class="mb-2">
-          <Label for="technicalChoices">{{ t("projects.technical-details.technical-choices") }}</Label>
-          <Textarea id="technicalChoices" v-model="project.technicalDetails.technicalChoices" required/>
-        </div>
-
-        <div class="mb-2">
-          <Label for="challenges">{{ t("projects.technical-details.challenges") }}</Label>
-          <Textarea id="challenges" v-model="project.technicalDetails.challenges" required/>
-        </div>
-
-        <div class="mb-2">
-          <Label for="solutions">{{ t("projects.technical-details.solutions") }}</Label>
-          <Textarea id="solutions" v-model="project.technicalDetails.solutions" required/>
         </div>
 
         <SelectableList v-model:selectedItems="selectedExperienceIDs" :items="experiences"

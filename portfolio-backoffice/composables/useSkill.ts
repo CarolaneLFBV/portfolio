@@ -6,8 +6,6 @@ export default function () {
         name: '',
         type: 'technical',
         tags: [],
-        introduction: {definition: '', context: ''},
-        history: '',
         projects: [],
         experiences: [],
     });

@@ -9,7 +9,7 @@ extension Experience {
         static let schema = "experiences"
 
         enum ExperienceType: String, Codable {
-            case professional, personal
+            case professional, educational
         }
 
         @ID(key: .id)
@@ -30,9 +30,6 @@ extension Experience {
         @Field(key: "type")
         var type: ExperienceType
 
-        @OptionalField(key: "introduction")
-        var introduction: String?
-
         @Group(key: "period")
         var period: Period
 
@@ -40,7 +37,7 @@ extension Experience {
         var companyName: String?
 
         @Field(key: "missionDetails")
-        var missionDetails: String?
+        var missionDetails: [String]?
 
         @Siblings(through: SkillExperience.self, from: \.$experience, to: \.$skill)
         var skills: [Skill.Entity]
@@ -59,7 +56,7 @@ extension Experience {
              introduction: String?,
              period: Period,
              companyName: String?,
-             missionDetails: String
+             missionDetails: [String]?
              ) {
                 self.id = id
                 self.imageUrls = imageUrls
@@ -67,7 +64,6 @@ extension Experience {
                 self.name = name
                 self.slug = slug
                 self.type = type
-                self.introduction = introduction
                 self.period = period
                 self.companyName = companyName
                 self.missionDetails = missionDetails
@@ -84,7 +80,6 @@ extension Experience.Entity {
             name: name,
             slug: slug,
             type: type,
-            introduction: introduction,
             period: period,
             companyName: companyName,
             missionDetails: missionDetails,

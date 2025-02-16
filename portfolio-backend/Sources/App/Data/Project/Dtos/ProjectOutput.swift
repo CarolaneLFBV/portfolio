@@ -9,10 +9,7 @@ extension Project.Dto {
         let name: String
         let slug: String?
         let type: ProjectType
-        let introduction: String?
         let presentation: String?
-        let background: Background
-        let technicalDetails: TechnicalDetails
         let skills: [SkillIds]
         let experiences: [ExperienceIds]
     }

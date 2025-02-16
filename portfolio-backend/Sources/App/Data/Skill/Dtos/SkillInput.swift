@@ -6,8 +6,6 @@ extension Skill.Dto {
         let name: String
         let type: SkillType
         let tags: [String]
-        let introduction: Introduction
-        let history: String?
         let projects: [ProjectIds]
         let experiences: [ExperienceIds]
         let image: File?
@@ -20,9 +18,6 @@ extension Skill.Dto {
             self.type = try container.decode(Skill.Dto.SkillType.self,
                                              forKey: Skill.Dto.Input.CodingKeys.type)
             self.tags = try container.decode([String].self, forKey: Skill.Dto.Input.CodingKeys.tags)
-            self.introduction = try container.decode(Skill.Dto.Introduction.self,
-                                                     forKey: Skill.Dto.Input.CodingKeys.introduction)
-            self.history = try container.decodeIfPresent(String.self, forKey: Skill.Dto.Input.CodingKeys.history)
             self.projects = (try? container.decode([Skill.Dto.ProjectIds].self,
                                                    forKey: Skill.Dto.Input.CodingKeys.projects)) ?? []
             self.experiences = (try? container.decode([Skill.Dto.ExperienceIds].self,
@@ -37,8 +32,6 @@ extension Skill.Dto {
             skill.slug = self.name.slug()
             skill.type = self.type
             skill.tags = self.tags
-            skill.introduction = self.introduction
-            skill.history = self.history
             return skill
         }
     }

@@ -7,10 +7,7 @@ extension Project.Dto {
         let images: [File]?
         let logo: File?
         let type: ProjectType
-        let introduction: String?
         let presentation: String?
-        let background: Background
-        let technicalDetails: TechnicalDetails
         let skills: [SkillIds]
         let experiences: [ExperienceIds]
 
@@ -21,18 +18,9 @@ extension Project.Dto {
             self.type = try container.decode(ProjectType.self, forKey: codingKeys.type)
             self.images = try container.decodeIfPresent([File].self, forKey: codingKeys.images)
             self.logo = try container.decodeIfPresent(File.self, forKey: codingKeys.logo)
-            self.introduction = try container.decodeIfPresent(String.self,
-                                          forKey: codingKeys.introduction)
-            self.presentation = try container.decodeIfPresent(String.self,
-                                         forKey: codingKeys.presentation)
-            self.background = try container.decode(Project.Dto.Background.self,
-                                 forKey: codingKeys.background)
-            self.technicalDetails = try container.decode(Project.Dto.TechnicalDetails.self,
-                                 forKey: codingKeys.technicalDetails)
-            self.skills = (try? container.decode([Project.Dto.SkillIds].self,
-                                 forKey: codingKeys.skills)) ?? []
-            self.experiences = (try? container.decode([Project.Dto.ExperienceIds].self,
-                                forKey: codingKeys.experiences)) ?? []
+            self.presentation = try container.decodeIfPresent(String.self, forKey: codingKeys.presentation)
+            self.skills = (try? container.decode([Project.Dto.SkillIds].self, forKey: codingKeys.skills)) ?? []
+            self.experiences = (try? container.decode([Project.Dto.ExperienceIds].self, forKey: codingKeys.experiences)) ?? []
         }
 
         func toModel() -> ProjectEntity {
@@ -40,10 +28,7 @@ extension Project.Dto {
             project.name = self.name
             project.slug = self.name.slug()
             project.type = self.type
-            project.introduction = self.introduction
             project.presentation = self.presentation
-            project.background = self.background
-            project.technicalDetails = self.technicalDetails
             return project
         }
     }

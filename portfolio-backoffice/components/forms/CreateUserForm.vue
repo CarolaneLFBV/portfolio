@@ -64,7 +64,11 @@ const register = async () => {
 
         <div class="mb-2">
           <Label for="role">{{ t('user.role') }}</Label>
-          <TypeSelector v-model:type="newUser.role" optionOne="admin" optionTwo="member"/>
+          <TypeSelector
+              v-model:type="newUser.role"
+              option-one="admin"
+              option-two="member"
+          />
         </div>
 
         <div class="flex flex-row gap-2">

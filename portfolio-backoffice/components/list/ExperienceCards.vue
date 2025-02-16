@@ -6,7 +6,7 @@ import NoDataView from "~/components/dashboard/NoDataView.vue";
 import type {Experience} from "~/types/experience";
 
 const props = defineProps<{
-  type: "professional" | "personal";
+  type: "professional" | "educational";
 }>();
 
 const experiences = ref<Experience[]>([]);

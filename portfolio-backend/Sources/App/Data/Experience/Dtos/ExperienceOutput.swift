@@ -9,10 +9,9 @@ extension Experience.Dto {
         let name: String
         let slug: String?
         let type: ExperienceType
-        let introduction: String?
         let period: Period
         let companyName: String?
-        let missionDetails: String?
+        let missionDetails: [String]?
         let skills: [SkillIds]
         let projects: [ProjectIds]
     }
