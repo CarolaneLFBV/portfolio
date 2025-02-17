@@ -25,7 +25,12 @@ extension Experience.Repositories {
         // Create a new experience and attach related skills and projects
         func create(_ input: Experience.Dto.Input, on req: Request) async throws {
             let experience = input.toModel()
-            experience.imageUrls = []
+
+            if let image = input.logo {
+                let imageData = try await ImageUseCase().upload(image, on: req)
+                experience.logoUrl = imageData
+            }
+
             try await experience.save(on: db)
         }
 
@@ -35,25 +40,12 @@ extension Experience.Repositories {
                 throw Failed.idNotFound
             }
             experience.name = input.name
+            experience.link = input.link
             experience.slug = input.name.slug()
             experience.type = input.type
             experience.period = input.period
             experience.companyName = input.companyName
             experience.missionDetails = input.missionDetails
-
-            if let images = input.images, !images.isEmpty {
-                let oldImages = experience.imageUrls ?? []
-                for image in oldImages {
-                    try await ImageUseCase().delete(at: image, on: req)
-                }
-
-                var imagePaths: [String] = []
-                for image in images {
-                    let imagePath = try await ImageUseCase().upload(image, on: req)
-                    imagePaths.append(imagePath)
-                }
-                experience.imageUrls = imagePaths
-            }
 
             if let newLogo = input.logo {
                 if let oldLogo = experience.logoUrl {
@@ -93,10 +85,6 @@ extension Experience.Repositories {
 
             if let logo = experience.logoUrl {
                 try await ImageUseCase().delete(at: logo, on: req)
-            }
-
-            for image in experience.imageUrls ?? [] {
-                try await ImageUseCase().delete(at: image, on: req)
             }
 
             try await experience.delete(on: db)

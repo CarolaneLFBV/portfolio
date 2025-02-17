@@ -1,19 +1,12 @@
 <script lang="ts" setup>
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import type {Skill} from "~/types/skill";
 import useSkills from "~/composables/useSkill";
 import SkillCard from "~/components/card/SkillCard.vue";
 import NoDataView from "~/components/dashboard/NoDataView.vue";
 
-const props = defineProps<{
-  type: "technical" | "soft";
-}>();
-
 const skills = ref<Skill[]>([]);
 const {getSkills} = useSkills();
-const filteredSkills = computed(() => {
-  return skills.value.filter(skill => skill.type === props.type);
-});
 
 const loadData = async () => {
   try {
@@ -34,8 +27,8 @@ const removeSkill = (slug: string) => {
 
 <template>
   <SkillCard
-      v-for="skill in filteredSkills"
-      v-if="filteredSkills.length"
+      v-for="skill in skills"
+      v-if="skills.length"
       :skill="skill"
       @skillDeleted="removeSkill"
   />

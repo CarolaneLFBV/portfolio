@@ -2,7 +2,7 @@
   "app": {
     "name": "Carolane Lefebvre - Back office",
     "logo": "Logo",
-    "images": "Images"
+    "link": "Link"
   },
   "auth": {
     "already-acc": "You already have an account?",

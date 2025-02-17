@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type {PropType} from 'vue';
-import useImage from "~/composables/useImage";
 import {DrawingPinIcon} from "@radix-icons/vue";
 
 const props = defineProps({
@@ -8,7 +7,6 @@ const props = defineProps({
   items: Array as PropType<{ id: string; name: string }[]>,
   selectedItems: Array as PropType<string[]>,
 });
-const {getLogo} = useImage()
 
 const emit = defineEmits(['update:selectedItems']);
 

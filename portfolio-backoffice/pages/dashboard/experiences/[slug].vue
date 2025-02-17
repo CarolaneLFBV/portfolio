@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useI18n} from "#imports";
+import {definePageMeta, useI18n} from "#imports";
 import {useRoute} from "#vue-router";
 import useExperience from "~/composables/useExperience";
 import useSkill from "~/composables/useSkill";
@@ -11,8 +11,12 @@ import {navigateTo} from "#app";
 import LogoInput from "~/components/inputs/LogoInput.vue";
 import SelectableList from "~/components/list/SelectableList.vue";
 import TypeSelector from "~/components/inputs/TypeSelector.vue";
-import ImagesInput from "~/components/inputs/ImagesInput.vue";
 import ArrayInput from "~/components/inputs/ArrayInput.vue";
+
+definePageMeta({
+  layout: 'dashboard-layout',
+  middleware: ['auth', 'role']
+});
 
 const route = useRoute();
 const slug = route.params.slug as string;
@@ -29,7 +33,6 @@ const selectedProjectIDs = ref<string[]>([]);
 const selectedSkillIDs = ref<string[]>([]);
 
 let selectedLogo: File | null;
-const selectedImages = ref<File[]>([]);
 
 const onInit = async () => {
   if (slug) {
@@ -56,6 +59,7 @@ const onSubmit = async () => {
 
   formData.append('name', experience.value.name);
   formData.append('type', experience.value.type);
+  formData.append('link', experience.value.link);
   formData.append('period[startDate]', experience.value.period.startDate);
   formData.append('period[endDate]', experience.value.period.endDate);
   formData.append('companyName', experience.value.companyName);
@@ -71,11 +75,6 @@ const onSubmit = async () => {
   if (selectedLogo != null) {
     formData.append('logo', selectedLogo);
   }
-
-  selectedImages.value.forEach(image => {
-    formData.append("images[]", image);
-  });
-
   await updateExperience(slug, formData);
   await navigateTo({path: `/dashboard/experiences/`});
 };
@@ -101,6 +100,11 @@ const onSubmit = async () => {
               option-one="professional"
               option-two="educational"
           />
+        </div>
+
+        <div class="mb-2">
+          <Label for="type">{{ t("app.link") }}</Label>
+          <Input id="name" v-model="experience.link" required/>
         </div>
 
         <div class="mb-2">
@@ -139,7 +143,6 @@ const onSubmit = async () => {
         />
 
         <LogoInput v-model:logo="selectedLogo"/>
-        <ImagesInput v-model:images="selectedImages"/>
 
         <div class="flex flex-row gap-2">
           <Button variant="secondary" @click="$router.back()">{{ t("utils.cancel") }}</Button>

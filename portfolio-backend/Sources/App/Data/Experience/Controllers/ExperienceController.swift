@@ -23,7 +23,7 @@ extension Experience.Controllers {
                 User.Middlewares.RoleMiddleware(requiredRole: .admin),
                 User.Entity.guardMiddleware()
             ])
-            protected.post("create", use: self.create)
+            protected.on(.POST, "create", body: .collect(maxSize: "10mb"), use: self.create)
 
             let protectedElement = protected.grouped(":slug")
             protectedElement.on(.PATCH, body: .collect(maxSize: "10mb"), use: self.update)

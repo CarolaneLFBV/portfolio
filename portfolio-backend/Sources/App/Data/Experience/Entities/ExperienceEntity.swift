@@ -15,9 +15,6 @@ extension Experience {
         @ID(key: .id)
         var id: UUID?
 
-        @OptionalField(key: "imageUrls")
-        var imageUrls: [String]?
-
         @OptionalField(key: "logoUrl")
         var logoUrl: String?
 
@@ -26,6 +23,9 @@ extension Experience {
 
         @Field(key: "slug")
         var slug: String
+
+        @Field(key: "link")
+        var link: String?
 
         @Field(key: "type")
         var type: ExperienceType
@@ -48,10 +48,10 @@ extension Experience {
         init() {}
 
         init(id: UUID? = nil,
-             imageUrls: [String]?,
              logoUrl: String? = nil,
              name: String,
              slug: String,
+             link: String?,
              type: ExperienceType,
              introduction: String?,
              period: Period,
@@ -59,10 +59,10 @@ extension Experience {
              missionDetails: [String]?
              ) {
                 self.id = id
-                self.imageUrls = imageUrls
                 self.logoUrl = logoUrl
                 self.name = name
                 self.slug = slug
+                self.link = link
                 self.type = type
                 self.period = period
                 self.companyName = companyName
@@ -75,10 +75,10 @@ extension Experience.Entity {
     func toDTO(from db: Database) async throws -> Experience.Dto.Output {
         .init(
             id: id,
-            imageUrls: imageUrls,
             logoUrl: logoUrl,
             name: name,
             slug: slug,
+            link: link,
             type: type,
             period: period,
             companyName: companyName,

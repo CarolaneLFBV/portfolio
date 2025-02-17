@@ -23,7 +23,7 @@ extension Skill.Controllers {
                 User.Middlewares.RoleMiddleware(requiredRole: .admin),
                 User.Entity.guardMiddleware()
             ])
-            protected.post("create", use: self.create)
+            protected.on(.POST, "create", body: .collect(maxSize: "10mb"), use: self.update)
             let protectedElement = protected.grouped(":slug")
             protectedElement.on(.PATCH, body: .collect(maxSize: "10mb"), use: self.update)
             protectedElement.delete(use: self.delete)

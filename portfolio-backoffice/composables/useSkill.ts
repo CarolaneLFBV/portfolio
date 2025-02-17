@@ -4,7 +4,6 @@ import {$fetch} from "ofetch";
 export default function () {
     const newSkill = ref<SkillInput>({
         name: '',
-        type: 'technical',
         tags: [],
         projects: [],
         experiences: [],

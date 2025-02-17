@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 import useSkills from "~/composables/useSkill";
 import {navigateTo} from "#app";
-import {useI18n} from "#imports";
-import TypeSelector from "~/components/inputs/TypeSelector.vue";
+import {definePageMeta, useI18n} from "#imports";
 import ArrayInput from "~/components/inputs/ArrayInput.vue";
 import LogoInput from "~/components/inputs/LogoInput.vue";
+
+definePageMeta({
+  layout: 'dashboard-layout',
+  middleware: ['auth', 'role']
+});
 
 const {t} = useI18n();
 const {createSkill, newSkill} = useSkills();
@@ -13,7 +17,6 @@ let selectedLogo: File | null;
 const onSubmit = async () => {
   const formData = new FormData();
   formData.append('name', newSkill.value.name);
-  formData.append('type', newSkill.value.type);
   newSkill.value.tags.forEach(tag => formData.append('tags[]', tag));
 
   if (selectedLogo != null) {
@@ -41,15 +44,6 @@ const onSubmit = async () => {
         <div class="mb-2">
           <Label for="tags">{{ t("skills.tags") }}</Label>
           <ArrayInput v-model:tags="newSkill.tags"/>
-        </div>
-
-        <div class="mb-2">
-          <Label for="type">{{ t("skills.type") }}</Label>
-          <TypeSelector
-              v-model:type="newSkill.type"
-              option-one="technical"
-              option-two="soft"
-          />
         </div>
 
         <LogoInput v-model:logo="selectedLogo"/>

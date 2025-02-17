@@ -1,41 +1,29 @@
 <script lang="ts" setup>
 import {navigateTo} from "#app";
-import {useI18n} from "#imports";
+import {definePageMeta, useI18n} from "#imports";
 import useProject from "~/composables/useProject";
 import TypeSelector from "~/components/inputs/TypeSelector.vue";
-import useExperience from "~/composables/useExperience";
-import useSkill from "~/composables/useSkill";
-import {ref} from "vue";
-import type {Experience} from "~/types/experience";
-import type {Skill} from "~/types/skill";
-import ImagesInput from "~/components/inputs/ImagesInput.vue";
 import LogoInput from "~/components/inputs/LogoInput.vue";
+
+definePageMeta({
+  layout: 'dashboard-layout',
+  middleware: ['auth', 'role']
+});
 
 const {t} = useI18n();
 const {createProject, newProject} = useProject();
-const {getExperiences} = useExperience();
-const {getSkills} = useSkill();
-
-const experiences = ref<Experience[]>([]);
-const skills = ref<Skill[]>([]);
-
 let selectedLogo: File | null;
-const selectedImages = ref<File[]>([]);
 
 const onSubmit = async () => {
   const formData = new FormData();
   formData.append('name', newProject.value.name);
   formData.append('type', newProject.value.type);
+  formData.append('link', newProject.value.link);
   formData.append('presentation', newProject.value.presentation);
 
   if (selectedLogo != null) {
     formData.append('logo', selectedLogo);
   }
-
-  selectedImages.value.forEach(image => {
-    formData.append("images[]", image);
-  });
-
   await createProject(formData);
   await navigateTo({path: `/dashboard/projects`});
 };
@@ -59,12 +47,16 @@ const onSubmit = async () => {
         </div>
 
         <div class="mb-2">
+          <Label for="link">{{ t("app.link") }}</Label>
+          <Input id="link" v-model="newProject.link" required/>
+        </div>
+
+        <div class="mb-2">
           <Label for="presentation">{{ t("projects.presentation") }}</Label>
           <Textarea id="presentation" v-model="newProject.presentation" required/>
         </div>
 
         <LogoInput v-model:logo="selectedLogo"/>
-        <ImagesInput v-model:images="selectedImages"/>
 
         <div class="flex flex-row gap-2">
           <Button variant="secondary" @click="$router.back()">{{ t("utils.cancel") }}</Button>

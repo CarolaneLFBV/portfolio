@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import {Tabs, TabsContent} from "~/components/ui/tabs";
-import TabsList from "~/components/navigation/TabsList.vue";
 import SkillCards from "~/components/list/SkillCards.vue";
 import {definePageMeta, useI18n} from "#imports";
 
@@ -10,11 +8,6 @@ definePageMeta({
 });
 
 const {t} = useI18n();
-const tabs = [
-  {value: "technical-skills", label: "Technical Skills"},
-  {value: "soft-skills", label: "Soft Skills"},
-];
-
 const createNewSkill = async () => {
   await navigateTo({path: '/dashboard/skills/create'})
 }
@@ -29,15 +22,6 @@ const createNewSkill = async () => {
         {{ t("skills.new") }}
       </Button>
     </div>
-
-    <Tabs class="space-y-4" default-value="technical-skills">
-      <TabsList :tabs="tabs"/>
-      <TabsContent class="space-y-4" value="technical-skills">
-        <SkillCards type="technical"/>
-      </TabsContent>
-      <TabsContent class="space-y-4" value="soft-skills">
-        <SkillCards type="soft"/>
-      </TabsContent>
-    </Tabs>
+    <SkillCards/>
   </div>
 </template>

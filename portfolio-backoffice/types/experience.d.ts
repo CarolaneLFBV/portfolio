@@ -3,12 +3,11 @@ import type {Skill} from "~/types/skill";
 
 export interface Experience {
     id: string;
-    images?: File[];
-    imageURLs?: string[];
     logo?: File;
     logoUrl?: string;
     name: string;
     slug: string;
+    link?: string;
     type: Type;
     period: Period
     companyName?: string;
@@ -20,8 +19,8 @@ export interface Experience {
 type Type = 'professional' | 'educational';
 
 type Period = {
-    startDate: String;
-    endDate: String;
+    startDate: string;
+    endDate: string;
 }
 
-export type ExperienceInput = Pick<Experience, "name", "type", "period", "companyName", "missionDetails", "projects", "skills">
+export type ExperienceInput = Pick<Experience, "name", "type", "link", "period", "companyName", "missionDetails", "projects", "skills">

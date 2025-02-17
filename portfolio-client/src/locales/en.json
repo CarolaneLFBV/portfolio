@@ -1,0 +1,30 @@
+{
+  "navigation": {
+    "apps": "Apps",
+    "qa": "Q&A",
+    "skills": "Skills"
+  },
+  "qa": {
+    "download": "Download CV",
+    "who-am-i": "Who am I?",
+    "who-am-i-response": "I’m Carolane, a junior mobile and web engineer specializing in iOS and modern web technologies. I have 2+ years of experience in web development and 1 year in mobile development (Flutter) through an apprenticeship.",
+    "tech-stacks": "What tech stacks do I work with?",
+    "tech-stacks-response": "I have experience working with a variety of technologies, including:",
+    "tech-stacks-mobile": "Swift, SwiftUI, Chart, UserNotifications, URLSession, CoreData (Object Graph), CoreML",
+    "tech-stacks-web": "Vue.js, NuxtJS, TypeScript, state management (Pinia), HTTP clients (Axios, Fetch), Design systems (Tailwind, SASS)",
+    "tech-stacks-backend": "Vapor",
+    "tech-stacks-tools-and-devops": "Docker, Testing tools (Postman, Bruno), Git",
+    "tech-stacks-project-management": "Agile",
+    "tech-stacks-preferred": "What tech stack do I prefer to work with?",
+    "tech-stacks-preferred-response": "I mainly focus on Swift/SwiftUI, but I remain open to other opportunities in mobile and web development.",
+    "professional-exp": "What is my professional experience?",
+    "professional-exp-response": "For more details about my experience, check out my LinkedIn profile or download my CV.",
+    "linkedin": "LinkedIn",
+    "freelance": "Do I work as a freelancer?",
+    "freelance-response": "Yes! I am open to freelance opportunities and available for collaboration on exciting projects. Feel free to reach out if you have an idea or need a developer.",
+    "english": "What is my level of English?",
+    "english-response": "I am fluent in French (native) and also fluent in English, which allows me to collaborate easily in international teams and work on global projects.",
+    "soft-skills": "What are my soft skills?",
+    "soft-skills-response": "I quickly adapt to new environments and thrive in dynamic settings. Passionate about technology, I am curious, proactive, and eager to learn. I enjoy contributing to UX, UI, architecture, and API development, bringing autonomy and valuable insights to my team."
+  }
+}

@@ -20,7 +20,6 @@ const onInit = async () => {
   if (slug) {
     try {
       user.value = await getUserBySlug(slug);
-      user.value.interests = user.value.interests || [];
     } catch (error) {
       console.error("Erreur lors de la récupération du user :", error);
     }

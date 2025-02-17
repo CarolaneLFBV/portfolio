@@ -25,7 +25,12 @@ extension Project.Repositories {
         // Create a new project and attach related skills and experiences
         func create(_ input: Project.Dto.Input, on req: Request) async throws {
             let project = input.toModel()
-            project.imageUrls = []
+
+            if let image = input.logo {
+                let imageData = try await ImageUseCase().upload(image, on: req)
+                project.logoUrl = imageData
+            }
+
             try await project.save(on: db)
         }
 
@@ -38,21 +43,8 @@ extension Project.Repositories {
             project.name = input.name
             project.slug = input.name.slug()
             project.type = input.type
+            project.link = input.link
             project.presentation = input.presentation
-
-            if let images = input.images, !images.isEmpty {
-                let oldImages = project.imageUrls ?? []
-                for image in oldImages {
-                    try await ImageUseCase().delete(at: image, on: req)
-                }
-
-                var imagePaths: [String] = []
-                for image in images {
-                    let imagePath = try await ImageUseCase().upload(image, on: req)
-                    imagePaths.append(imagePath)
-                }
-                project.imageUrls = imagePaths
-            }
 
             if let newLogo = input.logo {
                 if let oldLogo = project.logoUrl {
@@ -93,10 +85,6 @@ extension Project.Repositories {
 
             if let logo = project.logoUrl {
                 try await ImageUseCase().delete(at: logo, on: req)
-            }
-
-            for image in project.imageUrls ?? [] {
-                try await ImageUseCase().delete(at: image, on: req)
             }
 
             try await project.delete(on: db)

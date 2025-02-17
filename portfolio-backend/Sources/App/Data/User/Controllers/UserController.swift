@@ -15,6 +15,7 @@ extension User.Controllers {
         func boot(routes: any RoutesBuilder) throws {
             let users = routes.grouped("users")
             users.get(use: self.index)
+            users.get(":slug", use: self.getUserBySlug)
 
             let currentProtectedRoute = users.grouped([
                 User.Middlewares.JWTAuthAuthenticator(),
@@ -28,7 +29,6 @@ extension User.Controllers {
                 User.Entity.guardMiddleware()
             ])
             let protectedElement = protected.grouped(":slug")
-            protectedElement.get(use: self.getUserBySlug)
             protectedElement.on(.PATCH, body: .collect(maxSize: "10mb"), use: self.update)
             protectedElement.delete(use: self.delete)
         }

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
 import {useRoute} from "#vue-router";
-import {useI18n} from "#imports";
+import {definePageMeta, useI18n} from "#imports";
 import useProject from "~/composables/useProject";
 import useSkill from "~/composables/useSkill";
 import useExperience from "~/composables/useExperience";
@@ -13,7 +13,11 @@ import {navigateTo} from "#app";
 import LogoInput from "~/components/inputs/LogoInput.vue";
 import SelectableList from "~/components/list/SelectableList.vue";
 import TypeSelector from "~/components/inputs/TypeSelector.vue";
-import ImagesInput from "~/components/inputs/ImagesInput.vue";
+
+definePageMeta({
+  layout: 'dashboard-layout',
+  middleware: ['auth', 'role']
+});
 
 const route = useRoute();
 const slug = route.params.slug as string;
@@ -28,9 +32,7 @@ const experiences = ref<Experience[]>([]);
 const skills = ref<Skill[]>([]);
 const selectedExperienceIDs = ref<string[]>([]);
 const selectedSkillIDs = ref<string[]>([]);
-
 let selectedLogo: File | null;
-const selectedImages = ref<File[]>([]);
 
 const onInit = async () => {
   if (slug) {
@@ -57,6 +59,7 @@ const onSubmit = async () => {
 
   formData.append('name', project.value.name);
   formData.append('type', project.value.type);
+  formData.append('link', project.value.link);
   formData.append('presentation', project.value.presentation);
 
   project.value.experiences.forEach(experienceId => {
@@ -69,11 +72,6 @@ const onSubmit = async () => {
   if (selectedLogo != null) {
     formData.append('logo', selectedLogo);
   }
-
-  selectedImages.value.forEach(image => {
-    formData.append("images[]", image);
-  });
-
   await updateProject(slug, formData);
   await navigateTo({path: `/dashboard/projects/`});
 };
@@ -97,16 +95,29 @@ const onSubmit = async () => {
         </div>
 
         <div class="mb-2">
+          <Label for="link">{{ t("app.link") }}</Label>
+          <Input id="link" v-model="project.link" required/>
+        </div>
+
+
+        <div class="mb-2">
           <Label for="presentation">{{ t("projects.presentation") }}</Label>
           <Textarea id="presentation" v-model="project.presentation" required/>
         </div>
 
-        <SelectableList v-model:selectedItems="selectedExperienceIDs" :items="experiences"
-                        :title="t('projects.title')"/>
-        <SelectableList v-model:selectedItems="selectedSkillIDs" :items="skills" :title="t('skills.title')"/>
+        <SelectableList
+            v-model:selectedItems="selectedExperienceIDs"
+            :items="experiences"
+            :title="t('experiences.title')"
+        />
+
+        <SelectableList
+            v-model:selectedItems="selectedSkillIDs"
+            :items="skills"
+            :title="t('skills.title')"
+        />
 
         <LogoInput v-model:logo="selectedLogo"/>
-        <ImagesInput v-model:images="selectedImages"/>
 
         <div class="flex flex-row gap-2">
           <Button variant="secondary" @click="$router.back()">{{ t("utils.cancel") }}</Button>

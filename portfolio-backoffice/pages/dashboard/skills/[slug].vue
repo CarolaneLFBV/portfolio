@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
 import {useRoute} from "#vue-router";
-import {useI18n} from "#imports";
+import {definePageMeta, useI18n} from "#imports";
 import useSkills from "~/composables/useSkill";
 import useProjects from "~/composables/useProject";
 import useExperiences from "~/composables/useExperience";
@@ -11,7 +11,11 @@ import type {Experience} from "~/types/experience";
 import SelectableList from "~/components/list/SelectableList.vue";
 import ArrayInput from "~/components/inputs/ArrayInput.vue";
 import LogoInput from "~/components/inputs/LogoInput.vue";
-import TypeSelector from "~/components/inputs/TypeSelector.vue";
+
+definePageMeta({
+  layout: 'dashboard-layout',
+  middleware: ['auth', 'role']
+});
 
 const route = useRoute();
 const slug = route.params.slug as string;
@@ -53,7 +57,6 @@ const onSubmit = async () => {
   skill.value.experiences = selectedExperienceIDs.value;
 
   formData.append('name', skill.value.name);
-  formData.append('type', skill.value.type);
   skill.value.tags.forEach(tag => formData.append('tags[]', tag));
 
   skill.value.projects.forEach(projectId => {
@@ -86,16 +89,6 @@ const onSubmit = async () => {
         <div class="mb-2">
           <Label for="tags">{{ t("skills.tags") }}</Label>
           <ArrayInput v-model:tags="skill.tags"/>
-        </div>
-
-        <div class="mb-2">
-          <Label for="type">{{ t("skills.type") }}</Label>
-          <TypeSelector
-              v-model:type="skill.type"
-              :placeholder="skill.type"
-              option-one="technical"
-              option-two="soft"
-          />
         </div>
 
         <SelectableList

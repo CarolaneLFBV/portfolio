@@ -6,10 +6,6 @@ export default function () {
         return logo ? `${apiBaseUrl}/images/${logo}` : '/okeep.png';
     }
 
-    function getImages(images?: string[] | string) {
-        return images ? `${apiBaseUrl}/images/${images}` : '/okeep.png';
-    }
-
     return {
         getLogo
     }
