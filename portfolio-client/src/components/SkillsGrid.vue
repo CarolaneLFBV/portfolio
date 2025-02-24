@@ -1,12 +1,14 @@
-<script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import type { Skill } from '@/types/skill'
+<script lang="ts" setup>
+import {onMounted, ref} from 'vue'
+import type {Skill} from '@/types/skill'
 import useSkills from '@/composables/useSkills.ts'
 import useImage from '@/composables/useImage.ts'
+import {useI18n} from "vue-i18n";
 
 const skills = ref<Skill[]>([]);
 const {getSkills} = useSkills();
 const {getLogo} = useImage();
+const {t} = useI18n();
 
 const loadData = async () => {
   try {
@@ -26,19 +28,28 @@ const formatSkillName = (name: string) => {
 </script>
 
 <template>
-  <section>
-    <h3 class="text-2xl font-bold mb-4">Skills</h3>
-    <div class="flex flex-row flex-wrap gap-10">
-      <div v-for="skill in skills" :key="skill.id" class="text-center">
-        <img
-          class="w-16 h-16 mx-auto rounded-2xl object-cover"
-          :src="`${getLogo(skill.imageURL)}`"
-          alt="App Icon"
-        />
-        <p class="font-bold mt-2 break-words whitespace-pre-line">{{ formatSkillName(skill.name) }}</p>
+  <div class="text-center pb-20">
+    <h2 class="text-4xl font-bold mb-6">{{ t("navigation.skills") }}</h2>
+    <div class="flex flex-row flex-wrap justify-center gap-2">
+      <div class="flex flex-row flex-wrap justify-center gap-5">
+        <a
+          v-for="skill in skills"
+          :key="skill.id"
+          class="text-center p-4"
+          rel="noopener noreferrer"
+          target="_blank">
+          <img
+            :src="`${getLogo(skill.imageURL)}`"
+            alt="App Icon"
+            class="w-16 h-16 object-cover mx-auto rounded-2xl"
+          />
+          <p class="font-bold mt-2 break-words whitespace-pre-line">{{
+              formatSkillName(skill.name)
+            }}</p>
+        </a>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <style scoped>

@@ -26,5 +26,12 @@
     "english-response": "I am fluent in French (native) and also fluent in English, which allows me to collaborate easily in international teams and work on global projects.",
     "soft-skills": "What are my soft skills?",
     "soft-skills-response": "I quickly adapt to new environments and thrive in dynamic settings. Passionate about technology, I am curious, proactive, and eager to learn. I enjoy contributing to UX, UI, architecture, and API development, bringing autonomy and valuable insights to my team."
+  },
+  "tech": {
+    "mobile": "Mobile:",
+    "web": "Web:",
+    "backend": "Backend:",
+    "tools-devops": "Tools & DevOps:",
+    "project-management": "Project Management:"
   }
 }
